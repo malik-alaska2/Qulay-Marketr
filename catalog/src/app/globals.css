@@ -1,0 +1,23 @@
+@import 'tailwindcss';
+
+:root {
+  --bg: #f7fafc;
+  --card: #ffffff;
+  --line: #dfe7ed;
+  --text: #0e1a24;
+  --muted: #5a7387;
+  --accent: #0a7a80;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  margin: 0;
+}
+
+input,
+textarea,
+select {
+  font-size: 16px; /* иначе Safari зумит форму при фокусе */
+}

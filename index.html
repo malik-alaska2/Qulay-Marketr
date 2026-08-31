@@ -265,6 +265,10 @@ const FALLBACK = {
 const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
 const $ = (id) => document.getElementById(id);
 
+/* Все проекты на malik-alaska2.github.io делят одно localStorage,
+   поэтому ключи с приставкой qm: — чтобы не пересечься с E-BAZAR. */
+const K = (key) => "qm:" + key;
+
 let SETTINGS = { ...FALLBACK.settings };
 let ITEMS = [];
 let page = "home";
@@ -273,15 +277,15 @@ let cat = "";
 let query = "";
 let curItem = null;
 let favs = load("favs", []);
-let theme = localStorage.getItem("theme") || (tg && tg.colorScheme === "dark" ? "dark" : "light");
-let token = localStorage.getItem("ghKey") || "";
+let theme = localStorage.getItem(K("theme")) || (tg && tg.colorScheme === "dark" ? "dark" : "light");
+let token = localStorage.getItem(K("ghKey")) || "";
 let draft = null, draftSettings = null, openRow = null;
 let logoTaps = 0, logoTimer = null, toastTimer = null;
 
 function load(key, fallback) {
-  try { const v = JSON.parse(localStorage.getItem(key)); return v ?? fallback; } catch { return fallback; }
+  try { const v = JSON.parse(localStorage.getItem(K(key))); return v ?? fallback; } catch { return fallback; }
 }
-const save = (key, value) => { try { localStorage.setItem(key, JSON.stringify(value)); } catch {} };
+const save = (key, value) => { try { localStorage.setItem(K(key), JSON.stringify(value)); } catch {} };
 
 /* ============================================================ ВСПОМОГАТЕЛЬНОЕ ============================================================ */
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) =>
@@ -495,7 +499,7 @@ async function adminLogin() {
     });
     if (!res.ok) { toast(res.status === 401 ? "Ключ неверный или устарел" : "Нет доступа к репозиторию"); return; }
     token = key;
-    localStorage.setItem("ghKey", key);
+    localStorage.setItem(K("ghKey"), key);
     $("tokenInput").value = "";
     renderAdmin();
     toast("Готово");
@@ -504,7 +508,7 @@ async function adminLogin() {
 }
 
 function adminLogout() {
-  token = ""; localStorage.removeItem("ghKey");
+  token = ""; localStorage.removeItem(K("ghKey"));
   draft = null; draftSettings = null; openRow = null;
   renderAdmin(); toast("Ключ удалён из этого браузера");
 }
@@ -823,7 +827,7 @@ async function loadCatalog() {
 }
 
 /* Обработчики */
-$("themeBtn").onclick = () => { theme = theme === "dark" ? "light" : "dark"; localStorage.setItem("theme", theme); applyTheme(); };
+$("themeBtn").onclick = () => { theme = theme === "dark" ? "light" : "dark"; localStorage.setItem(K("theme"), theme); applyTheme(); };
 $("q").oninput = (e) => { query = e.target.value; renderGrid(); };
 $("tabs").onclick = (e) => {
   const b = e.target.closest("button"); if (!b) return;
@@ -860,6 +864,7 @@ if (tg) {
 
 applyTheme();
 applySettings();
+$("q").value = "";
 if (location.hash === "#admin" || token) $("navAdmin").style.display = "flex";
 routeFromHash();
 loadCatalog();

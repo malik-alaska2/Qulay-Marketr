@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Qulay Market — каталог жилья и товаров</title>
+<meta name="description" content="Личный каталог квартир и товаров: открывается в браузере и внутри Telegram.">
+<meta name="theme-color" content="#0a7a80">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Qulay Market">
+<meta property="og:description" content="Каталог жилья и товаров: открывается в браузере и внутри Telegram.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a7a80'/%3E%3Cpath d='M18 26h28l-3 20H21z' fill='none' stroke='white' stroke-width='4' stroke-linejoin='round'/%3E%3Cpath d='M25 26a7 7 0 0114 0' fill='none' stroke='white' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+  :root{
+    --bg:#f5f8fa; --card:#ffffff; --line:#e2eaf0; --text:#0e1a24; --muted:#5a7387;
+    --accent:#0a7a80; --accent-2:#08666b; --accent-soft:#e5f2f2; --danger:#c8362f;
+    --r:14px; --shadow:0 1px 3px rgba(14,26,36,.06);
+  }
+  [data-theme="dark"]{
+    --bg:#0d1418; --card:#151f25; --line:#233039; --text:#eef4f7; --muted:#8ba3b3;
+    --accent:#2aa7ad; --accent-2:#249298; --accent-soft:#12262b; --danger:#e0655e;
+    --shadow:0 1px 3px rgba(0,0,0,.4);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{background:var(--bg);color:var(--text);
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;line-height:1.45}
+  button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+  input,select,textarea{font-family:inherit;font-size:16px;width:100%;padding:11px 13px;
+    border:1.5px solid var(--line);border-radius:11px;background:var(--card);color:var(--text);outline:none}
+  input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+  textarea{resize:vertical}
+  .wrap{max-width:760px;margin:0 auto;padding:0 14px calc(80px + env(safe-area-inset-bottom))}
+
+  /* Шапка */
+  .header{position:sticky;top:0;z-index:40;backdrop-filter:blur(12px);
+    background:color-mix(in srgb,var(--bg) 86%,transparent);border-bottom:1px solid transparent}
+  .header.scrolled{border-bottom-color:var(--line)}
+  .header-in{max-width:760px;margin:0 auto;padding:11px 14px;display:flex;align-items:center;gap:10px}
+  .logo{font-size:18px;font-weight:800;letter-spacing:-.2px;flex:1;user-select:none;cursor:pointer}
+  .logo b{color:var(--accent)}
+  .icon-btn{width:38px;height:38px;border-radius:11px;background:var(--card);border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+
+  /* Поиск и фильтры */
+  .search{position:relative;margin:8px 0 10px}
+  .search input{padding-left:38px}
+  .search::before{content:"🔍";position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:13px;opacity:.65}
+  .chips{display:flex;gap:7px;overflow-x:auto;padding-bottom:7px;scrollbar-width:none}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{flex:0 0 auto;padding:7px 14px;border-radius:99px;background:var(--card);border:1px solid var(--line);
+    font-size:13px;font-weight:600;color:var(--muted);white-space:nowrap}
+  .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .tabs{display:flex;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:4px;margin-bottom:10px}
+  .tabs button{flex:1;padding:9px 4px;border-radius:9px;font-size:13.5px;font-weight:700;color:var(--muted)}
+  .tabs button.on{background:var(--accent);color:#fff}
+  .count{font-size:12.5px;color:var(--muted);margin:2px 2px 8px}
+
+  /* Сетка карточек */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:11px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;
+    box-shadow:var(--shadow);cursor:pointer;display:flex;flex-direction:column;position:relative}
+  .card:active{opacity:.85}
+  .thumb{aspect-ratio:4/3;background:var(--accent-soft);position:relative;overflow:hidden}
+  .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+  .thumb .none{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:34px;opacity:.5}
+  .card-b{padding:10px 11px 12px;display:flex;flex-direction:column;gap:4px;flex:1}
+  .price{font-size:15.5px;font-weight:800;letter-spacing:-.2px}
+  .price small{font-size:12px;font-weight:500;color:var(--muted)}
+  .ttl{font-size:13.5px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .specs{font-size:11.5px;color:var(--muted);margin-top:auto;padding-top:3px;
+    display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+  .fav{position:absolute;top:7px;right:7px;width:31px;height:31px;border-radius:99px;z-index:2;
+    background:color-mix(in srgb,var(--card) 88%,transparent);color:var(--muted);
+    display:flex;align-items:center;justify-content:center;font-size:16px;line-height:1;
+    box-shadow:0 1px 4px rgba(0,0,0,.14)}
+  .fav.on{color:#e0a020}
+  .tag{position:absolute;top:7px;left:7px;z-index:2;background:rgba(14,26,36,.72);color:#fff;
+    font-size:10px;font-weight:700;padding:3px 8px;border-radius:99px;backdrop-filter:blur(4px)}
+  .tag.hid{background:var(--danger)}
+
+  /* Страница позиции */
+  .back{display:inline-flex;align-items:center;gap:6px;font-size:13.5px;color:var(--muted);padding:10px 0}
+  .gallery{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;border-radius:var(--r)}
+  .gallery::-webkit-scrollbar{display:none}
+  .gallery img{scroll-snap-align:center;flex:0 0 100%;height:min(58vw,300px);object-fit:cover;border-radius:var(--r);background:var(--accent-soft)}
+  .dots{display:flex;gap:5px;justify-content:center;margin-top:8px}
+  .dots i{width:6px;height:6px;border-radius:99px;background:var(--line);transition:background .2s}
+  .dots i.on{background:var(--accent)}
+  .name-row{display:flex;align-items:flex-start;gap:12px;margin:14px 0 4px}
+  h1.name{font-size:21px;font-weight:800;letter-spacing:-.3px;flex:1}
+  .star{width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:var(--card);
+    font-size:19px;line-height:1;color:var(--muted);flex-shrink:0;display:flex;align-items:center;justify-content:center}
+  .star.on{color:#e0a020;border-color:#e0a020}
+  .big-price{font-size:23px;font-weight:800;letter-spacing:-.4px}
+  .big-price small{font-size:14px;font-weight:500;color:var(--muted)}
+  .specs-list{margin:14px 0;border:1px solid var(--line);border-radius:var(--r);background:var(--card);padding:0 13px}
+  .specs-list div{display:flex;justify-content:space-between;gap:14px;padding:10px 0;font-size:14px;border-top:1px solid var(--line)}
+  .specs-list div:first-child{border-top:none}
+  .specs-list dt{color:var(--muted)}
+  .desc{white-space:pre-line;font-size:14.5px;line-height:1.6;margin:14px 0}
+  .btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px;
+    border-radius:12px;font-size:15px;font-weight:700;text-align:center}
+  .btn:active{opacity:.75}
+  .btn-primary{background:var(--accent);color:#fff}
+  .btn-soft{background:var(--accent-soft);color:var(--accent)}
+  .btn-line{border:1.5px solid var(--line);background:var(--card)}
+  .btn-danger{background:rgba(200,54,47,.11);color:var(--danger)}
+  .btn:disabled{opacity:.5;cursor:default}
+  .cta{margin:22px 0 6px}
+
+  /* Низ */
+  .nav{position:fixed;left:0;right:0;bottom:0;z-index:35;background:var(--card);border-top:1px solid var(--line);
+    display:flex;max-width:760px;margin:0 auto;padding-bottom:env(safe-area-inset-bottom)}
+  .nav button{flex:1;padding:9px 0 11px;font-size:11px;font-weight:600;color:var(--muted);
+    display:flex;flex-direction:column;align-items:center;gap:3px}
+  .nav button .ic{font-size:19px;line-height:1}
+  .nav button.on{color:var(--accent)}
+
+  .page{display:none}
+  .page.on{display:block}
+  h2.title{font-size:20px;font-weight:800;letter-spacing:-.3px;margin:14px 0 10px}
+  .empty{text-align:center;padding:56px 20px;color:var(--muted);font-size:14px}
+  .empty .big{font-size:44px;margin-bottom:12px;opacity:.75}
+  .muted{color:var(--muted);font-size:13px}
+
+  .toast{position:fixed;left:50%;top:14px;z-index:99;transform:translateX(-50%) translateY(-120px);
+    background:var(--text);color:var(--bg);padding:11px 20px;border-radius:99px;font-size:13.5px;font-weight:600;
+    box-shadow:0 8px 24px rgba(0,0,0,.25);transition:transform .28s ease;max-width:90vw;text-align:center}
+  .toast.on{transform:translateX(-50%) translateY(0)}
+
+  /* Админка */
+  .adm{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:13px;margin-bottom:10px}
+  .adm-head{display:flex;align-items:center;gap:10px;cursor:pointer}
+  .adm-head .g{flex:1;min-width:0}
+  .adm-head b{display:block;font-size:14.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .adm-head .mini{width:46px;height:46px;border-radius:10px;object-fit:cover;background:var(--accent-soft);flex-shrink:0}
+  .adm-body{margin-top:12px;display:flex;flex-direction:column;gap:10px}
+  .f label{display:block;font-size:12.5px;font-weight:700;margin-bottom:5px;color:var(--muted)}
+  .f2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .checks{display:flex;gap:18px;flex-wrap:wrap;font-size:14px}
+  .checks label{display:flex;align-items:center;gap:7px}
+  .checks input{width:19px;height:19px;padding:0}
+  .photos{display:flex;flex-wrap:wrap;gap:8px}
+  .photos figure{position:relative;width:78px}
+  .photos img{width:78px;height:62px;object-fit:cover;border-radius:9px;background:var(--accent-soft)}
+  .photos button{position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:99px;
+    background:var(--danger);color:#fff;font-size:13px;line-height:1;display:flex;align-items:center;justify-content:center}
+  .save-bar{position:sticky;bottom:calc(74px + env(safe-area-inset-bottom));padding:10px 0;z-index:25;
+    background:linear-gradient(to top,var(--bg) 62%,transparent)}
+</style>
+</head>
+<body>
+
+<header class="header" id="header">
+  <div class="header-in">
+    <div class="logo" id="logo">Qulay <b>Market</b></div>
+    <button class="icon-btn" id="themeBtn" title="Тема">🌙</button>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- КАТАЛОГ -->
+  <section class="page" id="p-home">
+    <div class="search"><input id="q" type="search" placeholder="Поиск по каталогу" autocomplete="off"></div>
+    <div class="tabs" id="tabs">
+      <button data-kind="" class="on">Всё</button>
+      <button data-kind="realty">Жильё</button>
+      <button data-kind="product">Товары</button>
+    </div>
+    <div class="chips" id="chips"></div>
+    <div class="count" id="count"></div>
+    <div class="grid" id="grid"></div>
+    <div class="empty" id="homeEmpty" style="display:none"><div class="big">🗂</div><div>Ничего не нашлось</div></div>
+  </section>
+
+  <!-- ПОЗИЦИЯ -->
+  <section class="page" id="p-item"></section>
+
+  <!-- ИЗБРАННОЕ -->
+  <section class="page" id="p-fav">
+    <h2 class="title">Избранное</h2>
+    <div class="grid" id="favGrid"></div>
+    <div class="empty" id="favEmpty" style="display:none"><div class="big">☆</div><div>Здесь появится то, что вы отметите звёздочкой</div></div>
+  </section>
+
+  <!-- АДМИНКА -->
+  <section class="page" id="p-admin">
+    <h2 class="title">Админка</h2>
+
+    <div id="admLogin">
+      <div class="f" style="margin-bottom:12px">
+        <label>Ключ доступа GitHub</label>
+        <input id="tokenInput" type="password" autocomplete="off" placeholder="github_pat_...">
+      </div>
+      <button class="btn btn-primary" id="loginBtn">Войти</button>
+      <p class="muted" style="margin-top:12px;line-height:1.6">
+        Ключ создаётся один раз:
+        <a href="https://github.com/settings/tokens?type=beta" target="_blank" rel="noopener" style="color:var(--accent)">Fine-grained tokens</a>
+        → Generate new token → Repository access: только <b id="repoName1"></b> → Permissions → Contents: <b>Read and write</b>.
+        Ключ хранится только в этом телефоне или браузере, в репозитории его нет.
+      </p>
+    </div>
+
+    <div id="admPanel" style="display:none">
+      <div class="adm">
+        <b style="font-size:14.5px">Настройки</b>
+        <div class="adm-body">
+          <div class="f"><label>Название каталога</label><input id="setTitle"></div>
+          <div class="f2">
+            <div class="f"><label>Telegram для связи (без @)</label><input id="setContact" autocomplete="off"></div>
+            <div class="f"><label>Телефон (можно пусто)</label><input id="setPhone" autocomplete="off"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="admList"></div>
+      <button class="btn btn-soft" id="addBtn" style="margin-bottom:10px">＋ Добавить позицию</button>
+
+      <div class="save-bar">
+        <button class="btn btn-primary" id="saveBtn">Сохранить всё</button>
+      </div>
+      <button class="btn btn-line" id="logoutBtn" style="margin-top:6px">Сменить ключ</button>
+      <p class="muted" style="margin-top:10px;line-height:1.6">
+        После сохранения GitHub обновляет сайт примерно за минуту. Если изменений не видно — обновите страницу.
+      </p>
+    </div>
+  </section>
+
+</div>
+
+<nav class="nav" id="nav">
+  <button data-page="home"><span class="ic">🏠</span><span>Каталог</span></button>
+  <button data-page="fav"><span class="ic">★</span><span>Избранное</span></button>
+  <button data-page="admin" id="navAdmin" style="display:none"><span class="ic">⚙️</span><span>Админка</span></button>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   НАСТРОЙКИ. Здесь только то, что не меняется из админки.
+   ============================================================ */
+const CONFIG = {
+  github: {
+    owner:  "malik-alaska2",
+    repo:   "Qulay-Marketr",
+    branch: "main",
+    catalog: "catalog.json",
+    photos:  "photos",
+  },
+};
+
+/* Запасные данные — показываются, если catalog.json ещё не создан */
+const FALLBACK = {
+  settings: { title: "Qulay Market", contact: "", phone: "" },
+  items: [],
+};
+
+/* ============================================================ СОСТОЯНИЕ ============================================================ */
+const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+const $ = (id) => document.getElementById(id);
+
+let SETTINGS = { ...FALLBACK.settings };
+let ITEMS = [];
+let page = "home";
+let kind = "";
+let cat = "";
+let query = "";
+let curItem = null;
+let favs = load("favs", []);
+let theme = localStorage.getItem("theme") || (tg && tg.colorScheme === "dark" ? "dark" : "light");
+let token = localStorage.getItem("ghKey") || "";
+let draft = null, draftSettings = null, openRow = null;
+let logoTaps = 0, logoTimer = null, toastTimer = null;
+
+function load(key, fallback) {
+  try { const v = JSON.parse(localStorage.getItem(key)); return v ?? fallback; } catch { return fallback; }
+}
+const save = (key, value) => { try { localStorage.setItem(key, JSON.stringify(value)); } catch {} };
+
+/* ============================================================ ВСПОМОГАТЕЛЬНОЕ ============================================================ */
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) =>
+  ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+const money = (n) => (Number(n) || 0).toLocaleString("ru-RU") + " TL";
+const isRealty = (it) => it.kind === "realty";
+const per = (it) => (isRealty(it) ? '<small> /мес</small>' : "");
+const cover = (it) => (Array.isArray(it.images) && it.images.length ? it.images[0] : "");
+
+function specsLine(it) {
+  return [it.rooms, it.area ? it.area + " м²" : "", it.floor, it.district]
+    .filter(Boolean).join(" · ");
+}
+
+function toast(msg) {
+  const el = $("toast");
+  el.textContent = msg;
+  el.classList.add("on");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove("on"), 2400);
+}
+
+function applyTheme() {
+  document.documentElement.dataset.theme = theme;
+  $("themeBtn").textContent = theme === "dark" ? "☀️" : "🌙";
+}
+
+/* ============================================================ МАРШРУТЫ ============================================================ */
+function go(next, id) {
+  page = next;
+  curItem = next === "item" ? Number(id) : null;
+  document.querySelectorAll(".page").forEach((el) => el.classList.remove("on"));
+  const el = $("p-" + next);
+  if (el) el.classList.add("on");
+  document.querySelectorAll("#nav button").forEach((b) =>
+    b.classList.toggle("on", b.dataset.page === next));
+
+  const hash = next === "home" ? "" : next === "item" ? "#item-" + id : "#" + next;
+  if (location.hash !== hash) history.replaceState(null, "", location.pathname + location.search + hash);
+
+  if (next === "item") renderItem();
+  if (next === "fav") renderFavs();
+  if (next === "admin") renderAdmin();
+  if (next === "home") renderGrid();
+
+  window.scrollTo(0, 0);
+  if (tg && tg.BackButton) {
+    try { next === "home" ? tg.BackButton.hide() : tg.BackButton.show(); } catch {}
+  }
+}
+
+function routeFromHash() {
+  const h = location.hash.replace(/^#/, "");
+  const m = h.match(/^item-(\d+)$/);
+  if (m) return go("item", m[1]);
+  if (h === "fav") return go("fav");
+  if (h === "admin") return go("admin");
+  go("home");
+}
+
+/* ============================================================ КАТАЛОГ ============================================================ */
+function visible() {
+  const q = query.trim().toLowerCase();
+  return ITEMS.filter((it) => {
+    if (it.hidden) return false;
+    if (kind && it.kind !== kind) return false;
+    if (cat && it.category !== cat) return false;
+    if (!q) return true;
+    return [it.title, it.description, it.category, it.district, it.rooms, it.floor]
+      .filter(Boolean).join(" ").toLowerCase().includes(q);
+  });
+}
+
+function cardHtml(it) {
+  const img = cover(it);
+  const fav = favs.includes(it.id);
+  return `
+  <article class="card" onclick="go('item',${it.id})">
+    <div class="thumb">
+      ${img ? `<img src="${esc(img)}" alt="${esc(it.title)}" loading="lazy">`
+            : `<div class="none">${isRealty(it) ? "🏠" : "📦"}</div>`}
+      <span class="tag">${isRealty(it) ? "Жильё" : "Товар"}</span>
+      <button class="fav${fav ? " on" : ""}" onclick="event.stopPropagation();toggleFav(${it.id})" aria-label="В избранное">${fav ? "★" : "☆"}</button>
+    </div>
+    <div class="card-b">
+      <div class="price">${money(it.price)}${per(it)}</div>
+      <div class="ttl">${esc(it.title)}</div>
+      ${specsLine(it) ? `<div class="specs">${esc(specsLine(it))}</div>` : ""}
+    </div>
+  </article>`;
+}
+
+function renderChips() {
+  const list = [...new Set(ITEMS.filter((i) => !i.hidden && (!kind || i.kind === kind))
+    .map((i) => i.category).filter(Boolean))].sort((a, b) => a.localeCompare(b, "ru"));
+  if (cat && !list.includes(cat)) cat = "";
+  $("chips").innerHTML = list.length
+    ? `<button class="chip${cat ? "" : " on"}" onclick="setCat('')">Все разделы</button>` +
+      list.map((c) => `<button class="chip${cat === c ? " on" : ""}" onclick="setCat('${esc(c).replace(/'/g, "&#39;")}')">${esc(c)}</button>`).join("")
+    : "";
+}
+function setCat(c) { cat = c; renderChips(); renderGrid(); }
+
+function renderGrid() {
+  renderChips();
+  const list = visible();
+  $("grid").innerHTML = list.map(cardHtml).join("");
+  const empty = $("homeEmpty");
+  empty.style.display = list.length ? "none" : "block";
+  empty.innerHTML = ITEMS.length
+    ? '<div class="big">\u{1F5C2}</div><div>\u041d\u0438\u0447\u0435\u0433\u043e \u043d\u0435 \u043d\u0430\u0448\u043b\u043e\u0441\u044c</div>'
+    : '<div class="big">\u{1F4E6}</div><div>\u041a\u0430\u0442\u0430\u043b\u043e\u0433 \u043f\u043e\u043a\u0430 \u043f\u0443\u0441\u0442.<br>\u041e\u0442\u043a\u0440\u043e\u0439\u0442\u0435 \u0430\u0434\u043c\u0438\u043d\u043a\u0443 \u0438 \u0434\u043e\u0431\u0430\u0432\u044c\u0442\u0435 \u043f\u0435\u0440\u0432\u0443\u044e \u043f\u043e\u0437\u0438\u0446\u0438\u044e.</div>';
+  $("count").textContent = list.length ? plural(list.length) : "";
+}
+function plural(n) {
+  const t = n % 10, h = n % 100;
+  const word = t === 1 && h !== 11 ? "позиция" : t >= 2 && t <= 4 && (h < 12 || h > 14) ? "позиции" : "позиций";
+  return n + " " + word;
+}
+
+function toggleFav(id) {
+  favs = favs.includes(id) ? favs.filter((x) => x !== id) : [...favs, id];
+  save("favs", favs);
+  renderGrid();
+  if (page === "fav") renderFavs();
+  if (page === "item") renderItem();
+}
+
+function renderFavs() {
+  const list = ITEMS.filter((it) => favs.includes(it.id) && !it.hidden);
+  $("favGrid").innerHTML = list.map(cardHtml).join("");
+  $("favEmpty").style.display = list.length ? "none" : "block";
+}
+
+/* ============================================================ СТРАНИЦА ПОЗИЦИИ ============================================================ */
+function renderItem() {
+  const it = ITEMS.find((x) => x.id === curItem);
+  if (!it || it.hidden) {
+    $("p-item").innerHTML = `<div class="empty"><div class="big">🔍</div><div>Позиция не найдена</div>
+      <button class="btn btn-soft" style="margin-top:16px" onclick="go('home')">В каталог</button></div>`;
+    return;
+  }
+  const photos = Array.isArray(it.images) ? it.images : [];
+  const rows = [
+    ["Категория", it.category],
+    ["Район", it.district],
+    ["Комнаты", it.rooms],
+    ["Площадь", it.area ? it.area + " м²" : ""],
+    ["Этаж", it.floor],
+    isRealty(it) ? ["Мебель", it.furnished ? "Есть" : "Нет"] : null,
+  ].filter((r) => r && r[1]);
+
+  const contact = String(SETTINGS.contact || "").replace(/^@/, "");
+  const text = `Здравствуйте! Интересует «${it.title}» (№${it.id})`;
+  const link = contact ? `https://t.me/${contact}?text=${encodeURIComponent(text)}` : "";
+  const fav = favs.includes(it.id);
+
+  $("p-item").innerHTML = `
+    <button class="back" onclick="go('home')">← Назад в каталог</button>
+    ${photos.length ? `
+      <div class="gallery" id="gallery">
+        ${photos.map((p) => `<img src="${esc(p)}" alt="${esc(it.title)}">`).join("")}
+      </div>
+      ${photos.length > 1 ? `<div class="dots" id="dots">${photos.map((_, i) => `<i class="${i ? "" : "on"}"></i>`).join("")}</div>` : ""}
+    ` : `<div class="thumb" style="border-radius:var(--r);aspect-ratio:auto;height:170px"><div class="none" style="font-size:46px">${isRealty(it) ? "🏠" : "📦"}</div></div>`}
+
+    <div class="name-row">
+      <h1 class="name">${esc(it.title)}</h1>
+      <button class="star${fav ? " on" : ""}" onclick="toggleFav(${it.id})" aria-label="В избранное">${fav ? "★" : "☆"}</button>
+    </div>
+    <div class="big-price">${money(it.price)}${per(it)}</div>
+    ${rows.length ? `<div class="specs-list">${rows.map(([k, v]) =>
+      `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</div>` : ""}
+    ${it.description ? `<p class="desc">${esc(it.description)}</p>` : ""}
+
+    <div class="cta">
+      ${link ? `<a class="btn btn-primary" id="ctaBtn" href="${esc(link)}" target="_blank" rel="noopener">Написать в Telegram</a>`
+             : `<div class="muted" style="text-align:center">Укажите Telegram для связи в админке</div>`}
+      ${SETTINGS.phone ? `<a class="btn btn-line" style="margin-top:8px" href="tel:${esc(SETTINGS.phone)}">Позвонить ${esc(SETTINGS.phone)}</a>` : ""}
+    </div>
+    <p class="muted" style="text-align:center;margin-top:10px">№${it.id}</p>`;
+
+  const gallery = $("gallery");
+  if (gallery && photos.length > 1) {
+    gallery.addEventListener("scroll", () => {
+      const i = Math.round(gallery.scrollLeft / gallery.clientWidth);
+      $("dots").querySelectorAll("i").forEach((d, n) => d.classList.toggle("on", n === i));
+    }, { passive: true });
+  }
+  const cta = $("ctaBtn");
+  if (cta && tg && tg.openTelegramLink) {
+    cta.addEventListener("click", (e) => { e.preventDefault(); try { tg.openTelegramLink(link); } catch { window.open(link, "_blank"); } });
+  }
+}
+
+/* ============================================================ АДМИНКА ============================================================ */
+function ensureDraft() {
+  if (!draft) draft = JSON.parse(JSON.stringify(ITEMS));
+  if (!draftSettings) draftSettings = JSON.parse(JSON.stringify(SETTINGS));
+}
+
+async function adminLogin() {
+  const key = $("tokenInput").value.trim();
+  if (!key) { toast("Введите ключ"); return; }
+  const btn = $("loginBtn");
+  btn.disabled = true; btn.textContent = "Проверяю…";
+  try {
+    const res = await fetch(`https://api.github.com/repos/${CONFIG.github.owner}/${CONFIG.github.repo}`, {
+      headers: { Authorization: "Bearer " + key, Accept: "application/vnd.github+json" },
+    });
+    if (!res.ok) { toast(res.status === 401 ? "Ключ неверный или устарел" : "Нет доступа к репозиторию"); return; }
+    token = key;
+    localStorage.setItem("ghKey", key);
+    $("tokenInput").value = "";
+    renderAdmin();
+    toast("Готово");
+  } catch { toast("Нет связи с GitHub"); }
+  finally { btn.disabled = false; btn.textContent = "Войти"; }
+}
+
+function adminLogout() {
+  token = ""; localStorage.removeItem("ghKey");
+  draft = null; draftSettings = null; openRow = null;
+  renderAdmin(); toast("Ключ удалён из этого браузера");
+}
+
+function setField(i, field, value) { ensureDraft(); draft[i][field] = value; }
+function setNum(i, field, value) { ensureDraft(); draft[i][field] = value === "" ? (field === "area" ? null : 0) : Number(value); }
+function setSetting(field, value) { ensureDraft(); draftSettings[field] = value; }
+
+function rowToggle(i) { openRow = openRow === i ? null : i; renderAdmin(); }
+
+function addItem() {
+  ensureDraft();
+  const id = draft.reduce((m, x) => Math.max(m, Number(x.id) || 0), 0) + 1;
+  draft.unshift({ id, kind: "product", title: "", description: "", price: 0, category: "",
+    district: "", rooms: "", area: null, floor: "", furnished: 0, images: [], hidden: 0 });
+  openRow = 0;
+  renderAdmin();
+}
+
+function delItem(i) {
+  ensureDraft();
+  if (!confirm(`Удалить «${draft[i].title || "без названия"}»?`)) return;
+  draft.splice(i, 1);
+  openRow = null;
+  renderAdmin();
+}
+
+function moveItem(i, d) {
+  ensureDraft();
+  const j = i + d;
+  if (j < 0 || j >= draft.length) return;
+  [draft[i], draft[j]] = [draft[j], draft[i]];
+  openRow = openRow === i ? j : openRow === j ? i : openRow;
+  renderAdmin();
+}
+
+/* Фото: сжимаем прямо в браузере, чтобы репозиторий не разрастался */
+function pickPhotos(i) {
+  ensureDraft();
+  const input = document.createElement("input");
+  input.type = "file"; input.accept = "image/*"; input.multiple = true;
+  input.onchange = async () => {
+    const files = [...(input.files || [])];
+    for (const file of files) {
+      try { draft[i].images.push(await compress(file)); }
+      catch { toast("Не удалось прочитать фото"); }
+    }
+    renderAdmin();
+    if (files.length) toast(files.length === 1 ? "Фото добавлено" : "Фото добавлены: " + files.length);
+  };
+  input.click();
+}
+
+function compress(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = reject;
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onerror = reject;
+      img.onload = () => {
+        const max = 1280;
+        const scale = Math.min(1, max / Math.max(img.width, img.height));
+        const cv = document.createElement("canvas");
+        cv.width = Math.round(img.width * scale);
+        cv.height = Math.round(img.height * scale);
+        cv.getContext("2d").drawImage(img, 0, 0, cv.width, cv.height);
+        resolve(cv.toDataURL("image/jpeg", 0.78));
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function delPhoto(i, n) { ensureDraft(); draft[i].images.splice(n, 1); renderAdmin(); }
+
+function renderAdmin() {
+  const logged = !!token;
+  $("admLogin").style.display = logged ? "none" : "block";
+  $("admPanel").style.display = logged ? "block" : "none";
+  $("repoName1").textContent = CONFIG.github.repo;
+  if (!logged) return;
+
+  ensureDraft();
+  $("setTitle").value = draftSettings.title || "";
+  $("setContact").value = draftSettings.contact || "";
+  $("setPhone").value = draftSettings.phone || "";
+
+  $("admList").innerHTML = draft.map((it, i) => {
+    const img = cover(it);
+    const head = `
+      <div class="adm-head" onclick="rowToggle(${i})">
+        ${img ? `<img class="mini" src="${esc(img)}" alt="">`
+              : `<div class="mini" style="display:flex;align-items:center;justify-content:center;font-size:20px">${isRealty(it) ? "🏠" : "📦"}</div>`}
+        <div class="g">
+          <b>${esc(it.title || "Без названия")}</b>
+          <span class="muted">№${it.id} · ${isRealty(it) ? "жильё" : "товар"} · ${money(it.price)}${it.hidden ? " · скрыто" : ""}</span>
+        </div>
+        <span class="muted">${openRow === i ? "▲" : "▼"}</span>
+      </div>`;
+    if (openRow !== i) return `<div class="adm">${head}</div>`;
+
+    return `<div class="adm">${head}
+      <div class="adm-body">
+        <div class="f2">
+          <div class="f"><label>Тип</label>
+            <select onchange="setField(${i},'kind',this.value);renderAdmin()">
+              <option value="product"${it.kind === "product" ? " selected" : ""}>Товар</option>
+              <option value="realty"${it.kind === "realty" ? " selected" : ""}>Жильё</option>
+            </select></div>
+          <div class="f"><label>Цена, TL</label>
+            <input type="number" min="0" inputmode="numeric" value="${esc(it.price)}" oninput="setNum(${i},'price',this.value)"></div>
+        </div>
+        <div class="f"><label>Название</label>
+          <input value="${esc(it.title)}" oninput="setField(${i},'title',this.value)"></div>
+        <div class="f"><label>Описание</label>
+          <textarea rows="4" oninput="setField(${i},'description',this.value)">${esc(it.description)}</textarea></div>
+        <div class="f2">
+          <div class="f"><label>Категория</label>
+            <input value="${esc(it.category)}" oninput="setField(${i},'category',this.value)"></div>
+          <div class="f"><label>Район</label>
+            <input value="${esc(it.district)}" oninput="setField(${i},'district',this.value)"></div>
+          <div class="f"><label>Комнаты</label>
+            <input placeholder="2+1" value="${esc(it.rooms)}" oninput="setField(${i},'rooms',this.value)"></div>
+          <div class="f"><label>Площадь, м²</label>
+            <input type="number" min="0" inputmode="numeric" value="${it.area == null ? "" : esc(it.area)}" oninput="setNum(${i},'area',this.value)"></div>
+        </div>
+        <div class="f"><label>Этаж</label>
+          <input placeholder="5 из 12" value="${esc(it.floor)}" oninput="setField(${i},'floor',this.value)"></div>
+        <div class="checks">
+          ${isRealty(it) ? `<label><input type="checkbox"${it.furnished ? " checked" : ""} onchange="setField(${i},'furnished',this.checked?1:0)">С мебелью</label>` : ""}
+          <label><input type="checkbox"${it.hidden ? " checked" : ""} onchange="setField(${i},'hidden',this.checked?1:0);renderAdmin()">Скрыть с сайта</label>
+        </div>
+        <div class="f">
+          <label>Фотографии</label>
+          <div class="photos">
+            ${(it.images || []).map((p, n) => `<figure>
+                <img src="${esc(p)}" alt="">
+                <button onclick="delPhoto(${i},${n})" aria-label="Удалить фото">×</button>
+              </figure>`).join("")}
+          </div>
+          <button class="btn btn-soft" style="margin-top:8px" onclick="pickPhotos(${i})">📷 Добавить фото</button>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-line" onclick="moveItem(${i},-1)">↑</button>
+          <button class="btn btn-line" onclick="moveItem(${i},1)">↓</button>
+          <button class="btn btn-danger" onclick="delItem(${i})">Удалить</button>
+        </div>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+/* ============================================================ ЗАПИСЬ В GITHUB ============================================================ */
+const ghUrl = (path) =>
+  `https://api.github.com/repos/${CONFIG.github.owner}/${CONFIG.github.repo}/contents/${path}`;
+const ghHeaders = () => ({
+  Authorization: "Bearer " + token,
+  Accept: "application/vnd.github+json",
+  "Content-Type": "application/json",
+});
+
+/* Свежая версия файла. If-None-Match не ставим: GitHub отвечает 304, и sha теряется. */
+async function ghSha(path) {
+  const q = "?ref=" + encodeURIComponent(CONFIG.github.branch) + "&_=" + Date.now();
+  try {
+    const res = await fetch(ghUrl(path) + q, { headers: ghHeaders(), cache: "no-store" });
+    if (res.ok) { const j = await res.json(); if (j && j.sha) return j.sha; }
+    if (res.status === 404) return undefined;
+  } catch {}
+  try {
+    const dir = path.includes("/") ? path.slice(0, path.lastIndexOf("/")) : "";
+    const res = await fetch(ghUrl(dir) + q, { headers: ghHeaders(), cache: "no-store" });
+    if (res.ok) {
+      const list = await res.json();
+      if (Array.isArray(list)) { const hit = list.find((f) => f && f.path === path); if (hit) return hit.sha; }
+    }
+  } catch {}
+  return undefined;
+}
+
+/* Запись файла с повтором, если версия устарела */
+async function ghPut(path, base64, message) {
+  let lastErr = "";
+  for (let attempt = 1; attempt <= 4; attempt++) {
+    const sha = await ghSha(path);
+    const res = await fetch(ghUrl(path), {
+      method: "PUT",
+      headers: ghHeaders(),
+      body: JSON.stringify({ message, content: base64, branch: CONFIG.github.branch, ...(sha ? { sha } : {}) }),
+    });
+    if (res.ok) return res.json();
+    let detail = "";
+    try { detail = (await res.json()).message || ""; } catch {}
+    lastErr = res.status + " " + detail;
+    if (res.status === 409 || res.status === 422) { await new Promise((r) => setTimeout(r, 900 * attempt)); continue; }
+    throw new Error(lastErr);
+  }
+  throw new Error(lastErr);
+}
+
+function toBase64(str) {
+  const bytes = new TextEncoder().encode(str);
+  let bin = "";
+  const CHUNK = 0x8000;
+  for (let i = 0; i < bytes.length; i += CHUNK) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + CHUNK));
+  return btoa(bin);
+}
+
+/* Имя файла делаем латиницей — так ссылка на фото остаётся простой */
+const TRANSLIT = { а:"a",б:"b",в:"v",г:"g",д:"d",е:"e",ё:"e",ж:"zh",з:"z",и:"i",й:"y",к:"k",л:"l",м:"m",
+  н:"n",о:"o",п:"p",р:"r",с:"s",т:"t",у:"u",ф:"f",х:"h",ц:"c",ч:"ch",ш:"sh",щ:"sch",ъ:"",ы:"y",ь:"",
+  э:"e",ю:"yu",я:"ya" };
+const slug = (s) => String(s || "").toLowerCase()
+  .replace(/[а-яё]/g, (c) => TRANSLIT[c] ?? "")
+  .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 24).replace(/-+$/, "") || "photo";
+
+async function adminSave() {
+  ensureDraft();
+  const btn = $("saveBtn");
+  btn.disabled = true; btn.textContent = "Сохраняю…";
+  try {
+    if (!token) throw new Error("401 Ключ доступа не введён");
+
+    /* 1. Новые фото — отдельными файлами в photos/ */
+    let uploaded = 0;
+    for (const it of draft) {
+      const images = Array.isArray(it.images) ? it.images : (it.images = []);
+      for (let n = 0; n < images.length; n++) {
+        const m = String(images[n]).match(/^data:image\/(jpeg|jpg|png|webp);base64,(.+)$/);
+        if (!m) continue;
+        const ext = m[1] === "jpeg" ? "jpg" : m[1];
+        const name = `${CONFIG.github.photos}/${it.id}-${slug(it.title)}-${Date.now()}-${n}.${ext}`;
+        btn.textContent = `Загружаю фото ${++uploaded}…`;
+        await ghPut(name, m[2], "photo: " + name);
+        images[n] = name;
+      }
+    }
+
+    /* 2. Сам каталог */
+    btn.textContent = "Сохраняю каталог…";
+    const payload = {
+      settings: {
+        title: ($("setTitle").value || "").trim() || "Qulay Market",
+        contact: ($("setContact").value || "").trim().replace(/^@/, ""),
+        phone: ($("setPhone").value || "").trim(),
+      },
+      items: draft.map(normalize),
+    };
+    await ghPut(CONFIG.github.catalog, toBase64(JSON.stringify(payload, null, 2)), "catalog update");
+
+    SETTINGS = payload.settings;
+    ITEMS = JSON.parse(JSON.stringify(payload.items));
+    draft = null; draftSettings = null;
+    applySettings();
+    renderAdmin(); renderGrid();
+    toast("Сохранено на GitHub");
+  } catch (e) {
+    const raw = String((e && e.message) || e);
+    let msg = raw;
+    if (/401|Bad credentials/i.test(raw)) msg = "Ключ неверный или устарел";
+    else if (/403|Resource not accessible/i.test(raw)) msg = "У ключа нет прав на запись (Contents: Read and write)";
+    else if (/404|Not Found/i.test(raw)) msg = "Репозиторий не найден — проверьте доступ ключа к " + CONFIG.github.repo;
+    else if (/409|does not match/i.test(raw)) msg = "Каталог изменился в другом окне. Обновите страницу и повторите";
+    else if (/422|sha/i.test(raw)) msg = "GitHub не отдал версию файла. Проверьте доступ ключа к " + CONFIG.github.repo;
+    else if (msg.length > 110) msg = "Не удалось сохранить";
+    toast("⚠️ " + msg);
+    alert("Не удалось сохранить:\n\n" + msg);
+  } finally {
+    btn.disabled = false; btn.textContent = "Сохранить всё";
+  }
+}
+
+function normalize(it) {
+  return {
+    id: Number(it.id),
+    kind: it.kind === "realty" ? "realty" : "product",
+    title: String(it.title || "").trim(),
+    description: String(it.description || "").trim(),
+    price: Number(it.price) || 0,
+    category: String(it.category || "").trim(),
+    district: String(it.district || "").trim(),
+    rooms: String(it.rooms || "").trim(),
+    area: it.area === "" || it.area == null ? null : Number(it.area),
+    floor: String(it.floor || "").trim(),
+    furnished: it.furnished ? 1 : 0,
+    images: (Array.isArray(it.images) ? it.images : []).filter(Boolean),
+    hidden: it.hidden ? 1 : 0,
+  };
+}
+
+/* ============================================================ ЗАГРУЗКА И СТАРТ ============================================================ */
+function applySettings() {
+  const name = SETTINGS.title || "Qulay Market";
+  const parts = name.split(" ");
+  $("logo").innerHTML = parts.length > 1
+    ? esc(parts.slice(0, -1).join(" ")) + " <b>" + esc(parts[parts.length - 1]) + "</b>"
+    : "<b>" + esc(name) + "</b>";
+  document.title = name + " — каталог жилья и товаров";
+}
+
+async function loadCatalog() {
+  try {
+    const res = await fetch("catalog.json?t=" + Date.now(), { cache: "no-store" });
+    if (!res.ok) return;
+    const data = await res.json();
+    const items = Array.isArray(data) ? data : data.items;
+    if (Array.isArray(items)) ITEMS = items.map(normalize);
+    if (data && data.settings) SETTINGS = { ...SETTINGS, ...data.settings };
+  } catch {}
+  applySettings();
+  renderGrid();
+  if (page === "item") renderItem();
+  if (page === "fav") renderFavs();
+}
+
+/* Обработчики */
+$("themeBtn").onclick = () => { theme = theme === "dark" ? "light" : "dark"; localStorage.setItem("theme", theme); applyTheme(); };
+$("q").oninput = (e) => { query = e.target.value; renderGrid(); };
+$("tabs").onclick = (e) => {
+  const b = e.target.closest("button"); if (!b) return;
+  kind = b.dataset.kind; cat = "";
+  document.querySelectorAll("#tabs button").forEach((x) => x.classList.toggle("on", x === b));
+  renderGrid();
+};
+$("nav").onclick = (e) => { const b = e.target.closest("button"); if (b) go(b.dataset.page); };
+$("loginBtn").onclick = adminLogin;
+$("logoutBtn").onclick = adminLogout;
+$("addBtn").onclick = addItem;
+$("saveBtn").onclick = adminSave;
+["setTitle", "setContact", "setPhone"].forEach((id) => {
+  $(id).oninput = (e) => setSetting(id.replace("set", "").toLowerCase(), e.target.value);
+});
+$("tokenInput").onkeydown = (e) => { if (e.key === "Enter") adminLogin(); };
+
+/* Админка прячется: пять нажатий на логотип или адрес с #admin */
+$("logo").onclick = () => {
+  logoTaps++;
+  clearTimeout(logoTimer);
+  logoTimer = setTimeout(() => (logoTaps = 0), 1600);
+  if (logoTaps >= 5) { logoTaps = 0; $("navAdmin").style.display = "flex"; go("admin"); }
+};
+
+window.addEventListener("hashchange", routeFromHash);
+window.addEventListener("scroll", () => $("header").classList.toggle("scrolled", window.scrollY > 4), { passive: true });
+
+if (tg) {
+  try { tg.ready(); tg.expand(); } catch {}
+  try { tg.BackButton.onClick(() => go("home")); } catch {}
+  try { if (tg.disableVerticalSwipes) tg.disableVerticalSwipes(); } catch {}
+}
+
+applyTheme();
+applySettings();
+if (location.hash === "#admin" || token) $("navAdmin").style.display = "flex";
+routeFromHash();
+loadCatalog();
+</script>
+</body>
+</html>

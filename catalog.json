@@ -1,0 +1,54 @@
+{
+  "settings": {
+    "title": "Qulay Market",
+    "contact": "",
+    "phone": ""
+  },
+  "items": [
+    {
+      "id": 1,
+      "kind": "realty",
+      "title": "Квартира 2+1 рядом с метро",
+      "description": "Светлая квартира в тихом доме, десять минут пешком до метро.\nЕсть кондиционер и встроенная кухня. Депозит — одна месячная плата.",
+      "price": 28000,
+      "category": "Квартиры",
+      "district": "Эсеньюрт",
+      "rooms": "2+1",
+      "area": 95,
+      "floor": "5 из 12",
+      "furnished": 1,
+      "images": [],
+      "hidden": 0
+    },
+    {
+      "id": 2,
+      "kind": "realty",
+      "title": "Комната в общей квартире",
+      "description": "Отдельная комната, общая кухня и ванная. Коммунальные включены в цену.",
+      "price": 7500,
+      "category": "Комнаты",
+      "district": "Авджылар",
+      "rooms": "1+0",
+      "area": 18,
+      "floor": "2 из 5",
+      "furnished": 1,
+      "images": [],
+      "hidden": 0
+    },
+    {
+      "id": 3,
+      "kind": "product",
+      "title": "Холодильник Beko, 2 года",
+      "description": "Рабочий, без сколов. Самовывоз или доставка по договорённости.",
+      "price": 6500,
+      "category": "Техника",
+      "district": "Багджылар",
+      "rooms": "",
+      "area": null,
+      "floor": "",
+      "furnished": 0,
+      "images": [],
+      "hidden": 0
+    }
+  ]
+}

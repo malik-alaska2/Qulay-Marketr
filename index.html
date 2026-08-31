@@ -166,7 +166,9 @@
 
   <!-- КАТАЛОГ -->
   <section class="page" id="p-home">
-    <div class="search"><input id="q" type="search" placeholder="Поиск по каталогу" autocomplete="off"></div>
+    <form class="search" autocomplete="off" onsubmit="return false"><input id="q" type="search" name="catalog-search"
+      placeholder="Поиск по каталогу" autocomplete="off" autocapitalize="off" autocorrect="off"
+      spellcheck="false" data-lpignore="true" data-1p-ignore data-form-type="other"></form>
     <div class="tabs" id="tabs">
       <button data-kind="" class="on">Всё</button>
       <button data-kind="realty">Жильё</button>
@@ -862,9 +864,14 @@ if (tg) {
   try { if (tg.disableVerticalSwipes) tg.disableVerticalSwipes(); } catch {}
 }
 
+/* Браузер иногда сам подставляет в поиск сохранённый телефон или адрес.
+   Чистим поле, пока пользователь ничего не ввёл. */
+const clearAutofill = () => { if (!query && $("q").value) $("q").value = ""; };
+clearAutofill();
+[120, 400, 1000].forEach((ms) => setTimeout(clearAutofill, ms));
+
 applyTheme();
 applySettings();
-$("q").value = "";
 if (location.hash === "#admin" || token) $("navAdmin").style.display = "flex";
 routeFromHash();
 loadCatalog();

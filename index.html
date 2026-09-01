@@ -1,306 +1,337 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="uz">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Qulay Market — каталог жилья и товаров</title>
-<meta name="description" content="Личный каталог квартир и товаров: открывается в браузере и внутри Telegram.">
-<meta name="theme-color" content="#0a7a80">
+<title>Qulay Market</title>
+<meta name="description" content="Uy-joy va mahsulotlar katalogi. Brauzerda ham, Telegram ichida ham ochiladi.">
+<meta name="theme-color" content="#FE5857">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Qulay Market">
-<meta property="og:description" content="Каталог жилья и товаров: открывается в браузере и внутри Telegram.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a7a80'/%3E%3Cpath d='M18 26h28l-3 20H21z' fill='none' stroke='white' stroke-width='4' stroke-linejoin='round'/%3E%3Cpath d='M25 26a7 7 0 0114 0' fill='none' stroke='white' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E">
+<meta property="og:description" content="Uy-joy va mahsulotlar katalogi">
+<meta property="og:image" content="logo.png">
+<link rel="icon" href="icon.png">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,700;0,800&display=swap" rel="stylesheet">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
   :root{
-    --bg:#f5f8fa; --card:#ffffff; --line:#e2eaf0; --text:#0e1a24; --muted:#5a7387;
-    --accent:#0a7a80; --accent-2:#08666b; --accent-soft:#e5f2f2; --danger:#c8362f;
-    --r:14px; --shadow:0 1px 3px rgba(14,26,36,.06);
+    --brand:#FE5857; --accent:#EA3B38; --accent-2:#C92F2C; --accent-soft:#FFEDEC;
+    --bg:#FAFAFA; --card:#FFFFFF; --line:#ECECEE; --text:#111318; --muted:#6E7278;
+    --ink:#111318; --danger:#C92F2C;
+    --r:16px; --shadow:0 1px 2px rgba(17,19,24,.05),0 6px 18px rgba(17,19,24,.04);
   }
   [data-theme="dark"]{
-    --bg:#0d1418; --card:#151f25; --line:#233039; --text:#eef4f7; --muted:#8ba3b3;
-    --accent:#2aa7ad; --accent-2:#249298; --accent-soft:#12262b; --danger:#e0655e;
-    --shadow:0 1px 3px rgba(0,0,0,.4);
+    --brand:#FE5857; --accent:#FE5857; --accent-2:#E8433F; --accent-soft:#2A1717;
+    --bg:#0C0D10; --card:#16181D; --line:#24272E; --text:#F4F5F7; --muted:#9AA0A8;
+    --ink:#F4F5F7; --danger:#FF6B67;
+    --shadow:0 1px 2px rgba(0,0,0,.5),0 6px 18px rgba(0,0,0,.35);
   }
   *{margin:0;padding:0;box-sizing:border-box}
   html{-webkit-text-size-adjust:100%}
-  body{background:var(--bg);color:var(--text);
-    font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
-    -webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;line-height:1.45}
+  body{background:var(--bg);color:var(--text);font-family:"Open Sans",system-ui,-apple-system,Segoe UI,sans-serif;
+    font-size:15px;line-height:1.45;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
   button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
   a{color:inherit;text-decoration:none}
-  input,select,textarea{font-family:inherit;font-size:16px;width:100%;padding:11px 13px;
-    border:1.5px solid var(--line);border-radius:11px;background:var(--card);color:var(--text);outline:none}
-  input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+  svg{display:block}
+  input,select,textarea{font-family:inherit;font-size:16px;width:100%;padding:12px 14px;
+    border:1.5px solid var(--line);border-radius:12px;background:var(--card);color:var(--text);outline:none;
+    transition:border-color .15s}
+  input:focus,select:focus,textarea:focus{border-color:var(--brand)}
   textarea{resize:vertical}
-  .wrap{max-width:760px;margin:0 auto;padding:0 14px calc(80px + env(safe-area-inset-bottom))}
+  .wrap{max-width:840px;margin:0 auto;padding:0 15px calc(88px + env(safe-area-inset-bottom))}
 
-  /* Шапка */
-  .header{position:sticky;top:0;z-index:40;backdrop-filter:blur(12px);
-    background:color-mix(in srgb,var(--bg) 86%,transparent);border-bottom:1px solid transparent}
+  /* Shapka */
+  .header{position:sticky;top:0;z-index:40;backdrop-filter:blur(14px);
+    background:color-mix(in srgb,var(--bg) 84%,transparent);border-bottom:1px solid transparent;transition:border-color .2s}
   .header.scrolled{border-bottom-color:var(--line)}
-  .header-in{max-width:760px;margin:0 auto;padding:11px 14px;display:flex;align-items:center;gap:10px}
-  .logo{font-size:18px;font-weight:800;letter-spacing:-.2px;flex:1;user-select:none;cursor:pointer}
-  .logo b{color:var(--accent)}
-  .icon-btn{width:38px;height:38px;border-radius:11px;background:var(--card);border:1px solid var(--line);
-    display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+  .header-in{max-width:840px;margin:0 auto;padding:10px 15px;display:flex;align-items:center;gap:10px}
+  .brand{display:flex;align-items:center;gap:9px;flex:1;user-select:none;cursor:pointer}
+  .brand img{width:30px;height:30px;object-fit:contain}
+  .brand span{font-size:18px;font-weight:800;letter-spacing:-.4px}
+  .brand span i{color:var(--brand);font-style:normal}
+  .icon-btn{width:38px;height:38px;border-radius:12px;background:var(--card);border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;color:var(--muted);flex-shrink:0}
+  .icon-btn:active{transform:scale(.94)}
 
-  /* Поиск и фильтры */
-  .search{position:relative;margin:8px 0 10px}
-  .search input{padding-left:38px}
-  .search::before{content:"🔍";position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:13px;opacity:.65}
-  .chips{display:flex;gap:7px;overflow-x:auto;padding-bottom:7px;scrollbar-width:none}
+  /* Qidiruv va filtrlar */
+  .search{position:relative;margin:10px 0}
+  .search input{padding-left:42px;border-radius:14px}
+  .search svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted)}
+  .toolbar{display:flex;align-items:center;gap:10px;margin:10px 2px 12px}
+  .chips{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;padding:1px 0}
   .chips::-webkit-scrollbar{display:none}
   .chip{flex:0 0 auto;padding:7px 14px;border-radius:99px;background:var(--card);border:1px solid var(--line);
-    font-size:13px;font-weight:600;color:var(--muted);white-space:nowrap}
-  .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
-  .tabs{display:flex;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:4px;margin-bottom:10px}
-  .tabs button{flex:1;padding:9px 4px;border-radius:9px;font-size:13.5px;font-weight:700;color:var(--muted)}
-  .tabs button.on{background:var(--accent);color:#fff}
-  .count{font-size:12.5px;color:var(--muted);margin:2px 2px 8px}
+    font-size:13px;font-weight:600;color:var(--muted);white-space:nowrap;transition:.15s}
+  .chip.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+  .sortbtn{flex:0 0 auto;display:flex;align-items:center;gap:6px;padding:7px 12px;border-radius:99px;
+    background:var(--card);border:1px solid var(--line);font-size:13px;font-weight:600;color:var(--muted)}
+  .count{font-size:12.5px;color:var(--muted);margin:0 2px 10px}
 
-  /* Сетка карточек */
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:11px}
+  /* Kartochkalar */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(164px,1fr));gap:12px}
   .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;
-    box-shadow:var(--shadow);cursor:pointer;display:flex;flex-direction:column;position:relative}
-  .card:active{opacity:.85}
-  .thumb{aspect-ratio:4/3;background:var(--accent-soft);position:relative;overflow:hidden}
+    box-shadow:var(--shadow);cursor:pointer;display:flex;flex-direction:column;position:relative;transition:transform .12s}
+  .card:active{transform:scale(.985)}
+  .thumb{aspect-ratio:4/3;background:linear-gradient(140deg,var(--accent-soft),var(--card));position:relative;overflow:hidden}
   .thumb img{width:100%;height:100%;object-fit:cover;display:block}
-  .thumb .none{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:34px;opacity:.5}
-  .card-b{padding:10px 11px 12px;display:flex;flex-direction:column;gap:4px;flex:1}
-  .price{font-size:15.5px;font-weight:800;letter-spacing:-.2px}
-  .price small{font-size:12px;font-weight:500;color:var(--muted)}
+  .thumb .none{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--brand);opacity:.5}
+  .card-b{padding:11px 12px 13px;display:flex;flex-direction:column;gap:5px;flex:1}
+  .price{font-size:16px;font-weight:800;letter-spacing:-.3px}
+  .price small{font-size:11.5px;font-weight:600;color:var(--muted)}
   .ttl{font-size:13.5px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-  .specs{font-size:11.5px;color:var(--muted);margin-top:auto;padding-top:3px;
+  .specs{font-size:11.5px;color:var(--muted);margin-top:auto;padding-top:4px;
     display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
-  .fav{position:absolute;top:7px;right:7px;width:31px;height:31px;border-radius:99px;z-index:2;
-    background:color-mix(in srgb,var(--card) 88%,transparent);color:var(--muted);
-    display:flex;align-items:center;justify-content:center;font-size:16px;line-height:1;
-    box-shadow:0 1px 4px rgba(0,0,0,.14)}
-  .fav.on{color:#e0a020}
-  .tag{position:absolute;top:7px;left:7px;z-index:2;background:rgba(14,26,36,.72);color:#fff;
-    font-size:10px;font-weight:700;padding:3px 8px;border-radius:99px;backdrop-filter:blur(4px)}
-  .tag.hid{background:var(--danger)}
+  .fav{position:absolute;top:8px;right:8px;width:32px;height:32px;border-radius:99px;z-index:2;
+    background:color-mix(in srgb,var(--card) 90%,transparent);color:var(--muted);
+    display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+  .fav.on{color:var(--brand)}
+  .tag{position:absolute;top:8px;left:8px;z-index:2;background:var(--ink);color:var(--bg);
+    font-size:10px;font-weight:700;letter-spacing:.3px;padding:4px 9px;border-radius:99px;text-transform:uppercase}
+  .tag.red{background:var(--brand);color:#fff}
 
-  /* Страница позиции */
-  .back{display:inline-flex;align-items:center;gap:6px;font-size:13.5px;color:var(--muted);padding:10px 0}
+  .sk{border-radius:var(--r);background:var(--card);border:1px solid var(--line);overflow:hidden}
+  .sk .b{aspect-ratio:4/3;background:var(--line);animation:pulse 1.3s ease-in-out infinite}
+  .sk .l{height:11px;margin:11px 12px;border-radius:6px;background:var(--line);animation:pulse 1.3s ease-in-out infinite}
+  .sk .l.s{width:55%}
+  @keyframes pulse{0%,100%{opacity:.55}50%{opacity:.95}}
+
+  /* Pozitsiya sahifasi */
+  .back{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;font-weight:600;color:var(--muted);padding:12px 0}
   .gallery{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;border-radius:var(--r)}
   .gallery::-webkit-scrollbar{display:none}
-  .gallery img{scroll-snap-align:center;flex:0 0 100%;height:min(58vw,300px);object-fit:cover;border-radius:var(--r);background:var(--accent-soft)}
-  .dots{display:flex;gap:5px;justify-content:center;margin-top:8px}
-  .dots i{width:6px;height:6px;border-radius:99px;background:var(--line);transition:background .2s}
-  .dots i.on{background:var(--accent)}
-  .name-row{display:flex;align-items:flex-start;gap:12px;margin:14px 0 4px}
-  h1.name{font-size:21px;font-weight:800;letter-spacing:-.3px;flex:1}
-  .star{width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:var(--card);
-    font-size:19px;line-height:1;color:var(--muted);flex-shrink:0;display:flex;align-items:center;justify-content:center}
-  .star.on{color:#e0a020;border-color:#e0a020}
-  .big-price{font-size:23px;font-weight:800;letter-spacing:-.4px}
-  .big-price small{font-size:14px;font-weight:500;color:var(--muted)}
-  .specs-list{margin:14px 0;border:1px solid var(--line);border-radius:var(--r);background:var(--card);padding:0 13px}
-  .specs-list div{display:flex;justify-content:space-between;gap:14px;padding:10px 0;font-size:14px;border-top:1px solid var(--line)}
+  .gallery img{scroll-snap-align:center;flex:0 0 100%;height:min(62vw,330px);object-fit:cover;border-radius:var(--r);background:var(--accent-soft)}
+  .hero-none{height:190px;border-radius:var(--r);background:linear-gradient(140deg,var(--accent-soft),var(--card));
+    display:flex;align-items:center;justify-content:center;color:var(--brand);opacity:.6}
+  .dots{display:flex;gap:5px;justify-content:center;margin-top:9px}
+  .dots i{width:6px;height:6px;border-radius:99px;background:var(--line)}
+  .dots i.on{background:var(--brand);width:16px;transition:width .2s}
+  .name-row{display:flex;align-items:flex-start;gap:12px;margin:16px 0 6px}
+  h1.name{font-size:21px;font-weight:800;letter-spacing:-.4px;flex:1;line-height:1.3}
+  .star{width:42px;height:42px;border-radius:13px;border:1.5px solid var(--line);background:var(--card);
+    color:var(--muted);flex-shrink:0;display:flex;align-items:center;justify-content:center}
+  .star.on{color:var(--brand);border-color:var(--brand);background:var(--accent-soft)}
+  .big-price{font-size:25px;font-weight:800;letter-spacing:-.6px}
+  .big-price small{font-size:14px;font-weight:600;color:var(--muted)}
+  .specs-list{margin:16px 0;border:1px solid var(--line);border-radius:var(--r);background:var(--card);padding:0 14px;box-shadow:var(--shadow)}
+  .specs-list div{display:flex;justify-content:space-between;gap:14px;padding:11px 0;font-size:14px;border-top:1px solid var(--line)}
   .specs-list div:first-child{border-top:none}
   .specs-list dt{color:var(--muted)}
-  .desc{white-space:pre-line;font-size:14.5px;line-height:1.6;margin:14px 0}
-  .btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px;
-    border-radius:12px;font-size:15px;font-weight:700;text-align:center}
-  .btn:active{opacity:.75}
-  .btn-primary{background:var(--accent);color:#fff}
+  .specs-list dd{font-weight:600;text-align:right}
+  .desc{white-space:pre-line;font-size:14.5px;line-height:1.65;margin:16px 0}
+  h2.sec{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin:22px 0 10px}
+
+  .btn{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;padding:14px;
+    border-radius:13px;font-size:15px;font-weight:700;text-align:center;transition:.15s}
+  .btn:active{transform:scale(.985);opacity:.9}
+  .btn-primary{background:var(--accent);color:#fff;box-shadow:0 6px 18px color-mix(in srgb,var(--accent) 30%,transparent)}
+  .btn-dark{background:var(--ink);color:var(--bg)}
   .btn-soft{background:var(--accent-soft);color:var(--accent)}
   .btn-line{border:1.5px solid var(--line);background:var(--card)}
-  .btn-danger{background:rgba(200,54,47,.11);color:var(--danger)}
-  .btn:disabled{opacity:.5;cursor:default}
-  .cta{margin:22px 0 6px}
+  .btn-danger{background:var(--accent-soft);color:var(--danger)}
+  .btn:disabled{opacity:.5;cursor:default;box-shadow:none}
+  .cta{margin:24px 0 8px;display:flex;flex-direction:column;gap:9px}
 
-  /* Низ */
-  .nav{position:fixed;left:0;right:0;bottom:0;z-index:35;background:var(--card);border-top:1px solid var(--line);
-    display:flex;max-width:760px;margin:0 auto;padding-bottom:env(safe-area-inset-bottom)}
-  .nav button{flex:1;padding:9px 0 11px;font-size:11px;font-weight:600;color:var(--muted);
-    display:flex;flex-direction:column;align-items:center;gap:3px}
-  .nav button .ic{font-size:19px;line-height:1}
-  .nav button.on{color:var(--accent)}
+  /* Pastki menyu */
+  .nav{position:fixed;left:0;right:0;bottom:0;z-index:35;background:color-mix(in srgb,var(--card) 94%,transparent);
+    backdrop-filter:blur(14px);border-top:1px solid var(--line);
+    display:flex;max-width:840px;margin:0 auto;padding-bottom:env(safe-area-inset-bottom)}
+  .nav button{flex:1;padding:9px 0 10px;font-size:10.5px;font-weight:700;color:var(--muted);
+    display:flex;flex-direction:column;align-items:center;gap:4px;position:relative}
+  .nav button.on{color:var(--brand)}
+  .nav button.on::before{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);
+    width:26px;height:3px;border-radius:0 0 4px 4px;background:var(--brand)}
+  .nav .badge{position:absolute;top:4px;right:calc(50% - 20px);min-width:16px;height:16px;padding:0 4px;
+    border-radius:99px;background:var(--brand);color:#fff;font-size:9.5px;font-weight:800;
+    display:flex;align-items:center;justify-content:center}
 
-  .page{display:none}
+  .page{display:none;animation:fade .18s ease}
   .page.on{display:block}
-  h2.title{font-size:20px;font-weight:800;letter-spacing:-.3px;margin:14px 0 10px}
-  .empty{text-align:center;padding:56px 20px;color:var(--muted);font-size:14px}
-  .empty .big{font-size:44px;margin-bottom:12px;opacity:.75}
-  .muted{color:var(--muted);font-size:13px}
+  @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+  h2.title{font-size:22px;font-weight:800;letter-spacing:-.5px;margin:16px 0 12px}
+  .empty{text-align:center;padding:54px 20px;color:var(--muted);font-size:14px}
+  .empty svg{margin:0 auto 14px;color:var(--line)}
+  .muted{color:var(--muted);font-size:13px;line-height:1.6}
 
-  .toast{position:fixed;left:50%;top:14px;z-index:99;transform:translateX(-50%) translateY(-120px);
-    background:var(--text);color:var(--bg);padding:11px 20px;border-radius:99px;font-size:13.5px;font-weight:600;
-    box-shadow:0 8px 24px rgba(0,0,0,.25);transition:transform .28s ease;max-width:90vw;text-align:center}
+  .toast{position:fixed;left:50%;top:14px;z-index:99;transform:translateX(-50%) translateY(-130px);
+    background:var(--ink);color:var(--bg);padding:12px 20px;border-radius:99px;font-size:13.5px;font-weight:600;
+    box-shadow:0 10px 30px rgba(0,0,0,.28);transition:transform .3s cubic-bezier(.2,.9,.3,1);max-width:92vw;text-align:center}
   .toast.on{transform:translateX(-50%) translateY(0)}
 
-  /* Админка */
-  .adm{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:13px;margin-bottom:10px}
-  .adm-head{display:flex;align-items:center;gap:10px;cursor:pointer}
+  /* Boshqaruv paneli */
+  .lock{max-width:360px;margin:28px auto 0;text-align:center}
+  .lock img{width:170px;margin:0 auto 22px;display:block}
+  .lock .f{text-align:left}
+  .adm{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin-bottom:11px;box-shadow:var(--shadow)}
+  .adm-t{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:12px}
+  .adm-head{display:flex;align-items:center;gap:11px;cursor:pointer}
   .adm-head .g{flex:1;min-width:0}
   .adm-head b{display:block;font-size:14.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .adm-head .mini{width:46px;height:46px;border-radius:10px;object-fit:cover;background:var(--accent-soft);flex-shrink:0}
-  .adm-body{margin-top:12px;display:flex;flex-direction:column;gap:10px}
-  .f label{display:block;font-size:12.5px;font-weight:700;margin-bottom:5px;color:var(--muted)}
-  .f2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .checks{display:flex;gap:18px;flex-wrap:wrap;font-size:14px}
-  .checks label{display:flex;align-items:center;gap:7px}
-  .checks input{width:19px;height:19px;padding:0}
-  .photos{display:flex;flex-wrap:wrap;gap:8px}
-  .photos figure{position:relative;width:78px}
-  .photos img{width:78px;height:62px;object-fit:cover;border-radius:9px;background:var(--accent-soft)}
-  .photos button{position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:99px;
-    background:var(--danger);color:#fff;font-size:13px;line-height:1;display:flex;align-items:center;justify-content:center}
-  .save-bar{position:sticky;bottom:calc(74px + env(safe-area-inset-bottom));padding:10px 0;z-index:25;
-    background:linear-gradient(to top,var(--bg) 62%,transparent)}
+  .adm-head .mini{width:48px;height:48px;border-radius:11px;object-fit:cover;background:var(--accent-soft);flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;color:var(--brand)}
+  .adm-body{margin-top:13px;display:flex;flex-direction:column;gap:11px}
+  .f label{display:block;font-size:12.5px;font-weight:700;margin-bottom:6px;color:var(--muted)}
+  .f2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+  .checks{display:flex;gap:20px;flex-wrap:wrap;font-size:14px}
+  .checks label{display:flex;align-items:center;gap:8px}
+  .checks input{width:20px;height:20px;padding:0;accent-color:var(--accent)}
+  .photos{display:flex;flex-wrap:wrap;gap:9px}
+  .photos figure{position:relative;width:80px}
+  .photos img{width:80px;height:64px;object-fit:cover;border-radius:10px;background:var(--accent-soft)}
+  .photos button{position:absolute;top:-6px;right:-6px;width:23px;height:23px;border-radius:99px;
+    background:var(--danger);color:#fff;font-size:14px;line-height:1;display:flex;align-items:center;justify-content:center}
+  .save-bar{position:sticky;bottom:calc(80px + env(safe-area-inset-bottom));padding:12px 0;z-index:25;
+    background:linear-gradient(to top,var(--bg) 60%,transparent)}
 </style>
 </head>
 <body>
 
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 10.2 12 3l9 7.2"/><path d="M5.5 9.2V20h13V9.2"/><path d="M9.8 20v-5.4h4.4V20"/></symbol>
+  <symbol id="i-bag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4.4 7.5h15.2L18.4 20H5.6z"/><path d="M8.6 7.5a3.4 3.4 0 0 1 6.8 0"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m12 3.6 2.6 5.4 5.9.8-4.3 4.1 1 5.9-5.2-2.8-5.2 2.8 1-5.9L3.5 9.8l5.9-.8z"/></symbol>
+  <symbol id="i-star-f" viewBox="0 0 24 24" fill="currentColor">
+    <path d="m12 3.6 2.6 5.4 5.9.8-4.3 4.1 1 5.9-5.2-2.8-5.2 2.8 1-5.9L3.5 9.8l5.9-.8z"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+    <circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14.5 5 8 12l6.5 7"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20 14.2A8.2 8.2 0 0 1 9.8 4 8.4 8.4 0 1 0 20 14.2"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round">
+    <circle cx="12" cy="12" r="4"/><path d="M12 2.6v2M12 19.4v2M21.4 12h-2M4.6 12h-2M18.4 5.6 17 7M7 17l-1.4 1.4M18.4 18.4 17 17M7 7 5.6 5.6"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="3.1"/><path d="m19.4 14-.9 1.6.9 1.9-1.9 1.9-1.9-.9-1.6.9-.7 2h-2.6l-.7-2-1.6-.9-1.9.9L4.6 17.5l.9-1.9L4.6 14l-2-.7v-2.6l2-.7.9-1.6-.9-1.9 1.9-1.9 1.9.9L10 4.6l.7-2h2.6l.7 2 1.6.9 1.9-.9 1.9 1.9-.9 1.9.9 1.6 2 .7v2.6z"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24" fill="currentColor"><path d="M21.2 3.3 2.6 10.5c-.8.3-.8 1.4 0 1.7l4.7 1.6 1.8 5.4c.3.8 1.3.9 1.8.3l2.5-2.9 4.6 3.4c.6.4 1.4.1 1.6-.6l3-14.4c.2-.8-.6-1.5-1.4-1.7z"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6.3 3.5h3l1.5 3.8-1.9 1.4a11.4 11.4 0 0 0 5.4 5.4l1.4-1.9 3.8 1.5v3c0 .9-.7 1.6-1.6 1.6A14.9 14.9 0 0 1 4.7 5.1c0-.9.7-1.6 1.6-1.6z"/></symbol>
+  <symbol id="i-cam" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3.5 8.2h3.2L8 5.8h8l1.3 2.4h3.2v10H3.5z"/><circle cx="12" cy="13.2" r="3.2"/></symbol>
+  <symbol id="i-box" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 3 4 6.8v10.4L12 21l8-3.8V6.8z"/><path d="M4 6.8 12 10.6l8-3.8M12 10.6V21"/></symbol>
+</svg>
+
 <header class="header" id="header">
   <div class="header-in">
-    <div class="logo" id="logo">Qulay <b>Market</b></div>
-    <button class="icon-btn" id="themeBtn" title="Тема">🌙</button>
+    <div class="brand" id="brand">
+      <img src="icon.png" alt="Qulay Market">
+      <span id="brandText"><i>Qulay</i> Market</span>
+    </div>
+    <button class="icon-btn" id="themeBtn" aria-label="Mavzu"><svg width="19" height="19"><use href="#i-moon"/></svg></button>
   </div>
 </header>
 
 <div class="wrap">
 
-  <!-- КАТАЛОГ -->
-  <section class="page" id="p-home">
-    <form class="search" autocomplete="off" onsubmit="return false"><input id="q" type="search" name="catalog-search"
-      placeholder="Поиск по каталогу" autocomplete="off" autocapitalize="off" autocorrect="off"
-      spellcheck="false" data-lpignore="true" data-1p-ignore data-form-type="other"></form>
-    <div class="tabs" id="tabs">
-      <button data-kind="" class="on">Всё</button>
-      <button data-kind="realty">Жильё</button>
-      <button data-kind="product">Товары</button>
-    </div>
+  <!-- KATALOG -->
+  <section class="page" id="p-list">
+    <form class="search" autocomplete="off" onsubmit="return false">
+      <svg width="17" height="17"><use href="#i-search"/></svg>
+      <input id="q" type="search" name="katalog-qidiruv" placeholder="Katalogdan qidirish"
+             autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"
+             data-lpignore="true" data-1p-ignore data-form-type="other">
+    </form>
     <div class="chips" id="chips"></div>
-    <div class="count" id="count"></div>
+    <div class="toolbar">
+      <div class="count" id="count" style="flex:1;margin:0"></div>
+      <button class="sortbtn" id="sortBtn"></button>
+    </div>
     <div class="grid" id="grid"></div>
-    <div class="empty" id="homeEmpty" style="display:none"><div class="big">🗂</div><div>Ничего не нашлось</div></div>
+    <div class="empty" id="listEmpty" style="display:none"></div>
   </section>
 
-  <!-- ПОЗИЦИЯ -->
+  <!-- SARALANGAN -->
+  <section class="page" id="p-fav">
+    <h2 class="title">Saralangan</h2>
+    <div class="grid" id="favGrid"></div>
+    <div class="empty" id="favEmpty" style="display:none">
+      <svg width="46" height="46"><use href="#i-star"/></svg>
+      <div>Yulduzcha bosilgan e'lonlar shu yerda to'planadi</div>
+    </div>
+  </section>
+
+  <!-- POZITSIYA -->
   <section class="page" id="p-item"></section>
 
-  <!-- ИЗБРАННОЕ -->
-  <section class="page" id="p-fav">
-    <h2 class="title">Избранное</h2>
-    <div class="grid" id="favGrid"></div>
-    <div class="empty" id="favEmpty" style="display:none"><div class="big">☆</div><div>Здесь появится то, что вы отметите звёздочкой</div></div>
-  </section>
-
-  <!-- АДМИНКА -->
-  <section class="page" id="p-admin">
-    <h2 class="title">Админка</h2>
-
-    <div id="admLogin">
-      <div class="f" style="margin-bottom:12px">
-        <label>Ключ доступа GitHub</label>
-        <input id="tokenInput" type="password" autocomplete="off" placeholder="github_pat_...">
-      </div>
-      <button class="btn btn-primary" id="loginBtn">Войти</button>
-      <p class="muted" style="margin-top:12px;line-height:1.6">
-        Ключ создаётся один раз:
-        <a href="https://github.com/settings/tokens?type=beta" target="_blank" rel="noopener" style="color:var(--accent)">Fine-grained tokens</a>
-        → Generate new token → Repository access: только <b id="repoName1"></b> → Permissions → Contents: <b>Read and write</b>.
-        Ключ хранится только в этом телефоне или браузере, в репозитории его нет.
-      </p>
-    </div>
-
-    <div id="admPanel" style="display:none">
-      <div class="adm">
-        <b style="font-size:14.5px">Настройки</b>
-        <div class="adm-body">
-          <div class="f"><label>Название каталога</label><input id="setTitle"></div>
-          <div class="f2">
-            <div class="f"><label>Telegram для связи (без @)</label><input id="setContact" autocomplete="off"></div>
-            <div class="f"><label>Телефон (можно пусто)</label><input id="setPhone" autocomplete="off"></div>
-          </div>
-        </div>
-      </div>
-
-      <div id="admList"></div>
-      <button class="btn btn-soft" id="addBtn" style="margin-bottom:10px">＋ Добавить позицию</button>
-
-      <div class="save-bar">
-        <button class="btn btn-primary" id="saveBtn">Сохранить всё</button>
-      </div>
-      <button class="btn btn-line" id="logoutBtn" style="margin-top:6px">Сменить ключ</button>
-      <p class="muted" style="margin-top:10px;line-height:1.6">
-        После сохранения GitHub обновляет сайт примерно за минуту. Если изменений не видно — обновите страницу.
-      </p>
-    </div>
-  </section>
+  <!-- BOSHQARUV -->
+  <section class="page" id="p-admin"></section>
 
 </div>
 
 <nav class="nav" id="nav">
-  <button data-page="home"><span class="ic">🏠</span><span>Каталог</span></button>
-  <button data-page="fav"><span class="ic">★</span><span>Избранное</span></button>
-  <button data-page="admin" id="navAdmin" style="display:none"><span class="ic">⚙️</span><span>Админка</span></button>
+  <button data-page="realty"><svg width="22" height="22"><use href="#i-home"/></svg><span>Uy-joy</span></button>
+  <button data-page="product"><svg width="22" height="22"><use href="#i-bag"/></svg><span>Mahsulotlar</span></button>
+  <button data-page="fav"><svg width="22" height="22"><use href="#i-star"/></svg><span>Saralangan</span><i class="badge" id="favBadge" style="display:none"></i></button>
+  <button data-page="admin" id="navAdmin" style="display:none"><svg width="22" height="22"><use href="#i-gear"/></svg><span>Boshqaruv</span></button>
 </nav>
 
 <div class="toast" id="toast"></div>
 
 <script>
 /* ============================================================
-   НАСТРОЙКИ. Здесь только то, что не меняется из админки.
+   Sozlamalar. Bu yerda faqat boshqaruv panelidan o'zgarmaydigan narsalar.
    ============================================================ */
 const CONFIG = {
-  github: {
-    owner:  "malik-alaska2",
-    repo:   "Qulay-Marketr",
-    branch: "main",
-    catalog: "catalog.json",
-    photos:  "photos",
-  },
+  github: { owner: "malik-alaska2", repo: "Qulay-Marketr", branch: "main", catalog: "catalog.json", photos: "photos" },
 };
 
-/* Запасные данные — показываются, если catalog.json ещё не создан */
+/* catalog.json hali yo'q bo'lsa ishlatiladi */
 const FALLBACK = {
   settings: { title: "Qulay Market", contact: "", phone: "" },
+  admin: { login: "admin", salt: "ZYYcn4fzWO4p3cjcnwPNUA==", iterations: 200000,
+           hash: "rtS9gSedhf/74xGlYRtIM4Zy1W0Kdtcmam8MbfwIuQU=" },
   items: [],
 };
 
-/* ============================================================ СОСТОЯНИЕ ============================================================ */
+/* ============================================================ HOLAT ============================================================ */
 const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
 const $ = (id) => document.getElementById(id);
 
-/* Все проекты на malik-alaska2.github.io делят одно localStorage,
-   поэтому ключи с приставкой qm: — чтобы не пересечься с E-BAZAR. */
+/* malik-alaska2.github.io dagi barcha loyihalar bitta xotirani baham ko'radi,
+   shuning uchun kalitlar qm: old qo'shimchasi bilan. */
 const K = (key) => "qm:" + key;
 
 let SETTINGS = { ...FALLBACK.settings };
+let ADMIN = { ...FALLBACK.admin };
 let ITEMS = [];
-let page = "home";
-let kind = "";
+let loaded = false;
+let page = "realty";
+let kind = "realty";
 let cat = "";
 let query = "";
+let sort = 0;                       /* 0 — yangi, 1 — arzon, 2 — qimmat */
 let curItem = null;
 let favs = load("favs", []);
 let theme = localStorage.getItem(K("theme")) || (tg && tg.colorScheme === "dark" ? "dark" : "light");
 let token = localStorage.getItem(K("ghKey")) || "";
-let draft = null, draftSettings = null, openRow = null;
-let logoTaps = 0, logoTimer = null, toastTimer = null;
+let unlocked = sessionStorage.getItem(K("unlocked")) === "1";
+let draft = null, draftSettings = null, draftAdmin = null, openRow = null;
+let brandTaps = 0, brandTimer = null, toastTimer = null;
 
 function load(key, fallback) {
   try { const v = JSON.parse(localStorage.getItem(K(key))); return v ?? fallback; } catch { return fallback; }
 }
 const save = (key, value) => { try { localStorage.setItem(K(key), JSON.stringify(value)); } catch {} };
 
-/* ============================================================ ВСПОМОГАТЕЛЬНОЕ ============================================================ */
+const SORTS = ["Yangi", "Avval arzoni", "Avval qimmati"];
+
+/* ============================================================ YORDAMCHI ============================================================ */
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) =>
   ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
-const money = (n) => (Number(n) || 0).toLocaleString("ru-RU") + " TL";
+const money = (n) => (Number(n) || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " TL";
 const isRealty = (it) => it.kind === "realty";
-const per = (it) => (isRealty(it) ? '<small> /мес</small>' : "");
+const per = (it) => (isRealty(it) ? "<small> / oyiga</small>" : "");
 const cover = (it) => (Array.isArray(it.images) && it.images.length ? it.images[0] : "");
+const icon = (name, size) => `<svg width="${size}" height="${size}"><use href="#i-${name}"/></svg>`;
 
 function specsLine(it) {
-  return [it.rooms, it.area ? it.area + " м²" : "", it.floor, it.district]
-    .filter(Boolean).join(" · ");
+  return [it.rooms, it.area ? it.area + " m²" : "", it.floor, it.district].filter(Boolean).join(" · ");
 }
 
 function toast(msg) {
@@ -308,70 +339,78 @@ function toast(msg) {
   el.textContent = msg;
   el.classList.add("on");
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.classList.remove("on"), 2400);
+  toastTimer = setTimeout(() => el.classList.remove("on"), 2600);
 }
 
 function applyTheme() {
   document.documentElement.dataset.theme = theme;
-  $("themeBtn").textContent = theme === "dark" ? "☀️" : "🌙";
+  $("themeBtn").innerHTML = icon(theme === "dark" ? "sun" : "moon", 19);
 }
 
-/* ============================================================ МАРШРУТЫ ============================================================ */
+function haptic(kind) { try { if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred(kind || "light"); } catch {} }
+
+/* ============================================================ MARSHRUTLAR ============================================================ */
+const HASHES = { realty: "", product: "#mahsulot", fav: "#saralangan", admin: "#admin" };
+
 function go(next, id) {
   page = next;
+  if (next === "realty" || next === "product") { kind = next; cat = ""; }
   curItem = next === "item" ? Number(id) : null;
-  document.querySelectorAll(".page").forEach((el) => el.classList.remove("on"));
-  const el = $("p-" + next);
-  if (el) el.classList.add("on");
-  document.querySelectorAll("#nav button").forEach((b) =>
-    b.classList.toggle("on", b.dataset.page === next));
 
-  const hash = next === "home" ? "" : next === "item" ? "#item-" + id : "#" + next;
+  document.querySelectorAll(".page").forEach((el) => el.classList.remove("on"));
+  $(next === "realty" || next === "product" ? "p-list" : "p-" + next).classList.add("on");
+  document.querySelectorAll("#nav button").forEach((b) => b.classList.toggle("on", b.dataset.page === next));
+
+  const hash = next === "item" ? "#item-" + id : (HASHES[next] ?? "");
   if (location.hash !== hash) history.replaceState(null, "", location.pathname + location.search + hash);
 
-  if (next === "item") renderItem();
+  if (next === "realty" || next === "product") renderList();
   if (next === "fav") renderFavs();
+  if (next === "item") renderItem();
   if (next === "admin") renderAdmin();
-  if (next === "home") renderGrid();
 
   window.scrollTo(0, 0);
-  if (tg && tg.BackButton) {
-    try { next === "home" ? tg.BackButton.hide() : tg.BackButton.show(); } catch {}
-  }
+  if (tg && tg.BackButton) { try { next === "item" ? tg.BackButton.show() : tg.BackButton.hide(); } catch {} }
 }
 
 function routeFromHash() {
-  const h = location.hash.replace(/^#/, "");
-  const m = h.match(/^item-(\d+)$/);
+  const h = location.hash;
+  const m = h.match(/^#item-(\d+)$/);
   if (m) return go("item", m[1]);
-  if (h === "fav") return go("fav");
-  if (h === "admin") return go("admin");
-  go("home");
+  if (h === "#mahsulot") return go("product");
+  if (h === "#saralangan") return go("fav");
+  if (h === "#admin") { $("navAdmin").style.display = "flex"; return go("admin"); }
+  go("realty");
 }
 
-/* ============================================================ КАТАЛОГ ============================================================ */
+/* ============================================================ KATALOG ============================================================ */
 function visible() {
   const q = query.trim().toLowerCase();
-  return ITEMS.filter((it) => {
+  let list = ITEMS.filter((it) => {
     if (it.hidden) return false;
-    if (kind && it.kind !== kind) return false;
+    if (it.kind !== kind) return false;
     if (cat && it.category !== cat) return false;
     if (!q) return true;
     return [it.title, it.description, it.category, it.district, it.rooms, it.floor]
       .filter(Boolean).join(" ").toLowerCase().includes(q);
   });
+  if (sort === 1) list = [...list].sort((a, b) => a.price - b.price);
+  if (sort === 2) list = [...list].sort((a, b) => b.price - a.price);
+  return list;
 }
 
-function cardHtml(it) {
+function cardHtml(it, withTag) {
   const img = cover(it);
   const fav = favs.includes(it.id);
   return `
   <article class="card" onclick="go('item',${it.id})">
     <div class="thumb">
       ${img ? `<img src="${esc(img)}" alt="${esc(it.title)}" loading="lazy">`
-            : `<div class="none">${isRealty(it) ? "🏠" : "📦"}</div>`}
-      <span class="tag">${isRealty(it) ? "Жильё" : "Товар"}</span>
-      <button class="fav${fav ? " on" : ""}" onclick="event.stopPropagation();toggleFav(${it.id})" aria-label="В избранное">${fav ? "★" : "☆"}</button>
+            : `<div class="none">${icon(isRealty(it) ? "home" : "box", 40)}</div>`}
+      ${withTag ? `<span class="tag${isRealty(it) ? " red" : ""}">${isRealty(it) ? "Uy-joy" : "Mahsulot"}</span>` : ""}
+      <button class="fav${fav ? " on" : ""}" onclick="event.stopPropagation();toggleFav(${it.id})" aria-label="Saralangan">
+        ${icon(fav ? "star-f" : "star", 17)}
+      </button>
     </div>
     <div class="card-b">
       <div class="price">${money(it.price)}${per(it)}</div>
@@ -381,95 +420,102 @@ function cardHtml(it) {
   </article>`;
 }
 
+const skeleton = () => Array.from({ length: 4 }, () =>
+  `<div class="sk"><div class="b"></div><div class="l"></div><div class="l s"></div></div>`).join("");
+
 function renderChips() {
-  const list = [...new Set(ITEMS.filter((i) => !i.hidden && (!kind || i.kind === kind))
-    .map((i) => i.category).filter(Boolean))].sort((a, b) => a.localeCompare(b, "ru"));
+  const list = [...new Set(ITEMS.filter((i) => !i.hidden && i.kind === kind).map((i) => i.category).filter(Boolean))]
+    .sort((a, b) => a.localeCompare(b, "uz"));
   if (cat && !list.includes(cat)) cat = "";
   $("chips").innerHTML = list.length
-    ? `<button class="chip${cat ? "" : " on"}" onclick="setCat('')">Все разделы</button>` +
-      list.map((c) => `<button class="chip${cat === c ? " on" : ""}" onclick="setCat('${esc(c).replace(/'/g, "&#39;")}')">${esc(c)}</button>`).join("")
+    ? `<button class="chip${cat ? "" : " on"}" onclick="setCat('')">Barchasi</button>` +
+      list.map((c) => `<button class="chip${cat === c ? " on" : ""}" onclick="setCat(${JSON.stringify(c).replace(/"/g, "&quot;")})">${esc(c)}</button>`).join("")
     : "";
 }
-function setCat(c) { cat = c; renderChips(); renderGrid(); }
+function setCat(c) { cat = c; haptic(); renderList(); }
 
-function renderGrid() {
+function renderList() {
   renderChips();
+  $("sortBtn").textContent = SORTS[sort];
   const list = visible();
-  $("grid").innerHTML = list.map(cardHtml).join("");
-  const empty = $("homeEmpty");
+  const empty = $("listEmpty");
+
+  if (!loaded) { $("grid").innerHTML = skeleton(); empty.style.display = "none"; $("count").textContent = ""; return; }
+
+  $("grid").innerHTML = list.map((it) => cardHtml(it, false)).join("");
+  $("count").textContent = list.length ? `${list.length} ta ${kind === "realty" ? "e'lon" : "mahsulot"}` : "";
   empty.style.display = list.length ? "none" : "block";
-  empty.innerHTML = ITEMS.length
-    ? '<div class="big">\u{1F5C2}</div><div>\u041d\u0438\u0447\u0435\u0433\u043e \u043d\u0435 \u043d\u0430\u0448\u043b\u043e\u0441\u044c</div>'
-    : '<div class="big">\u{1F4E6}</div><div>\u041a\u0430\u0442\u0430\u043b\u043e\u0433 \u043f\u043e\u043a\u0430 \u043f\u0443\u0441\u0442.<br>\u041e\u0442\u043a\u0440\u043e\u0439\u0442\u0435 \u0430\u0434\u043c\u0438\u043d\u043a\u0443 \u0438 \u0434\u043e\u0431\u0430\u0432\u044c\u0442\u0435 \u043f\u0435\u0440\u0432\u0443\u044e \u043f\u043e\u0437\u0438\u0446\u0438\u044e.</div>';
-  $("count").textContent = list.length ? plural(list.length) : "";
-}
-function plural(n) {
-  const t = n % 10, h = n % 100;
-  const word = t === 1 && h !== 11 ? "позиция" : t >= 2 && t <= 4 && (h < 12 || h > 14) ? "позиции" : "позиций";
-  return n + " " + word;
+  empty.innerHTML = ITEMS.some((i) => i.kind === kind && !i.hidden)
+    ? `${icon("search", 44)}<div>Hech narsa topilmadi</div>`
+    : `${icon(kind === "realty" ? "home" : "box", 44)}<div>Hozircha bu bo'limda e'lon yo'q</div>`;
 }
 
 function toggleFav(id) {
   favs = favs.includes(id) ? favs.filter((x) => x !== id) : [...favs, id];
   save("favs", favs);
-  renderGrid();
+  haptic();
+  renderFavBadge();
+  if (page === "realty" || page === "product") renderList();
   if (page === "fav") renderFavs();
   if (page === "item") renderItem();
 }
 
+function renderFavBadge() {
+  const n = ITEMS.filter((it) => favs.includes(it.id) && !it.hidden).length;
+  const b = $("favBadge");
+  b.textContent = n;
+  b.style.display = n ? "flex" : "none";
+}
+
 function renderFavs() {
   const list = ITEMS.filter((it) => favs.includes(it.id) && !it.hidden);
-  $("favGrid").innerHTML = list.map(cardHtml).join("");
+  $("favGrid").innerHTML = list.map((it) => cardHtml(it, true)).join("");
   $("favEmpty").style.display = list.length ? "none" : "block";
 }
 
-/* ============================================================ СТРАНИЦА ПОЗИЦИИ ============================================================ */
+/* ============================================================ POZITSIYA ============================================================ */
 function renderItem() {
   const it = ITEMS.find((x) => x.id === curItem);
   if (!it || it.hidden) {
-    $("p-item").innerHTML = `<div class="empty"><div class="big">🔍</div><div>Позиция не найдена</div>
-      <button class="btn btn-soft" style="margin-top:16px" onclick="go('home')">В каталог</button></div>`;
+    $("p-item").innerHTML = `<div class="empty">${icon("search", 44)}<div>E'lon topilmadi</div>
+      <button class="btn btn-soft" style="margin-top:18px" onclick="go('realty')">Katalogga</button></div>`;
     return;
   }
   const photos = Array.isArray(it.images) ? it.images : [];
   const rows = [
-    ["Категория", it.category],
-    ["Район", it.district],
-    ["Комнаты", it.rooms],
-    ["Площадь", it.area ? it.area + " м²" : ""],
-    ["Этаж", it.floor],
-    isRealty(it) ? ["Мебель", it.furnished ? "Есть" : "Нет"] : null,
+    ["Kategoriya", it.category], ["Tuman", it.district], ["Xonalar", it.rooms],
+    ["Maydoni", it.area ? it.area + " m²" : ""], ["Qavat", it.floor],
+    isRealty(it) ? ["Mebel", it.furnished ? "Bor" : "Yo'q"] : null,
   ].filter((r) => r && r[1]);
 
   const contact = String(SETTINGS.contact || "").replace(/^@/, "");
-  const text = `Здравствуйте! Интересует «${it.title}» (№${it.id})`;
+  const text = `Assalomu alaykum! "${it.title}" (№${it.id}) qiziqtiryapti.`;
   const link = contact ? `https://t.me/${contact}?text=${encodeURIComponent(text)}` : "";
   const fav = favs.includes(it.id);
 
   $("p-item").innerHTML = `
-    <button class="back" onclick="go('home')">← Назад в каталог</button>
+    <button class="back" onclick="go('${it.kind}')">${icon("back", 15)} Katalogga qaytish</button>
     ${photos.length ? `
-      <div class="gallery" id="gallery">
-        ${photos.map((p) => `<img src="${esc(p)}" alt="${esc(it.title)}">`).join("")}
-      </div>
+      <div class="gallery" id="gallery">${photos.map((p) => `<img src="${esc(p)}" alt="${esc(it.title)}">`).join("")}</div>
       ${photos.length > 1 ? `<div class="dots" id="dots">${photos.map((_, i) => `<i class="${i ? "" : "on"}"></i>`).join("")}</div>` : ""}
-    ` : `<div class="thumb" style="border-radius:var(--r);aspect-ratio:auto;height:170px"><div class="none" style="font-size:46px">${isRealty(it) ? "🏠" : "📦"}</div></div>`}
+    ` : `<div class="hero-none">${icon(isRealty(it) ? "home" : "box", 54)}</div>`}
 
     <div class="name-row">
       <h1 class="name">${esc(it.title)}</h1>
-      <button class="star${fav ? " on" : ""}" onclick="toggleFav(${it.id})" aria-label="В избранное">${fav ? "★" : "☆"}</button>
+      <button class="star${fav ? " on" : ""}" onclick="toggleFav(${it.id})" aria-label="Saralangan">${icon(fav ? "star-f" : "star", 19)}</button>
     </div>
     <div class="big-price">${money(it.price)}${per(it)}</div>
-    ${rows.length ? `<div class="specs-list">${rows.map(([k, v]) =>
+
+    ${rows.length ? `<h2 class="sec">Ma'lumotlar</h2><div class="specs-list">${rows.map(([k, v]) =>
       `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</div>` : ""}
-    ${it.description ? `<p class="desc">${esc(it.description)}</p>` : ""}
+    ${it.description ? `<h2 class="sec">Tavsif</h2><p class="desc">${esc(it.description)}</p>` : ""}
 
     <div class="cta">
-      ${link ? `<a class="btn btn-primary" id="ctaBtn" href="${esc(link)}" target="_blank" rel="noopener">Написать в Telegram</a>`
-             : `<div class="muted" style="text-align:center">Укажите Telegram для связи в админке</div>`}
-      ${SETTINGS.phone ? `<a class="btn btn-line" style="margin-top:8px" href="tel:${esc(SETTINGS.phone)}">Позвонить ${esc(SETTINGS.phone)}</a>` : ""}
+      ${link ? `<a class="btn btn-primary" id="ctaBtn" href="${esc(link)}" target="_blank" rel="noopener">${icon("send", 18)} Telegramga yozish</a>` : ""}
+      ${SETTINGS.phone ? `<a class="btn btn-line" href="tel:${esc(SETTINGS.phone)}">${icon("phone", 17)} ${esc(SETTINGS.phone)}</a>` : ""}
+      ${!link && !SETTINGS.phone ? `<div class="muted" style="text-align:center">Bog'lanish uchun Telegram boshqaruv panelida ko'rsatilmagan</div>` : ""}
     </div>
-    <p class="muted" style="text-align:center;margin-top:10px">№${it.id}</p>`;
+    <p class="muted" style="text-align:center;margin-top:12px">E'lon raqami: №${it.id}</p>`;
 
   const gallery = $("gallery");
   if (gallery && photos.length > 1) {
@@ -484,58 +530,81 @@ function renderItem() {
   }
 }
 
-/* ============================================================ АДМИНКА ============================================================ */
+/* ============================================================ PAROL ============================================================ */
+const b64ToBytes = (b64) => Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+const bytesToB64 = (bytes) => {
+  let bin = "";
+  bytes.forEach((b) => (bin += String.fromCharCode(b)));
+  return btoa(bin);
+};
+
+async function derive(password, saltB64, iterations) {
+  const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(password), "PBKDF2", false, ["deriveBits"]);
+  const bits = await crypto.subtle.deriveBits(
+    { name: "PBKDF2", salt: b64ToBytes(saltB64), iterations, hash: "SHA-256" }, key, 256);
+  return bytesToB64(new Uint8Array(bits));
+}
+
+async function makeHash(password) {
+  const salt = bytesToB64(crypto.getRandomValues(new Uint8Array(16)));
+  const iterations = 200000;
+  return { salt, iterations, hash: await derive(password, salt, iterations) };
+}
+
+async function checkPassword(login, password) {
+  if (String(login).trim().toLowerCase() !== String(ADMIN.login || "").toLowerCase()) return false;
+  try { return (await derive(password, ADMIN.salt, ADMIN.iterations)) === ADMIN.hash; }
+  catch { return false; }
+}
+
+/* ============================================================ BOSHQARUV PANELI ============================================================ */
 function ensureDraft() {
   if (!draft) draft = JSON.parse(JSON.stringify(ITEMS));
   if (!draftSettings) draftSettings = JSON.parse(JSON.stringify(SETTINGS));
+  if (!draftAdmin) draftAdmin = { login: ADMIN.login, password: "", repeat: "" };
 }
 
-async function adminLogin() {
-  const key = $("tokenInput").value.trim();
-  if (!key) { toast("Введите ключ"); return; }
-  const btn = $("loginBtn");
-  btn.disabled = true; btn.textContent = "Проверяю…";
-  try {
-    const res = await fetch(`https://api.github.com/repos/${CONFIG.github.owner}/${CONFIG.github.repo}`, {
-      headers: { Authorization: "Bearer " + key, Accept: "application/vnd.github+json" },
-    });
-    if (!res.ok) { toast(res.status === 401 ? "Ключ неверный или устарел" : "Нет доступа к репозиторию"); return; }
-    token = key;
-    localStorage.setItem(K("ghKey"), key);
-    $("tokenInput").value = "";
-    renderAdmin();
-    toast("Готово");
-  } catch { toast("Нет связи с GitHub"); }
-  finally { btn.disabled = false; btn.textContent = "Войти"; }
+async function unlock() {
+  const login = $("inLogin").value.trim();
+  const pass = $("inPass").value;
+  if (!login || !pass) { toast("Login va parolni kiriting"); return; }
+  const btn = $("unlockBtn");
+  btn.disabled = true; btn.textContent = "Tekshirilmoqda…";
+  const ok = await checkPassword(login, pass);
+  btn.disabled = false; btn.textContent = "Kirish";
+  if (!ok) { toast("Login yoki parol noto'g'ri"); haptic("heavy"); return; }
+  unlocked = true;
+  sessionStorage.setItem(K("unlocked"), "1");
+  $("navAdmin").style.display = "flex";
+  renderAdmin();
 }
 
-function adminLogout() {
-  token = ""; localStorage.removeItem(K("ghKey"));
-  draft = null; draftSettings = null; openRow = null;
-  renderAdmin(); toast("Ключ удалён из этого браузера");
+function lockAdmin() {
+  unlocked = false;
+  sessionStorage.removeItem(K("unlocked"));
+  draft = null; draftSettings = null; draftAdmin = null; openRow = null;
+  renderAdmin();
 }
 
 function setField(i, field, value) { ensureDraft(); draft[i][field] = value; }
 function setNum(i, field, value) { ensureDraft(); draft[i][field] = value === "" ? (field === "area" ? null : 0) : Number(value); }
 function setSetting(field, value) { ensureDraft(); draftSettings[field] = value; }
-
+function setAdmin(field, value) { ensureDraft(); draftAdmin[field] = value; }
 function rowToggle(i) { openRow = openRow === i ? null : i; renderAdmin(); }
 
 function addItem() {
   ensureDraft();
   const id = draft.reduce((m, x) => Math.max(m, Number(x.id) || 0), 0) + 1;
-  draft.unshift({ id, kind: "product", title: "", description: "", price: 0, category: "",
-    district: "", rooms: "", area: null, floor: "", furnished: 0, images: [], hidden: 0 });
+  draft.unshift({ id, kind, title: "", description: "", price: 0, category: "", district: "",
+    rooms: "", area: null, floor: "", furnished: 0, images: [], hidden: 0 });
   openRow = 0;
   renderAdmin();
 }
 
 function delItem(i) {
   ensureDraft();
-  if (!confirm(`Удалить «${draft[i].title || "без названия"}»?`)) return;
-  draft.splice(i, 1);
-  openRow = null;
-  renderAdmin();
+  if (!confirm(`«${draft[i].title || "nomsiz"}» o'chirilsinmi?`)) return;
+  draft.splice(i, 1); openRow = null; renderAdmin();
 }
 
 function moveItem(i, d) {
@@ -547,7 +616,7 @@ function moveItem(i, d) {
   renderAdmin();
 }
 
-/* Фото: сжимаем прямо в браузере, чтобы репозиторий не разрастался */
+/* Suratlar brauzerning o'zida siqiladi — repozitoriy shishib ketmasin */
 function pickPhotos(i) {
   ensureDraft();
   const input = document.createElement("input");
@@ -555,11 +624,10 @@ function pickPhotos(i) {
   input.onchange = async () => {
     const files = [...(input.files || [])];
     for (const file of files) {
-      try { draft[i].images.push(await compress(file)); }
-      catch { toast("Не удалось прочитать фото"); }
+      try { draft[i].images.push(await compress(file)); } catch { toast("Suratni o'qib bo'lmadi"); }
     }
     renderAdmin();
-    if (files.length) toast(files.length === 1 ? "Фото добавлено" : "Фото добавлены: " + files.length);
+    if (files.length) toast(files.length + " ta surat qo'shildi");
   };
   input.click();
 }
@@ -585,96 +653,157 @@ function compress(file) {
     reader.readAsDataURL(file);
   });
 }
-
 function delPhoto(i, n) { ensureDraft(); draft[i].images.splice(n, 1); renderAdmin(); }
 
 function renderAdmin() {
-  const logged = !!token;
-  $("admLogin").style.display = logged ? "none" : "block";
-  $("admPanel").style.display = logged ? "block" : "none";
-  $("repoName1").textContent = CONFIG.github.repo;
-  if (!logged) return;
+  if (!unlocked) {
+    $("p-admin").innerHTML = `
+      <div class="lock">
+        <img src="logo.png" alt="Qulay Market">
+        <div class="f" style="margin-bottom:11px">
+          <label>Login</label>
+          <input id="inLogin" autocomplete="username" autocapitalize="off" spellcheck="false" value="${esc(ADMIN.login || "")}">
+        </div>
+        <div class="f" style="margin-bottom:16px">
+          <label>Parol</label>
+          <input id="inPass" type="password" autocomplete="current-password">
+        </div>
+        <button class="btn btn-primary" id="unlockBtn" onclick="unlock()">Kirish</button>
+        <p class="muted" style="margin-top:14px">Bu bo'lim faqat do'kon egasi uchun.</p>
+      </div>`;
+    const p = $("inPass");
+    if (p) p.onkeydown = (e) => { if (e.key === "Enter") unlock(); };
+    return;
+  }
 
   ensureDraft();
-  $("setTitle").value = draftSettings.title || "";
-  $("setContact").value = draftSettings.contact || "";
-  $("setPhone").value = draftSettings.phone || "";
-
-  $("admList").innerHTML = draft.map((it, i) => {
+  const rows = draft.map((it, i) => {
     const img = cover(it);
     const head = `
       <div class="adm-head" onclick="rowToggle(${i})">
         ${img ? `<img class="mini" src="${esc(img)}" alt="">`
-              : `<div class="mini" style="display:flex;align-items:center;justify-content:center;font-size:20px">${isRealty(it) ? "🏠" : "📦"}</div>`}
+              : `<div class="mini">${icon(isRealty(it) ? "home" : "box", 22)}</div>`}
         <div class="g">
-          <b>${esc(it.title || "Без названия")}</b>
-          <span class="muted">№${it.id} · ${isRealty(it) ? "жильё" : "товар"} · ${money(it.price)}${it.hidden ? " · скрыто" : ""}</span>
+          <b>${esc(it.title || "Nomsiz")}</b>
+          <span class="muted">№${it.id} · ${isRealty(it) ? "uy-joy" : "mahsulot"} · ${money(it.price)}${it.hidden ? " · yashirilgan" : ""}</span>
         </div>
         <span class="muted">${openRow === i ? "▲" : "▼"}</span>
       </div>`;
     if (openRow !== i) return `<div class="adm">${head}</div>`;
-
     return `<div class="adm">${head}
       <div class="adm-body">
         <div class="f2">
-          <div class="f"><label>Тип</label>
+          <div class="f"><label>Turi</label>
             <select onchange="setField(${i},'kind',this.value);renderAdmin()">
-              <option value="product"${it.kind === "product" ? " selected" : ""}>Товар</option>
-              <option value="realty"${it.kind === "realty" ? " selected" : ""}>Жильё</option>
+              <option value="realty"${it.kind === "realty" ? " selected" : ""}>Uy-joy</option>
+              <option value="product"${it.kind === "product" ? " selected" : ""}>Mahsulot</option>
             </select></div>
-          <div class="f"><label>Цена, TL</label>
+          <div class="f"><label>Narxi, TL</label>
             <input type="number" min="0" inputmode="numeric" value="${esc(it.price)}" oninput="setNum(${i},'price',this.value)"></div>
         </div>
-        <div class="f"><label>Название</label>
-          <input value="${esc(it.title)}" oninput="setField(${i},'title',this.value)"></div>
-        <div class="f"><label>Описание</label>
+        <div class="f"><label>Nomi</label><input value="${esc(it.title)}" oninput="setField(${i},'title',this.value)"></div>
+        <div class="f"><label>Tavsifi</label>
           <textarea rows="4" oninput="setField(${i},'description',this.value)">${esc(it.description)}</textarea></div>
         <div class="f2">
-          <div class="f"><label>Категория</label>
-            <input value="${esc(it.category)}" oninput="setField(${i},'category',this.value)"></div>
-          <div class="f"><label>Район</label>
-            <input value="${esc(it.district)}" oninput="setField(${i},'district',this.value)"></div>
-          <div class="f"><label>Комнаты</label>
-            <input placeholder="2+1" value="${esc(it.rooms)}" oninput="setField(${i},'rooms',this.value)"></div>
-          <div class="f"><label>Площадь, м²</label>
+          <div class="f"><label>Kategoriya</label><input value="${esc(it.category)}" oninput="setField(${i},'category',this.value)"></div>
+          <div class="f"><label>Tuman</label><input value="${esc(it.district)}" oninput="setField(${i},'district',this.value)"></div>
+          <div class="f"><label>Xonalar</label><input placeholder="2+1" value="${esc(it.rooms)}" oninput="setField(${i},'rooms',this.value)"></div>
+          <div class="f"><label>Maydoni, m²</label>
             <input type="number" min="0" inputmode="numeric" value="${it.area == null ? "" : esc(it.area)}" oninput="setNum(${i},'area',this.value)"></div>
         </div>
-        <div class="f"><label>Этаж</label>
-          <input placeholder="5 из 12" value="${esc(it.floor)}" oninput="setField(${i},'floor',this.value)"></div>
+        <div class="f"><label>Qavat</label><input placeholder="5 / 12" value="${esc(it.floor)}" oninput="setField(${i},'floor',this.value)"></div>
         <div class="checks">
-          ${isRealty(it) ? `<label><input type="checkbox"${it.furnished ? " checked" : ""} onchange="setField(${i},'furnished',this.checked?1:0)">С мебелью</label>` : ""}
-          <label><input type="checkbox"${it.hidden ? " checked" : ""} onchange="setField(${i},'hidden',this.checked?1:0);renderAdmin()">Скрыть с сайта</label>
+          ${isRealty(it) ? `<label><input type="checkbox"${it.furnished ? " checked" : ""} onchange="setField(${i},'furnished',this.checked?1:0)">Mebel bilan</label>` : ""}
+          <label><input type="checkbox"${it.hidden ? " checked" : ""} onchange="setField(${i},'hidden',this.checked?1:0);renderAdmin()">Saytda ko'rsatilmasin</label>
         </div>
         <div class="f">
-          <label>Фотографии</label>
-          <div class="photos">
-            ${(it.images || []).map((p, n) => `<figure>
-                <img src="${esc(p)}" alt="">
-                <button onclick="delPhoto(${i},${n})" aria-label="Удалить фото">×</button>
-              </figure>`).join("")}
-          </div>
-          <button class="btn btn-soft" style="margin-top:8px" onclick="pickPhotos(${i})">📷 Добавить фото</button>
+          <label>Suratlar</label>
+          <div class="photos">${(it.images || []).map((p, n) =>
+            `<figure><img src="${esc(p)}" alt=""><button onclick="delPhoto(${i},${n})" aria-label="O'chirish">×</button></figure>`).join("")}</div>
+          <button class="btn btn-soft" style="margin-top:9px" onclick="pickPhotos(${i})">${icon("cam", 17)} Surat qo'shish</button>
         </div>
-        <div style="display:flex;gap:8px">
+        <div style="display:flex;gap:9px">
           <button class="btn btn-line" onclick="moveItem(${i},-1)">↑</button>
           <button class="btn btn-line" onclick="moveItem(${i},1)">↓</button>
-          <button class="btn btn-danger" onclick="delItem(${i})">Удалить</button>
+          <button class="btn btn-danger" onclick="delItem(${i})">O'chirish</button>
+        </div>
+      </div></div>`;
+  }).join("");
+
+  $("p-admin").innerHTML = `
+    <h2 class="title">Boshqaruv paneli</h2>
+
+    <div class="adm">
+      <div class="adm-t">Do'kon</div>
+      <div class="adm-body" style="margin-top:0">
+        <div class="f"><label>Katalog nomi</label>
+          <input value="${esc(draftSettings.title)}" oninput="setSetting('title',this.value)"></div>
+        <div class="f2">
+          <div class="f"><label>Telegram (@ siz)</label>
+            <input value="${esc(draftSettings.contact)}" autocapitalize="off" spellcheck="false" oninput="setSetting('contact',this.value)"></div>
+          <div class="f"><label>Telefon</label>
+            <input value="${esc(draftSettings.phone)}" inputmode="tel" oninput="setSetting('phone',this.value)"></div>
         </div>
       </div>
-    </div>`;
-  }).join("");
+    </div>
+
+    <div class="adm">
+      <div class="adm-t">Kirish ma'lumotlari</div>
+      <div class="adm-body" style="margin-top:0">
+        <div class="f"><label>Login</label>
+          <input value="${esc(draftAdmin.login)}" autocapitalize="off" spellcheck="false" oninput="setAdmin('login',this.value)"></div>
+        <div class="f2">
+          <div class="f"><label>Yangi parol</label>
+            <input type="password" autocomplete="new-password" value="${esc(draftAdmin.password)}" oninput="setAdmin('password',this.value)"></div>
+          <div class="f"><label>Parolni takrorlang</label>
+            <input type="password" autocomplete="new-password" value="${esc(draftAdmin.repeat)}" oninput="setAdmin('repeat',this.value)"></div>
+        </div>
+        <p class="muted">Parolni o'zgartirmoqchi bo'lmasangiz, bu ikki maydonni bo'sh qoldiring.</p>
+      </div>
+    </div>
+
+    <div class="adm">
+      <div class="adm-t">GitHub kaliti</div>
+      <div class="adm-body" style="margin-top:0">
+        ${token
+          ? `<div class="row" style="display:flex;align-items:center;gap:10px">
+               <b style="flex:1;font-size:14px">Kalit shu qurilmada saqlangan</b>
+               <button class="btn btn-line" style="width:auto;padding:9px 14px" onclick="forgetToken()">Almashtirish</button>
+             </div>`
+          : `<div class="f"><label>Kalitni kiriting</label>
+               <input id="inToken" type="password" autocomplete="off" placeholder="github_pat_..."></div>
+             <button class="btn btn-line" onclick="saveToken()">Kalitni saqlash</button>`}
+        <p class="muted">Kalit faqat shu qurilmada saqlanadi. Usiz o'zgarishlarni saqlab bo'lmaydi.
+          <a href="https://github.com/settings/tokens?type=beta" target="_blank" rel="noopener" style="color:var(--accent)">Kalit yaratish</a>
+          — Repository access: ${esc(CONFIG.github.repo)}, Permissions → Contents: Read and write.</p>
+      </div>
+    </div>
+
+    <div class="adm-t" style="margin:20px 2px 10px">E'lonlar (${draft.length})</div>
+    ${rows}
+    <button class="btn btn-soft" onclick="addItem()">＋ Yangi e'lon</button>
+
+    <div class="save-bar"><button class="btn btn-primary" id="saveBtn" onclick="adminSave()">Hammasini saqlash</button></div>
+    <button class="btn btn-line" onclick="lockAdmin()">Chiqish</button>`;
 }
 
-/* ============================================================ ЗАПИСЬ В GITHUB ============================================================ */
-const ghUrl = (path) =>
-  `https://api.github.com/repos/${CONFIG.github.owner}/${CONFIG.github.repo}/contents/${path}`;
-const ghHeaders = () => ({
-  Authorization: "Bearer " + token,
-  Accept: "application/vnd.github+json",
-  "Content-Type": "application/json",
-});
+function saveToken() {
+  const v = ($("inToken").value || "").trim();
+  if (!v) { toast("Kalit kiritilmadi"); return; }
+  token = v;
+  localStorage.setItem(K("ghKey"), v);
+  renderAdmin();
+  toast("Kalit saqlandi");
+}
+function forgetToken() {
+  token = ""; localStorage.removeItem(K("ghKey")); renderAdmin(); toast("Kalit o'chirildi");
+}
 
-/* Свежая версия файла. If-None-Match не ставим: GitHub отвечает 304, и sha теряется. */
+/* ============================================================ GITHUB'GA YOZISH ============================================================ */
+const ghUrl = (path) => `https://api.github.com/repos/${CONFIG.github.owner}/${CONFIG.github.repo}/contents/${path}`;
+const ghHeaders = () => ({ Authorization: "Bearer " + token, Accept: "application/vnd.github+json", "Content-Type": "application/json" });
+
+/* Faylning eng so'nggi versiyasi. If-None-Match qo'yilmaydi: GitHub 304 qaytarib, sha yo'qoladi. */
 async function ghSha(path) {
   const q = "?ref=" + encodeURIComponent(CONFIG.github.branch) + "&_=" + Date.now();
   try {
@@ -693,14 +822,12 @@ async function ghSha(path) {
   return undefined;
 }
 
-/* Запись файла с повтором, если версия устарела */
 async function ghPut(path, base64, message) {
   let lastErr = "";
   for (let attempt = 1; attempt <= 4; attempt++) {
     const sha = await ghSha(path);
     const res = await fetch(ghUrl(path), {
-      method: "PUT",
-      headers: ghHeaders(),
+      method: "PUT", headers: ghHeaders(),
       body: JSON.stringify({ message, content: base64, branch: CONFIG.github.branch, ...(sha ? { sha } : {}) }),
     });
     if (res.ok) return res.json();
@@ -721,69 +848,13 @@ function toBase64(str) {
   return btoa(bin);
 }
 
-/* Имя файла делаем латиницей — так ссылка на фото остаётся простой */
-const TRANSLIT = { а:"a",б:"b",в:"v",г:"g",д:"d",е:"e",ё:"e",ж:"zh",з:"z",и:"i",й:"y",к:"k",л:"l",м:"m",
-  н:"n",о:"o",п:"p",р:"r",с:"s",т:"t",у:"u",ф:"f",х:"h",ц:"c",ч:"ch",ш:"sh",щ:"sch",ъ:"",ы:"y",ь:"",
-  э:"e",ю:"yu",я:"ya" };
+/* Fayl nomi lotin harflarida bo'lsin */
+const TRANSLIT = { а:"a",б:"b",в:"v",г:"g",д:"d",е:"e",ё:"e",ж:"j",з:"z",и:"i",й:"y",к:"k",л:"l",м:"m",н:"n",
+  о:"o",п:"p",р:"r",с:"s",т:"t",у:"u",ф:"f",х:"h",ц:"c",ч:"ch",ш:"sh",щ:"sch",ъ:"",ы:"y",ь:"",э:"e",ю:"yu",я:"ya",
+  ў:"o",қ:"q",ғ:"g",ҳ:"h","'":"" };
 const slug = (s) => String(s || "").toLowerCase()
-  .replace(/[а-яё]/g, (c) => TRANSLIT[c] ?? "")
+  .replace(/[а-яёўқғҳ']/g, (c) => TRANSLIT[c] ?? "")
   .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 24).replace(/-+$/, "") || "photo";
-
-async function adminSave() {
-  ensureDraft();
-  const btn = $("saveBtn");
-  btn.disabled = true; btn.textContent = "Сохраняю…";
-  try {
-    if (!token) throw new Error("401 Ключ доступа не введён");
-
-    /* 1. Новые фото — отдельными файлами в photos/ */
-    let uploaded = 0;
-    for (const it of draft) {
-      const images = Array.isArray(it.images) ? it.images : (it.images = []);
-      for (let n = 0; n < images.length; n++) {
-        const m = String(images[n]).match(/^data:image\/(jpeg|jpg|png|webp);base64,(.+)$/);
-        if (!m) continue;
-        const ext = m[1] === "jpeg" ? "jpg" : m[1];
-        const name = `${CONFIG.github.photos}/${it.id}-${slug(it.title)}-${Date.now()}-${n}.${ext}`;
-        btn.textContent = `Загружаю фото ${++uploaded}…`;
-        await ghPut(name, m[2], "photo: " + name);
-        images[n] = name;
-      }
-    }
-
-    /* 2. Сам каталог */
-    btn.textContent = "Сохраняю каталог…";
-    const payload = {
-      settings: {
-        title: ($("setTitle").value || "").trim() || "Qulay Market",
-        contact: ($("setContact").value || "").trim().replace(/^@/, ""),
-        phone: ($("setPhone").value || "").trim(),
-      },
-      items: draft.map(normalize),
-    };
-    await ghPut(CONFIG.github.catalog, toBase64(JSON.stringify(payload, null, 2)), "catalog update");
-
-    SETTINGS = payload.settings;
-    ITEMS = JSON.parse(JSON.stringify(payload.items));
-    draft = null; draftSettings = null;
-    applySettings();
-    renderAdmin(); renderGrid();
-    toast("Сохранено на GitHub");
-  } catch (e) {
-    const raw = String((e && e.message) || e);
-    let msg = raw;
-    if (/401|Bad credentials/i.test(raw)) msg = "Ключ неверный или устарел";
-    else if (/403|Resource not accessible/i.test(raw)) msg = "У ключа нет прав на запись (Contents: Read and write)";
-    else if (/404|Not Found/i.test(raw)) msg = "Репозиторий не найден — проверьте доступ ключа к " + CONFIG.github.repo;
-    else if (/409|does not match/i.test(raw)) msg = "Каталог изменился в другом окне. Обновите страницу и повторите";
-    else if (/422|sha/i.test(raw)) msg = "GitHub не отдал версию файла. Проверьте доступ ключа к " + CONFIG.github.repo;
-    else if (msg.length > 110) msg = "Не удалось сохранить";
-    toast("⚠️ " + msg);
-    alert("Не удалось сохранить:\n\n" + msg);
-  } finally {
-    btn.disabled = false; btn.textContent = "Сохранить всё";
-  }
-}
 
 function normalize(it) {
   return {
@@ -803,77 +874,135 @@ function normalize(it) {
   };
 }
 
-/* ============================================================ ЗАГРУЗКА И СТАРТ ============================================================ */
+async function adminSave() {
+  ensureDraft();
+  const btn = $("saveBtn");
+  const done = (label) => { btn.disabled = false; btn.textContent = label; };
+  btn.disabled = true; btn.textContent = "Saqlanmoqda…";
+  try {
+    if (!token) throw new Error("nokey");
+
+    let nextAdmin = { ...ADMIN, login: String(draftAdmin.login || "").trim() || ADMIN.login };
+    if (draftAdmin.password || draftAdmin.repeat) {
+      if (draftAdmin.password !== draftAdmin.repeat) throw new Error("mismatch");
+      if (draftAdmin.password.length < 6) throw new Error("short");
+      nextAdmin = { login: nextAdmin.login, ...(await makeHash(draftAdmin.password)) };
+    }
+
+    let uploaded = 0;
+    for (const it of draft) {
+      const images = Array.isArray(it.images) ? it.images : (it.images = []);
+      for (let n = 0; n < images.length; n++) {
+        const m = String(images[n]).match(/^data:image\/(jpeg|jpg|png|webp);base64,(.+)$/);
+        if (!m) continue;
+        const ext = m[1] === "jpeg" ? "jpg" : m[1];
+        const name = `${CONFIG.github.photos}/${it.id}-${slug(it.title)}-${Date.now()}-${n}.${ext}`;
+        btn.textContent = `Surat yuklanmoqda ${++uploaded}…`;
+        await ghPut(name, m[2], "photo: " + name);
+        images[n] = name;
+      }
+    }
+
+    btn.textContent = "Katalog saqlanmoqda…";
+    const payload = {
+      settings: {
+        title: String(draftSettings.title || "").trim() || "Qulay Market",
+        contact: String(draftSettings.contact || "").trim().replace(/^@/, ""),
+        phone: String(draftSettings.phone || "").trim(),
+      },
+      admin: nextAdmin,
+      items: draft.map(normalize),
+    };
+    await ghPut(CONFIG.github.catalog, toBase64(JSON.stringify(payload, null, 2)), "katalog yangilandi");
+
+    SETTINGS = payload.settings;
+    ADMIN = payload.admin;
+    ITEMS = payload.items.map(normalize);
+    draft = null; draftSettings = null; draftAdmin = null;
+    applySettings(); renderAdmin(); renderList(); renderFavBadge();
+    toast("GitHub'ga saqlandi");
+    haptic("medium");
+  } catch (e) {
+    const raw = String((e && e.message) || e);
+    let msg;
+    if (raw === "nokey") msg = "Avval GitHub kalitini kiriting";
+    else if (raw === "mismatch") msg = "Parollar mos kelmadi";
+    else if (raw === "short") msg = "Parol kamida 6 ta belgidan iborat bo'lsin";
+    else if (/401|Bad credentials/i.test(raw)) msg = "Kalit noto'g'ri yoki muddati o'tgan";
+    else if (/403|Resource not accessible/i.test(raw)) msg = "Kalitda yozish huquqi yo'q (Contents: Read and write)";
+    else if (/404|Not Found/i.test(raw)) msg = "Repozitoriy topilmadi — kalit " + CONFIG.github.repo + " ga ruxsatli ekanini tekshiring";
+    else if (/409|does not match/i.test(raw)) msg = "Katalog boshqa oynada o'zgardi. Sahifani yangilab, qaytadan urinib ko'ring";
+    else if (/422|sha/i.test(raw)) msg = "GitHub fayl versiyasini bermadi. Kalit ruxsatini tekshiring";
+    else msg = "Saqlab bo'lmadi";
+    toast(msg);
+    haptic("heavy");
+  } finally {
+    done("Hammasini saqlash");
+  }
+}
+
+/* ============================================================ YUKLASH VA ISHGA TUSHISH ============================================================ */
 function applySettings() {
-  const name = SETTINGS.title || "Qulay Market";
+  const name = String(SETTINGS.title || "Qulay Market").trim();
   const parts = name.split(" ");
-  $("logo").innerHTML = parts.length > 1
-    ? esc(parts.slice(0, -1).join(" ")) + " <b>" + esc(parts[parts.length - 1]) + "</b>"
-    : "<b>" + esc(name) + "</b>";
-  document.title = name + " — каталог жилья и товаров";
+  $("brandText").innerHTML = parts.length > 1
+    ? `<i>${esc(parts[0])}</i> ${esc(parts.slice(1).join(" "))}`
+    : `<i>${esc(name)}</i>`;
+  document.title = name;
 }
 
 async function loadCatalog() {
   try {
     const res = await fetch("catalog.json?t=" + Date.now(), { cache: "no-store" });
-    if (!res.ok) return;
-    const data = await res.json();
-    const items = Array.isArray(data) ? data : data.items;
-    if (Array.isArray(items)) ITEMS = items.map(normalize);
-    if (data && data.settings) SETTINGS = { ...SETTINGS, ...data.settings };
+    if (res.ok) {
+      const data = await res.json();
+      const items = Array.isArray(data) ? data : data.items;
+      if (Array.isArray(items)) ITEMS = items.map(normalize);
+      if (data && data.settings) SETTINGS = { ...SETTINGS, ...data.settings };
+      if (data && data.admin && data.admin.hash) ADMIN = data.admin;
+    }
   } catch {}
+  loaded = true;
   applySettings();
-  renderGrid();
-  if (page === "item") renderItem();
+  renderFavBadge();
+  if (page === "realty" || page === "product") renderList();
   if (page === "fav") renderFavs();
+  if (page === "item") renderItem();
+  if (page === "admin" && !unlocked) renderAdmin();
 }
 
-/* Обработчики */
+/* Hodisalar */
 $("themeBtn").onclick = () => { theme = theme === "dark" ? "light" : "dark"; localStorage.setItem(K("theme"), theme); applyTheme(); };
-$("q").oninput = (e) => { query = e.target.value; renderGrid(); };
-$("tabs").onclick = (e) => {
-  const b = e.target.closest("button"); if (!b) return;
-  kind = b.dataset.kind; cat = "";
-  document.querySelectorAll("#tabs button").forEach((x) => x.classList.toggle("on", x === b));
-  renderGrid();
-};
-$("nav").onclick = (e) => { const b = e.target.closest("button"); if (b) go(b.dataset.page); };
-$("loginBtn").onclick = adminLogin;
-$("logoutBtn").onclick = adminLogout;
-$("addBtn").onclick = addItem;
-$("saveBtn").onclick = adminSave;
-["setTitle", "setContact", "setPhone"].forEach((id) => {
-  $(id).oninput = (e) => setSetting(id.replace("set", "").toLowerCase(), e.target.value);
-});
-$("tokenInput").onkeydown = (e) => { if (e.key === "Enter") adminLogin(); };
+$("q").oninput = (e) => { query = e.target.value; renderList(); };
+$("sortBtn").onclick = () => { sort = (sort + 1) % SORTS.length; haptic(); renderList(); };
+$("nav").onclick = (e) => { const b = e.target.closest("button"); if (b) { haptic(); go(b.dataset.page); } };
 
-/* Админка прячется: пять нажатий на логотип или адрес с #admin */
-$("logo").onclick = () => {
-  logoTaps++;
-  clearTimeout(logoTimer);
-  logoTimer = setTimeout(() => (logoTaps = 0), 1600);
-  if (logoTaps >= 5) { logoTaps = 0; $("navAdmin").style.display = "flex"; go("admin"); }
+/* Boshqaruv paneli yashirin: logotipga 5 marta bosiladi yoki manzilga #admin qo'shiladi */
+$("brand").onclick = () => {
+  brandTaps++;
+  clearTimeout(brandTimer);
+  brandTimer = setTimeout(() => (brandTaps = 0), 1600);
+  if (brandTaps >= 5) { brandTaps = 0; $("navAdmin").style.display = "flex"; go("admin"); }
 };
 
 window.addEventListener("hashchange", routeFromHash);
 window.addEventListener("scroll", () => $("header").classList.toggle("scrolled", window.scrollY > 4), { passive: true });
 
+/* Brauzer ba'zan qidiruv maydoniga saqlangan telefonni qo'yib yuboradi */
+const clearAutofill = () => { if (!query && $("q").value) $("q").value = ""; };
+[0, 120, 400, 1000].forEach((ms) => setTimeout(clearAutofill, ms));
+
 if (tg) {
   try { tg.ready(); tg.expand(); } catch {}
-  try { tg.BackButton.onClick(() => go("home")); } catch {}
+  try { tg.BackButton.onClick(() => go(kind)); } catch {}
   try { if (tg.disableVerticalSwipes) tg.disableVerticalSwipes(); } catch {}
 }
 
-/* Браузер иногда сам подставляет в поиск сохранённый телефон или адрес.
-   Чистим поле, пока пользователь ничего не ввёл. */
-const clearAutofill = () => { if (!query && $("q").value) $("q").value = ""; };
-clearAutofill();
-[120, 400, 1000].forEach((ms) => setTimeout(clearAutofill, ms));
-
 applyTheme();
 applySettings();
-if (location.hash === "#admin" || token) $("navAdmin").style.display = "flex";
+if (unlocked) $("navAdmin").style.display = "flex";
 routeFromHash();
+renderList();
 loadCatalog();
 </script>
 </body>

@@ -134,6 +134,16 @@
   .btn:disabled{opacity:.5;cursor:default;box-shadow:none}
   .cta{margin:24px 0 8px;display:flex;flex-direction:column;gap:9px}
 
+  .amen{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 4px}
+  .amen span{display:inline-flex;align-items:center;gap:7px;padding:8px 13px;border-radius:99px;
+    background:var(--card);border:1px solid var(--line);font-size:13px;font-weight:600;box-shadow:var(--shadow)}
+  .amen span svg{color:var(--brand);flex-shrink:0}
+  .cta-box{margin:22px 0 8px;padding:16px 15px 15px;border:1px solid var(--line);border-radius:var(--r);
+    background:var(--card);box-shadow:var(--shadow)}
+  .cta-box .cta-t{font-size:15px;font-weight:800;letter-spacing:-.2px;margin-bottom:3px}
+  .cta-box .cta-s{font-size:13px;color:var(--muted);margin-bottom:13px}
+  .cta-box .cta{margin:0;gap:9px}
+
   /* Pastki menyu */
   .nav{position:fixed;left:0;right:0;bottom:0;z-index:35;background:color-mix(in srgb,var(--card) 94%,transparent);
     backdrop-filter:blur(14px);border-top:1px solid var(--line);
@@ -217,6 +227,11 @@
     <path d="M3.5 8.2h3.2L8 5.8h8l1.3 2.4h3.2v10H3.5z"/><circle cx="12" cy="13.2" r="3.2"/></symbol>
   <symbol id="i-box" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
     <path d="M12 3 4 6.8v10.4L12 21l8-3.8V6.8z"/><path d="M4 6.8 12 10.6l8-3.8M12 10.6V21"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m4.5 12.4 5 5L19.5 6.8"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10.4 13.6a4.2 4.2 0 0 0 6 0l2.8-2.8a4.25 4.25 0 0 0-6-6l-1.6 1.6"/>
+    <path d="M13.6 10.4a4.2 4.2 0 0 0-6 0l-2.8 2.8a4.25 4.25 0 0 0 6 6l1.6-1.6"/></symbol>
 </svg>
 
 <header class="header" id="header">
@@ -268,7 +283,7 @@
 
 <nav class="nav" id="nav">
   <button data-page="realty"><svg width="22" height="22"><use href="#i-home"/></svg><span>Uy-joy</span></button>
-  <button data-page="product"><svg width="22" height="22"><use href="#i-bag"/></svg><span>Mahsulotlar</span></button>
+  <button data-page="product" id="navProduct"><svg width="22" height="22"><use href="#i-bag"/></svg><span>Mahsulotlar</span></button>
   <button data-page="fav"><svg width="22" height="22"><use href="#i-star"/></svg><span>Saralangan</span><i class="badge" id="favBadge" style="display:none"></i></button>
   <button data-page="admin" id="navAdmin" style="display:none"><svg width="22" height="22"><use href="#i-gear"/></svg><span>Boshqaruv</span></button>
 </nav>
@@ -282,6 +297,10 @@
 const CONFIG = {
   github: { owner: "malik-alaska2", repo: "Qulay-Marketr", branch: "main", catalog: "catalog.json", photos: "photos" },
 };
+
+/* Mahsulotlar bo'limi vaqtincha yopilgan: pastki menyuda ko'rinmaydi, mahsulot e'lonlari saytga chiqmaydi.
+   Qaytarish uchun shu qatorda false o'rniga true yozing. Boshqaruv panelida bo'lim o'z joyida qoladi. */
+const SHOW_PRODUCTS = false;
 
 /* catalog.json hali yo'q bo'lsa ishlatiladi */
 const FALLBACK = {
@@ -323,6 +342,32 @@ const save = (key, value) => { try { localStorage.setItem(K(key), JSON.stringify
 
 const SORTS = ["Yangi", "Avval arzoni", "Avval qimmati"];
 
+/* Uy-joy e'lonining qo'shimcha maydonlari.
+   turi: text — oddiy matn, num — raqam, check — bor/yo'q belgisi */
+const EXTRA = [
+  { key: "address",     label: "Manzil",         group: "info", type: "text", hint: "Mahalla, ko'cha" },
+  { key: "buildingAge", label: "Bino yoshi",     group: "info", type: "num",  hint: "masalan 8", unit: " yil" },
+  { key: "heating",     label: "Isitish",        group: "info", type: "text", hint: "Kombi (dogalgaz)" },
+  { key: "appliances",  label: "Texnika",        group: "info", type: "text", hint: "Muzlatgich, kir mashinasi" },
+  { key: "transport",   label: "Transport",      group: "info", type: "text", hint: "Metrogacha 10 daqiqa" },
+  { key: "postedAt",    label: "E'lon sanasi",   group: "info", type: "text", hint: "01.09.2026" },
+  { key: "deposit",     label: "Depozit",        group: "rent", type: "num",  hint: "TL", money: true },
+  { key: "commission",  label: "Komissiya",      group: "rent", type: "text", hint: "Yo'q / bir oylik" },
+  { key: "minTerm",     label: "Minimal muddat", group: "rent", type: "text", hint: "6 oy" },
+];
+const EXTRA_NUM = EXTRA.filter((f) => f.type === "num").map((f) => f.key);
+
+/* Belgilar — e'lon sahifasida faqat «bor» bo'lganlari chiqadi */
+const AMEN = [
+  { key: "furnished", label: "Mebel bilan" },
+  { key: "elevator",  label: "Lift bor" },
+  { key: "balcony",   label: "Balkon" },
+  { key: "parking",   label: "Avtoturargoh" },
+  { key: "internet",  label: "Internet" },
+  { key: "utilities", label: "Kommunal narxda" },
+  { key: "pets",      label: "Uy hayvonlari mumkin" },
+];
+
 /* ============================================================ YORDAMCHI ============================================================ */
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) =>
   ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -356,6 +401,7 @@ function haptic(kind) { try { if (tg && tg.HapticFeedback) tg.HapticFeedback.imp
 const HASHES = { realty: "", product: "#mahsulot", fav: "#saralangan", admin: "#admin" };
 
 function go(next, id) {
+  if (next === "product" && !SHOW_PRODUCTS) next = "realty";
   page = next;
   if (next === "realty" || next === "product") { kind = next; cat = ""; }
   curItem = next === "item" ? Number(id) : null;
@@ -380,7 +426,7 @@ function routeFromHash() {
   const h = location.hash;
   const m = h.match(/^#item-(\d+)$/);
   if (m) return go("item", m[1]);
-  if (h === "#mahsulot") return go("product");
+  if (h === "#mahsulot") return go(SHOW_PRODUCTS ? "product" : "realty");
   if (h === "#saralangan") return go("fav");
   if (h === "#admin") { $("navAdmin").style.display = "flex"; return go("admin"); }
   go("realty");
@@ -392,9 +438,10 @@ function visible() {
   let list = ITEMS.filter((it) => {
     if (it.hidden) return false;
     if (it.kind !== kind) return false;
+    if (!SHOW_PRODUCTS && !isRealty(it)) return false;
     if (cat && it.category !== cat) return false;
     if (!q) return true;
-    return [it.title, it.description, it.category, it.district, it.rooms, it.floor]
+    return [it.title, it.description, it.category, it.district, it.rooms, it.floor, it.address, it.transport]
       .filter(Boolean).join(" ").toLowerCase().includes(q);
   });
   if (sort === 1) list = [...list].sort((a, b) => a.price - b.price);
@@ -464,14 +511,14 @@ function toggleFav(id) {
 }
 
 function renderFavBadge() {
-  const n = ITEMS.filter((it) => favs.includes(it.id) && !it.hidden).length;
+  const n = ITEMS.filter((it) => favs.includes(it.id) && !it.hidden && (SHOW_PRODUCTS || isRealty(it))).length;
   const b = $("favBadge");
   b.textContent = n;
   b.style.display = n ? "flex" : "none";
 }
 
 function renderFavs() {
-  const list = ITEMS.filter((it) => favs.includes(it.id) && !it.hidden);
+  const list = ITEMS.filter((it) => favs.includes(it.id) && !it.hidden && (SHOW_PRODUCTS || isRealty(it)));
   $("favGrid").innerHTML = list.map((it) => cardHtml(it, true)).join("");
   $("favEmpty").style.display = list.length ? "none" : "block";
 }
@@ -485,11 +532,32 @@ function renderItem() {
     return;
   }
   const photos = Array.isArray(it.images) ? it.images : [];
+  const realty = isRealty(it);
+  const extraVal = (key) => {
+    const f = EXTRA.find((x) => x.key === key);
+    const v = it[key];
+    if (v === "" || v == null) return "";
+    if (f && f.type === "num") return f.money ? money(v) : v + (f.unit || "");
+    return String(v);
+  };
   const rows = [
-    ["Kategoriya", it.category], ["Tuman", it.district], ["Xonalar", it.rooms],
-    ["Maydoni", it.area ? it.area + " m²" : ""], ["Qavat", it.floor],
-    isRealty(it) ? ["Mebel", it.furnished ? "Bor" : "Yo'q"] : null,
+    ["Kategoriya", it.category],
+    ["Tuman", it.district],
+    realty ? ["Manzil", extraVal("address")] : null,
+    ["Xonalar", it.rooms],
+    ["Maydoni", it.area ? it.area + " m²" : ""],
+    ["Qavat", it.floor],
+    realty ? ["Bino yoshi", extraVal("buildingAge")] : null,
+    realty ? ["Isitish", extraVal("heating")] : null,
+    realty ? ["Texnika", extraVal("appliances")] : null,
+    realty ? ["Transport", extraVal("transport")] : null,
+    realty ? ["E'lon sanasi", extraVal("postedAt")] : null,
   ].filter((r) => r && r[1]);
+
+  const rentRows = realty
+    ? EXTRA.filter((f) => f.group === "rent").map((f) => [f.label, extraVal(f.key)]).filter((r) => r[1])
+    : [];
+  const amens = realty ? AMEN.filter((a) => it[a.key]) : [];
 
   const contact = String(SETTINGS.contact || "").replace(/^@/, "");
   const text = `Assalomu alaykum! "${it.title}" (№${it.id}) qiziqtiryapti.`;
@@ -509,14 +577,24 @@ function renderItem() {
     </div>
     <div class="big-price">${money(it.price)}${per(it)}</div>
 
+    ${amens.length ? `<div class="amen">${amens.map((a) =>
+      `<span>${icon("check", 14)}${esc(a.label)}</span>`).join("")}</div>` : ""}
+
     ${rows.length ? `<h2 class="sec">Ma'lumotlar</h2><div class="specs-list">${rows.map(([k, v]) =>
+      `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</div>` : ""}
+    ${rentRows.length ? `<h2 class="sec">Ijara sharti</h2><div class="specs-list">${rentRows.map(([k, v]) =>
       `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</div>` : ""}
     ${it.description ? `<h2 class="sec">Tavsif</h2><p class="desc">${esc(it.description)}</p>` : ""}
 
-    <div class="cta">
-      ${link ? `<a class="btn btn-primary" id="ctaBtn" href="${esc(link)}" target="_blank" rel="noopener">${icon("send", 18)} Telegramga yozish</a>` : ""}
-      ${SETTINGS.phone ? `<a class="btn btn-line" href="tel:${esc(SETTINGS.phone)}">${icon("phone", 17)} ${esc(SETTINGS.phone)}</a>` : ""}
-      ${!link && !SETTINGS.phone ? `<div class="muted" style="text-align:center">Bog'lanish uchun Telegram boshqaruv panelida ko'rsatilmagan</div>` : ""}
+    <div class="cta-box">
+      <div class="cta-t">Aloqaga chiqish</div>
+      <div class="cta-s">${esc(it.title)} — №${it.id}</div>
+      <div class="cta">
+        ${link ? `<a class="btn btn-primary" id="ctaBtn" href="${esc(link)}" target="_blank" rel="noopener">${icon("send", 18)} Telegramga yozish</a>` : ""}
+        ${SETTINGS.phone ? `<a class="btn btn-line" href="tel:${esc(SETTINGS.phone)}">${icon("phone", 17)} ${esc(SETTINGS.phone)}</a>` : ""}
+        ${!link && !SETTINGS.phone ? `<div class="muted">Bog'lanish uchun Telegram yoki telefon boshqaruv panelida — «Do'kon» bo'limida ko'rsatilmagan.</div>` : ""}
+        <button class="btn btn-line" onclick="copyLink(${it.id})">${icon("link", 17)} E'lon havolasini nusxalash</button>
+      </div>
     </div>
     <p class="muted" style="text-align:center;margin-top:12px">E'lon raqami: №${it.id}</p>`;
 
@@ -530,6 +608,21 @@ function renderItem() {
   const cta = $("ctaBtn");
   if (cta && tg && tg.openTelegramLink) {
     cta.addEventListener("click", (e) => { e.preventDefault(); try { tg.openTelegramLink(link); } catch { window.open(link, "_blank"); } });
+  }
+}
+
+function itemUrl(id) {
+  return location.origin + location.pathname + location.search + "#item-" + id;
+}
+
+async function copyLink(id) {
+  const url = itemUrl(id);
+  try {
+    await navigator.clipboard.writeText(url);
+    haptic();
+    toast("Havola nusxalandi");
+  } catch {
+    prompt("E'lon havolasi:", url);
   }
 }
 
@@ -590,7 +683,11 @@ function lockAdmin() {
 }
 
 function setField(i, field, value) { ensureDraft(); draft[i][field] = value; }
-function setNum(i, field, value) { ensureDraft(); draft[i][field] = value === "" ? (field === "area" ? null : 0) : Number(value); }
+function setNum(i, field, value) {
+  ensureDraft();
+  const nullable = field === "area" || EXTRA_NUM.includes(field);
+  draft[i][field] = value === "" ? (nullable ? null : 0) : Number(value);
+}
 function setSetting(field, value) { ensureDraft(); draftSettings[field] = value; }
 function setAdmin(field, value) { ensureDraft(); draftAdmin[field] = value; }
 function rowToggle(i) { openRow = openRow === i ? null : i; renderAdmin(); }
@@ -598,8 +695,7 @@ function rowToggle(i) { openRow = openRow === i ? null : i; renderAdmin(); }
 function addItem() {
   ensureDraft();
   const id = draft.reduce((m, x) => Math.max(m, Number(x.id) || 0), 0) + 1;
-  draft.unshift({ id, kind, title: "", description: "", price: 0, category: "", district: "",
-    rooms: "", area: null, floor: "", furnished: 0, images: [], hidden: 0 });
+  draft.unshift(normalize({ id, kind: SHOW_PRODUCTS ? kind : "realty" }));
   openRow = 0;
   renderAdmin();
 }
@@ -657,6 +753,18 @@ function compress(file) {
   });
 }
 function delPhoto(i, n) { ensureDraft(); draft[i].images.splice(n, 1); renderAdmin(); }
+
+function admField(i, it, f) {
+  const v = it[f.key];
+  const hint = f.hint ? ` placeholder="${esc(f.hint)}"` : "";
+  if (f.type === "num") {
+    return `<div class="f"><label>${esc(f.label)}</label>
+      <input type="number" min="0" inputmode="numeric"${hint} value="${v == null ? "" : esc(v)}"
+        oninput="setNum(${i},'${f.key}',this.value)"></div>`;
+  }
+  return `<div class="f"><label>${esc(f.label)}</label>
+    <input${hint} value="${esc(v)}" oninput="setField(${i},'${f.key}',this.value)"></div>`;
+}
 
 function renderAdmin() {
   if (!unlocked) {
@@ -716,8 +824,15 @@ function renderAdmin() {
             <input type="number" min="0" inputmode="numeric" value="${it.area == null ? "" : esc(it.area)}" oninput="setNum(${i},'area',this.value)"></div>
         </div>
         <div class="f"><label>Qavat</label><input placeholder="5 / 12" value="${esc(it.floor)}" oninput="setField(${i},'floor',this.value)"></div>
+        ${isRealty(it) ? `
+        <div class="adm-t" style="margin:4px 0 -5px">Qo'shimcha ma'lumotlar</div>
+        <div class="f2">${EXTRA.filter((f) => f.group === "info").map((f) => admField(i, it, f)).join("")}</div>
+        <div class="adm-t" style="margin:4px 0 -5px">Ijara sharti</div>
+        <div class="f2">${EXTRA.filter((f) => f.group === "rent").map((f) => admField(i, it, f)).join("")}</div>
+        <div class="adm-t" style="margin:4px 0 -5px">Uyda bor</div>
+        <div class="checks">${AMEN.map((a) =>
+          `<label><input type="checkbox"${it[a.key] ? " checked" : ""} onchange="setField(${i},'${a.key}',this.checked?1:0)">${a.label}</label>`).join("")}</div>` : ""}
         <div class="checks">
-          ${isRealty(it) ? `<label><input type="checkbox"${it.furnished ? " checked" : ""} onchange="setField(${i},'furnished',this.checked?1:0)">Mebel bilan</label>` : ""}
           <label><input type="checkbox"${it.hidden ? " checked" : ""} onchange="setField(${i},'hidden',this.checked?1:0);renderAdmin()">Saytda ko'rsatilmasin</label>
         </div>
         <div class="f">
@@ -873,6 +988,10 @@ function normalize(it) {
     area: it.area === "" || it.area == null ? null : Number(it.area),
     floor: String(it.floor || "").trim(),
     furnished: it.furnished ? 1 : 0,
+    ...Object.fromEntries(EXTRA.map((f) => [f.key, f.type === "num"
+      ? (it[f.key] === "" || it[f.key] == null ? null : Number(it[f.key]))
+      : String(it[f.key] || "").trim()])),
+    ...Object.fromEntries(AMEN.filter((a) => a.key !== "furnished").map((a) => [a.key, it[a.key] ? 1 : 0])),
     images: (Array.isArray(it.images) ? it.images : []).filter(Boolean),
     hidden: it.hidden ? 1 : 0,
   };
@@ -1001,6 +1120,8 @@ if (tg) {
   try { tg.BackButton.onClick(() => go(kind)); } catch {}
   try { if (tg.disableVerticalSwipes) tg.disableVerticalSwipes(); } catch {}
 }
+
+if (!SHOW_PRODUCTS) $("navProduct").style.display = "none";
 
 applyTheme();
 applySettings();

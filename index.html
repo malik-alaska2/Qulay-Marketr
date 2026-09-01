@@ -229,6 +229,8 @@
     <path d="M12 3 4 6.8v10.4L12 21l8-3.8V6.8z"/><path d="M4 6.8 12 10.6l8-3.8M12 10.6V21"/></symbol>
   <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
     <path d="m4.5 12.4 5 5L19.5 6.8"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 21.5s7-6.1 7-11.1a7 7 0 1 0-14 0c0 5 7 11.1 7 11.1z"/><circle cx="12" cy="10.2" r="2.7"/></symbol>
   <symbol id="i-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
     <path d="M10.4 13.6a4.2 4.2 0 0 0 6 0l2.8-2.8a4.25 4.25 0 0 0-6-6l-1.6 1.6"/>
     <path d="M13.6 10.4a4.2 4.2 0 0 0-6 0l-2.8 2.8a4.25 4.25 0 0 0 6 6l1.6-1.6"/></symbol>
@@ -366,15 +368,29 @@ const AMEN = [
   { key: "internet",  label: "Internet" },
   { key: "utilities", label: "Kommunal narxda" },
   { key: "pets",      label: "Uy hayvonlari mumkin" },
+  { key: "security",  label: "7/24 qo'riqlash" },
+  { key: "playground",label: "Bolalar maydonchasi" },
+  { key: "mosque",    label: "Masjid yaqin" },
+  { key: "market",    label: "Do'kon va market" },
 ];
 
 /* ============================================================ YORDAMCHI ============================================================ */
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) =>
   ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
-const money = (n) => (Number(n) || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " TL";
+const CURRENCIES = ["TL", "$", "\u20ac"];
+const RENT = { oylik: "Oylik", kunlik: "Kunlik", kelishiladi: "Kelishiladi" };
+const PER = { oylik: " / oyiga", kunlik: " / kunlik", kelishiladi: "" };
+
+const money = (n, cur) => (Number(n) || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " " + (cur || "TL");
 const isRealty = (it) => it.kind === "realty";
-const per = (it) => (isRealty(it) ? "<small> / oyiga</small>" : "");
+const per = (it) => (isRealty(it) && PER[it.rentType] ? `<small>${PER[it.rentType]}</small>` : "");
+const priceHtml = (it) => (it.rentType === "kelishiladi" || !Number(it.price)
+  ? "Kelishiladi" : money(it.price, it.currency) + per(it));
+
+/* «Narx jadvali» maydoni: har qatorda «matn | narx» */
+const rateRows = (it) => String(it.rates || "").split("\n").map((l) => l.trim()).filter(Boolean)
+  .map((l) => { const i = l.indexOf("|"); return i < 0 ? [l, ""] : [l.slice(0, i).trim(), l.slice(i + 1).trim()]; });
 const cover = (it) => (Array.isArray(it.images) && it.images.length ? it.images[0] : "");
 const icon = (name, size) => `<svg width="${size}" height="${size}"><use href="#i-${name}"/></svg>`;
 
@@ -463,7 +479,7 @@ function cardHtml(it, withTag) {
       </button>
     </div>
     <div class="card-b">
-      <div class="price">${money(it.price)}${per(it)}</div>
+      <div class="price">${priceHtml(it)}</div>
       <div class="ttl">${esc(it.title)}</div>
       ${specsLine(it) ? `<div class="specs">${esc(specsLine(it))}</div>` : ""}
     </div>
@@ -537,7 +553,7 @@ function renderItem() {
     const f = EXTRA.find((x) => x.key === key);
     const v = it[key];
     if (v === "" || v == null) return "";
-    if (f && f.type === "num") return f.money ? money(v) : v + (f.unit || "");
+    if (f && f.type === "num") return f.money ? money(v, it.currency) : v + (f.unit || "");
     return String(v);
   };
   const rows = [
@@ -558,8 +574,9 @@ function renderItem() {
     ? EXTRA.filter((f) => f.group === "rent").map((f) => [f.label, extraVal(f.key)]).filter((r) => r[1])
     : [];
   const amens = realty ? AMEN.filter((a) => it[a.key]) : [];
+  const rates = rateRows(it);
 
-  const contact = String(SETTINGS.contact || "").replace(/^@/, "");
+  const contact = String(it.contact || SETTINGS.contact || "").replace(/^@/, "");
   const text = `Assalomu alaykum! "${it.title}" (№${it.id}) qiziqtiryapti.`;
   const link = contact ? `https://t.me/${contact}?text=${encodeURIComponent(text)}` : "";
   const fav = favs.includes(it.id);
@@ -575,12 +592,14 @@ function renderItem() {
       <h1 class="name">${esc(it.title)}</h1>
       <button class="star${fav ? " on" : ""}" onclick="toggleFav(${it.id})" aria-label="Saralangan">${icon(fav ? "star-f" : "star", 19)}</button>
     </div>
-    <div class="big-price">${money(it.price)}${per(it)}</div>
+    <div class="big-price">${priceHtml(it)}</div>
 
     ${amens.length ? `<div class="amen">${amens.map((a) =>
       `<span>${icon("check", 14)}${esc(a.label)}</span>`).join("")}</div>` : ""}
 
     ${rows.length ? `<h2 class="sec">Ma'lumotlar</h2><div class="specs-list">${rows.map(([k, v]) =>
+      `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</div>` : ""}
+    ${rates.length ? `<h2 class="sec">Narxlar</h2><div class="specs-list">${rates.map(([k, v]) =>
       `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</div>` : ""}
     ${rentRows.length ? `<h2 class="sec">Ijara sharti</h2><div class="specs-list">${rentRows.map(([k, v]) =>
       `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</div>` : ""}
@@ -593,6 +612,7 @@ function renderItem() {
         ${link ? `<a class="btn btn-primary" id="ctaBtn" href="${esc(link)}" target="_blank" rel="noopener">${icon("send", 18)} Telegramga yozish</a>` : ""}
         ${SETTINGS.phone ? `<a class="btn btn-line" href="tel:${esc(SETTINGS.phone)}">${icon("phone", 17)} ${esc(SETTINGS.phone)}</a>` : ""}
         ${!link && !SETTINGS.phone ? `<div class="muted">Bog'lanish uchun Telegram yoki telefon boshqaruv panelida — «Do'kon» bo'limida ko'rsatilmagan.</div>` : ""}
+        ${it.mapUrl ? `<a class="btn btn-line" href="${esc(it.mapUrl)}" target="_blank" rel="noopener">${icon("pin", 17)} Xaritada ko'rish</a>` : ""}
         <button class="btn btn-line" onclick="copyLink(${it.id})">${icon("link", 17)} E'lon havolasini nusxalash</button>
       </div>
     </div>
@@ -797,7 +817,7 @@ function renderAdmin() {
               : `<div class="mini">${icon(isRealty(it) ? "home" : "box", 22)}</div>`}
         <div class="g">
           <b>${esc(it.title || "Nomsiz")}</b>
-          <span class="muted">№${it.id} · ${isRealty(it) ? "uy-joy" : "mahsulot"} · ${money(it.price)}${it.hidden ? " · yashirilgan" : ""}</span>
+          <span class="muted">№${it.id} · ${isRealty(it) ? "uy-joy" : "mahsulot"} · ${priceHtml(it)}${it.hidden ? " · yashirilgan" : ""}</span>
         </div>
         <span class="muted">${openRow === i ? "▲" : "▼"}</span>
       </div>`;
@@ -813,6 +833,16 @@ function renderAdmin() {
           <div class="f"><label>Narxi, TL</label>
             <input type="number" min="0" inputmode="numeric" value="${esc(it.price)}" oninput="setNum(${i},'price',this.value)"></div>
         </div>
+        <div class="f2">
+          <div class="f"><label>Valyuta</label>
+            <select onchange="setField(${i},'currency',this.value);renderAdmin()">
+              ${CURRENCIES.map((c) => `<option value="${c}"${it.currency === c ? " selected" : ""}>${c}</option>`).join("")}
+            </select></div>
+          <div class="f"><label>To'lov turi</label>
+            <select onchange="setField(${i},'rentType',this.value);renderAdmin()">
+              ${Object.entries(RENT).map(([k, v]) => `<option value="${k}"${it.rentType === k ? " selected" : ""}>${v}</option>`).join("")}
+            </select></div>
+        </div>
         <div class="f"><label>Nomi</label><input value="${esc(it.title)}" oninput="setField(${i},'title',this.value)"></div>
         <div class="f"><label>Tavsifi</label>
           <textarea rows="4" oninput="setField(${i},'description',this.value)">${esc(it.description)}</textarea></div>
@@ -827,6 +857,14 @@ function renderAdmin() {
         ${isRealty(it) ? `
         <div class="adm-t" style="margin:4px 0 -5px">Qo'shimcha ma'lumotlar</div>
         <div class="f2">${EXTRA.filter((f) => f.group === "info").map((f) => admField(i, it, f)).join("")}</div>
+        <div class="f"><label>Narx jadvali — har qatorda: matn | narx</label>
+          <textarea rows="3" placeholder="1–10 kun | 70$" oninput="setField(${i},'rates',this.value)">${esc(it.rates)}</textarea></div>
+        <div class="f2">
+          <div class="f"><label>Xarita havolasi</label>
+            <input placeholder="https://maps.app.goo.gl/…" value="${esc(it.mapUrl)}" oninput="setField(${i},'mapUrl',this.value)"></div>
+          <div class="f"><label>Shu e'lon uchun Telegram</label>
+            <input placeholder="bo'sh — umumiy sozlama" value="${esc(it.contact)}" autocapitalize="off" spellcheck="false" oninput="setField(${i},'contact',this.value)"></div>
+        </div>
         <div class="adm-t" style="margin:4px 0 -5px">Ijara sharti</div>
         <div class="f2">${EXTRA.filter((f) => f.group === "rent").map((f) => admField(i, it, f)).join("")}</div>
         <div class="adm-t" style="margin:4px 0 -5px">Uyda bor</div>
@@ -992,6 +1030,11 @@ function normalize(it) {
       ? (it[f.key] === "" || it[f.key] == null ? null : Number(it[f.key]))
       : String(it[f.key] || "").trim()])),
     ...Object.fromEntries(AMEN.filter((a) => a.key !== "furnished").map((a) => [a.key, it[a.key] ? 1 : 0])),
+    currency: CURRENCIES.includes(it.currency) ? it.currency : "TL",
+    rentType: RENT[it.rentType] ? it.rentType : "oylik",
+    rates: String(it.rates || "").trim(),
+    mapUrl: String(it.mapUrl || "").trim(),
+    contact: String(it.contact || "").trim().replace(/^@/, ""),
     images: (Array.isArray(it.images) ? it.images : []).filter(Boolean),
     hidden: it.hidden ? 1 : 0,
   };

@@ -23,12 +23,19 @@ const API = "https://api.telegram.org/bot";
 /* catalog.json da promo bo'lmasa yoki maydonlari bo'sh bo'lsa — shular */
 const PROMO_FALLBACK = {
   on: 1,
-  photo: "",
+  photo: "photos/bot-banner.jpg",
   title: "Qulay Market",
   text:
-    "Istanbulda kunlik va oylik uy-joy ijarasi, aeroport transferi va taksi.\n" +
-    "Kerakli bo'limni tanlang — hammasi shu yerda.",
-  buttons: "Katalogni ochish | app\nTransfer buyurtma | app#transfer",
+    "Istanbulda kunlik va oylik uy-joy ijarasi, aeroportga kutib olish va taksi.\n" +
+    "Hammasi bitta ilovada — quyidagi tugmani bosing.",
+  buttons: "Qulay Market'ni ochish | app",
+  /* Botni ochganda, «Start» bosilmasdan turib chatning o'rtasida ko'rinadigan matn */
+  about:
+    "Istanbulda kunlik va oylik uy-joy ijarasi, aeroportga kutib olish va taksi.\n\n" +
+    "Uy-joy e'lonlari surat va narxlari bilan, transfer esa «qayerdan — qayerga» ko'rinishida — hammasi bitta ilovada.\n\n" +
+    "Boshlash uchun pastdagi tugmani bosing.",
+  /* Bot profilida va havola ko'rinishida chiqadigan qisqa matn */
+  short: "Istanbulda uy-joy ijarasi va aeroport transferi — bitta ilovada.",
 };
 
 /* --------------------------------------------------------------- yordamchi */
@@ -38,10 +45,12 @@ function normPromo(p) {
   p = p && typeof p === "object" ? p : {};
   return {
     on: p.on === 0 || p.on === false || p.on === "0" ? 0 : 1,
-    photo: str(p.photo, "").trim(),
+    photo: str(p.photo, PROMO_FALLBACK.photo).trim(),
     title: str(p.title, PROMO_FALLBACK.title).trim(),
     text: str(p.text, PROMO_FALLBACK.text),
     buttons: str(p.buttons, PROMO_FALLBACK.buttons),
+    about: str(p.about, PROMO_FALLBACK.about),
+    short: str(p.short, PROMO_FALLBACK.short),
   };
 }
 
@@ -70,8 +79,12 @@ function buildKeyboard(text) {
       let target = (i < 0 ? "app" : line.slice(i + 1)).trim();
       if (!label) return null;
 
-      if (/^app(#|$)/i.test(target)) {
-        return [{ text: label, web_app: { url: SITE + target.slice(3) } }];
+      if (/^app([#?]|$)/i.test(target)) {
+        let tail = target.slice(3);
+        /* Telegram web_app manzilining # qismini o'zining ma'lumotlari bilan
+           almashtiradi, shuning uchun bo'lim so'rov parametri bilan uzatiladi */
+        if (tail.startsWith("#")) tail = "?p=" + tail.slice(1);
+        return [{ text: label, web_app: { url: SITE + tail } }];
       }
       if (/^@[\w\d_]+$/.test(target)) target = "https://t.me/" + target.slice(1);
       else if (/^t\.me\//i.test(target)) target = "https://" + target;
@@ -165,13 +178,23 @@ module.exports = async function handler(req, res) {
     const wantSetup = /[?&]setup=/.test(String(req.url || ""));
     try {
       if (wantSetup) {
-        const out = await tg(token, "setWebhook", {
-          url: hook,
-          allowed_updates: ["message"],
-          drop_pending_updates: true,
-          ...(secret ? { secret_token: secret } : {}),
+        const promo = await loadPromo();
+        const [out, desc, short] = await Promise.all([
+          tg(token, "setWebhook", {
+            url: hook,
+            allowed_updates: ["message"],
+            drop_pending_updates: true,
+            ...(secret ? { secret_token: secret } : {}),
+          }),
+          tg(token, "setMyDescription", { description: promo.about.slice(0, 512) }),
+          tg(token, "setMyShortDescription", { short_description: promo.short.slice(0, 120) }),
+        ]);
+        return res.status(200).json({
+          ...base,
+          setWebhook: out,
+          setMyDescription: desc && desc.ok,
+          setMyShortDescription: short && short.ok,
         });
-        return res.status(200).json({ ...base, setWebhook: out });
       }
       const [info, me] = await Promise.all([
         tg(token, "getWebhookInfo", {}),

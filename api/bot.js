@@ -136,21 +136,63 @@ async function sendPromo(token, chatId, promo) {
   });
 }
 
+/* Shu funksiyaning o'z manzili — so'rov kelgan domendan olinadi */
+function hookUrl(req) {
+  const h = (req.headers && (req.headers["x-forwarded-host"] || req.headers.host)) || "";
+  return h ? "https://" + h + "/api/bot" : "";
+}
+
 /* ---------------------------------------------------------------- handler */
 module.exports = async function handler(req, res) {
   const token = process.env.BOT_TOKEN || "";
+  const secret = process.env.WEBHOOK_SECRET || "";
 
+  /* GET — holat; ?setup=1 bo'lsa webhook o'zini o'zi ro'yxatdan o'tkazadi.
+     Manzil har doim shu funksiyaning o'zi, shuning uchun uni begona joyga
+     burib yuborib bo'lmaydi. Token brauzerga hech qachon chiqmaydi. */
   if (req.method !== "POST") {
-    return res.status(200).json({
+    const hook = hookUrl(req);
+    const base = {
       ok: true,
       service: "qulay-market-bot",
       tokenSet: Boolean(token),
-      secretSet: Boolean(process.env.WEBHOOK_SECRET),
+      secretSet: Boolean(secret),
+      webhook: hook,
       site: SITE,
-    });
+    };
+    if (!token) return res.status(200).json({ ...base, hint: "Vercel'da token ko'rsatilmagan" });
+
+    const wantSetup = /[?&]setup=/.test(String(req.url || ""));
+    try {
+      if (wantSetup) {
+        const out = await tg(token, "setWebhook", {
+          url: hook,
+          allowed_updates: ["message"],
+          drop_pending_updates: true,
+          ...(secret ? { secret_token: secret } : {}),
+        });
+        return res.status(200).json({ ...base, setWebhook: out });
+      }
+      const [info, me] = await Promise.all([
+        tg(token, "getWebhookInfo", {}),
+        tg(token, "getMe", {}),
+      ]);
+      return res.status(200).json({
+        ...base,
+        bot: me && me.result ? "@" + me.result.username : null,
+        current: info && info.result
+          ? {
+              url: info.result.url || "",
+              pending: info.result.pending_update_count || 0,
+              lastError: info.result.last_error_message || null,
+            }
+          : null,
+      });
+    } catch (_) {
+      return res.status(200).json({ ...base, error: "Telegram javob bermadi" });
+    }
   }
 
-  const secret = process.env.WEBHOOK_SECRET || "";
   if (secret && req.headers["x-telegram-bot-api-secret-token"] !== secret) {
     return res.status(401).json({ ok: false });
   }

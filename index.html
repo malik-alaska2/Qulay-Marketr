@@ -196,15 +196,6 @@
   .photos button{position:absolute;top:-6px;right:-6px;width:23px;height:23px;border-radius:99px;
     background:var(--danger);color:#fff;font-size:14px;line-height:1;display:flex;align-items:center;justify-content:center}
   /* Transfer / taksi */
-  .tx-banner{display:flex;align-items:center;gap:11px;padding:11px 13px;margin:10px 0 0;border-radius:14px;
-    background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);cursor:pointer;transition:transform .12s}
-  .tx-banner:active{transform:scale(.99)}
-  .tx-banner .ic{width:38px;height:38px;border-radius:12px;background:var(--accent-soft);color:var(--accent);
-    display:flex;align-items:center;justify-content:center;flex-shrink:0}
-  .tx-banner .g{flex:1;min-width:0}
-  .tx-banner b{display:block;font-size:14px;font-weight:700;letter-spacing:-.2px}
-  .tx-banner span{font-size:12px;color:var(--muted);display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .tx-banner .go{color:var(--muted);flex-shrink:0}
 
   .hero-tx{position:relative;overflow:hidden;border-radius:var(--r);padding:20px 17px 21px;margin:16px 0 15px;
     background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;
@@ -316,7 +307,6 @@
              autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"
              data-lpignore="true" data-1p-ignore data-form-type="other">
     </form>
-    <div id="txBanner"></div>
     <div class="chips" id="chips"></div>
     <div class="toolbar">
       <div class="count" id="count" style="flex:1;margin:0"></div>
@@ -649,22 +639,8 @@ function renderChips() {
 }
 function setCat(c) { cat = c; haptic(); renderList(); }
 
-function renderTxBanner() {
-  const t = TRANSFER();
-  const el = $("txBanner");
-  if (!el) return;
-  el.innerHTML = t.on
-    ? `<div class="tx-banner" onclick="go('taxi')">
-         <div class="ic">${icon("car", 21)}</div>
-         <div class="g"><b>Transfer va taksi</b><span>Aeroport, shahar ichi va shaharlararo safarlar</span></div>
-         <span class="go">${icon("arrow", 17)}</span>
-       </div>`
-    : "";
-}
-
 function renderList() {
   renderChips();
-  renderTxBanner();
   $("sortBtn").textContent = SORTS[sort];
   const list = visible();
   const empty = $("listEmpty");

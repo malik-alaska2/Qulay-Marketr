@@ -7,7 +7,7 @@
       "on": 1,
       "contact": "ist2015",
       "phone": "",
-      "note": "Aeroportga kutib olish va kuzatish, shahar ichi va shaharlararo safarlar.\nBuyurtma haydovchiga Telegram orqali yuboriladi.",
+      "note": "Aeroportdan kutib olish va aeroportga kuzatib qo'yish, shahar ichi va shaharlararo safarlar.\nBuyurtma haydovchiga Telegram orqali yuboriladi.",
       "places": "Istanbul aeroporti (IST)\nSabiha Gökçen aeroporti (SAW)\nBaşakşehir / Kayaşehir\nTaksim\nFatih (Sultanahmet)\nEsenyurt\nBeylikdüzü\nBahçelievler\nBursa\nSapanca",
       "rates": ""
     },
@@ -15,10 +15,10 @@
       "on": 1,
       "photo": "photos/bot-banner.jpg",
       "title": "Qulay Market",
-      "text": "Istanbulda kunlik va oylik uy-joy ijarasi, aeroportga kutib olish va taksi.\nHammasi bitta ilovada — quyidagi tugmani bosing.",
+      "text": "Istanbulda kunlik va oylik uy-joy ijarasi — surat, narx va joylashuvi bilan.\n\n✈️ Aeroportdan kutib olish — reys kechiksa ham kutib turamiz\n🧳 Aeroportga kuzatib qo'yish — uchishdan oldin o'z vaqtida yetkazamiz\n🚕 Shahar ichi va shaharlararo taksi — Bursa, Sapanca va boshqa yo'nalishlar\n\nBuyurtma bir necha soniyada: qayerdan — qayerga, sana va vaqtni tanlaysiz.\n\nQuyidagi tugmani bosing 👇",
       "buttons": "Qulay Market'ni ochish | app",
-      "about": "Istanbulda kunlik va oylik uy-joy ijarasi, aeroportga kutib olish va taksi.\n\nUy-joy e'lonlari surat va narxlari bilan, transfer esa «qayerdan — qayerga» ko'rinishida — hammasi bitta ilovada.\n\nBoshlash uchun pastdagi tugmani bosing.",
-      "short": "Istanbulda uy-joy ijarasi va aeroport transferi — bitta ilovada."
+      "about": "Istanbulda kunlik va oylik uy-joy ijarasi hamda transfer xizmati.\n\n✈️ Aeroportdan kutib olish\n🧳 Aeroportga kuzatib qo'yish\n🚕 Shahar ichi va shaharlararo taksi\n\nUy-joy e'lonlari surat va narxlari bilan, transfer esa «qayerdan — qayerga» ko'rinishida — hammasi bitta ilovada.\n\nBoshlash uchun pastdagi tugmani bosing.",
+      "short": "Istanbulda uy-joy ijarasi, aeroport transferi va taksi — hammasi bitta ilovada."
     }
   },
   "admin": {

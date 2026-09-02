@@ -392,8 +392,19 @@ const TRANSFER_FALLBACK = {
   rates: "",
 };
 
+/* Botga kirganda yuboriladigan reklama. catalog.json ichida settings.promo,
+   uni api/bot.js o'qiydi. Bu yerda faqat standart qiymatlar. */
+const PROMO_FALLBACK = {
+  on: 1,
+  photo: "",
+  title: "Qulay Market",
+  text: "Istanbulda kunlik va oylik uy-joy ijarasi, aeroport transferi va taksi.\nKerakli bo'limni tanlang — hammasi shu yerda.",
+  buttons: "Katalogni ochish | app\nTransfer buyurtma | app#transfer",
+};
+
 const FALLBACK = {
-  settings: { title: "Qulay Market", contact: "", phone: "", transfer: { ...TRANSFER_FALLBACK } },
+  settings: { title: "Qulay Market", contact: "", phone: "",
+              transfer: { ...TRANSFER_FALLBACK }, promo: { ...PROMO_FALLBACK } },
   admin: { login: "admin", salt: "ZYYcn4fzWO4p3cjcnwPNUA==", iterations: 200000,
            hash: "rtS9gSedhf/74xGlYRtIM4Zy1W0Kdtcmam8MbfwIuQU=" },
   items: [],
@@ -480,6 +491,18 @@ function normTransfer(t) {
   };
 }
 const TRANSFER = () => (SETTINGS.transfer = normTransfer(SETTINGS.transfer));
+
+function normPromo(p) {
+  p = p && typeof p === "object" ? p : {};
+  const str = (v, d) => String(v == null ? d : v);
+  return {
+    on: p.on === 0 || p.on === false || p.on === "0" ? 0 : 1,
+    photo: str(p.photo, "").trim(),
+    title: str(p.title, PROMO_FALLBACK.title).trim(),
+    text: str(p.text, PROMO_FALLBACK.text),
+    buttons: str(p.buttons, PROMO_FALLBACK.buttons),
+  };
+}
 
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) =>
   ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -956,6 +979,7 @@ function ensureDraft() {
   if (!draftSettings) {
     draftSettings = JSON.parse(JSON.stringify(SETTINGS));
     draftSettings.transfer = normTransfer(draftSettings.transfer);
+    draftSettings.promo = normPromo(draftSettings.promo);
   }
   if (!draftAdmin) draftAdmin = { login: ADMIN.login, password: "", repeat: "" };
 }
@@ -990,6 +1014,21 @@ function setNum(i, field, value) {
 }
 function setSetting(field, value) { ensureDraft(); draftSettings[field] = value; }
 function setTransfer(field, value) { ensureDraft(); draftSettings.transfer[field] = value; }
+function setPromo(field, value) { ensureDraft(); draftSettings.promo[field] = value; }
+
+function pickPromoPhoto() {
+  ensureDraft();
+  const input = document.createElement("input");
+  input.type = "file"; input.accept = "image/*";
+  input.onchange = async () => {
+    const file = (input.files || [])[0];
+    if (!file) return;
+    try { draftSettings.promo.photo = await compress(file); renderAdmin(); toast("Surat qo'shildi"); }
+    catch { toast("Suratni o'qib bo'lmadi"); }
+  };
+  input.click();
+}
+function delPromoPhoto() { ensureDraft(); draftSettings.promo.photo = ""; renderAdmin(); }
 function setAdmin(field, value) { ensureDraft(); draftAdmin[field] = value; }
 function rowToggle(i) { openRow = openRow === i ? null : i; renderAdmin(); }
 
@@ -1210,6 +1249,32 @@ function renderAdmin() {
     </div>
 
     <div class="adm">
+      <div class="adm-t">Bot reklamasi</div>
+      <div class="adm-body" style="margin-top:0">
+        <div class="checks">
+          <label><input type="checkbox"${draftSettings.promo.on ? " checked" : ""}
+            onchange="setPromo('on',this.checked?1:0);renderAdmin()">Botga kirilganda reklama yuborilsin</label>
+        </div>
+        <div class="f">
+          <label>Surat</label>
+          <div class="photos">${draftSettings.promo.photo
+            ? `<figure><img src="${esc(draftSettings.promo.photo)}" alt="">
+                 <button onclick="delPromoPhoto()" aria-label="O'chirish">×</button></figure>` : ""}</div>
+          <button class="btn btn-soft" style="margin-top:9px" onclick="pickPromoPhoto()">${icon("cam", 17)} Surat tanlash</button>
+        </div>
+        <div class="f"><label>Sarlavha</label>
+          <input value="${esc(draftSettings.promo.title)}" oninput="setPromo('title',this.value)"></div>
+        <div class="f"><label>Matn</label>
+          <textarea rows="4" oninput="setPromo('text',this.value)">${esc(draftSettings.promo.text)}</textarea></div>
+        <div class="f"><label>Tugmalar — har qatorda: matn | havola</label>
+          <textarea rows="4" placeholder="Katalogni ochish | app" oninput="setPromo('buttons',this.value)">${esc(draftSettings.promo.buttons)}</textarea></div>
+        <p class="muted">Havola o'rniga <b>app</b> — mini appni ochadi, <b>app#transfer</b> — transfer bo'limini,
+          <b>@nik</b> yoki <b>https://…</b> — oddiy havola. Ko'pi bilan 6 ta tugma.
+          Bot javob berishi uchun Vercel'da <b>BOT_TOKEN</b> ko'rsatilgan bo'lishi kerak.</p>
+      </div>
+    </div>
+
+    <div class="adm">
       <div class="adm-t">Kirish ma'lumotlari</div>
       <div class="adm-body" style="margin-top:0">
         <div class="f"><label>Login</label>
@@ -1360,6 +1425,16 @@ async function adminSave() {
       nextAdmin = { login: nextAdmin.login, ...(await makeHash(draftAdmin.password)) };
     }
 
+    const promo = normPromo(draftSettings.promo);
+    const promoData = String(promo.photo).match(/^data:image\/(jpeg|jpg|png|webp);base64,(.+)$/);
+    if (promoData) {
+      btn.textContent = "Reklama surati yuklanmoqda…";
+      const ext = promoData[1] === "jpeg" ? "jpg" : promoData[1];
+      const name = `${CONFIG.github.photos}/promo-${Date.now()}.${ext}`;
+      await ghPut(name, promoData[2], "photo: " + name);
+      promo.photo = name;
+    }
+
     let uploaded = 0;
     for (const it of draft) {
       const images = Array.isArray(it.images) ? it.images : (it.images = []);
@@ -1381,6 +1456,7 @@ async function adminSave() {
         contact: String(draftSettings.contact || "").trim().replace(/^@/, ""),
         phone: String(draftSettings.phone || "").trim(),
         transfer: normTransfer(draftSettings.transfer),
+        promo,
       },
       admin: nextAdmin,
       items: draft.map(normalize),

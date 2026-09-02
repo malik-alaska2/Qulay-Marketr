@@ -10,6 +10,13 @@
       "note": "Aeroportga kutib olish va kuzatish, shahar ichi va shaharlararo safarlar.\nBuyurtma haydovchiga Telegram orqali yuboriladi.",
       "places": "Istanbul aeroporti (IST)\nSabiha Gökçen aeroporti (SAW)\nBaşakşehir / Kayaşehir\nTaksim\nFatih (Sultanahmet)\nEsenyurt\nBeylikdüzü\nBahçelievler\nBursa\nSapanca",
       "rates": ""
+    },
+    "promo": {
+      "on": 1,
+      "photo": "",
+      "title": "Qulay Market",
+      "text": "Istanbulda kunlik va oylik uy-joy ijarasi, aeroport transferi va taksi.\nKerakli bo'limni tanlang — hammasi shu yerda.",
+      "buttons": "Katalogni ochish | app\nTransfer buyurtma | app#transfer"
     }
   },
   "admin": {

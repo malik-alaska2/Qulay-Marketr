@@ -13,10 +13,12 @@
     },
     "promo": {
       "on": 1,
-      "photo": "",
+      "photo": "photos/bot-banner.jpg",
       "title": "Qulay Market",
-      "text": "Istanbulda kunlik va oylik uy-joy ijarasi, aeroport transferi va taksi.\nKerakli bo'limni tanlang — hammasi shu yerda.",
-      "buttons": "Katalogni ochish | app\nTransfer buyurtma | app#transfer"
+      "text": "Istanbulda kunlik va oylik uy-joy ijarasi, aeroportga kutib olish va taksi.\nHammasi bitta ilovada — quyidagi tugmani bosing.",
+      "buttons": "Qulay Market'ni ochish | app",
+      "about": "Istanbulda kunlik va oylik uy-joy ijarasi, aeroportga kutib olish va taksi.\n\nUy-joy e'lonlari surat va narxlari bilan, transfer esa «qayerdan — qayerga» ko'rinishida — hammasi bitta ilovada.\n\nBoshlash uchun pastdagi tugmani bosing.",
+      "short": "Istanbulda uy-joy ijarasi va aeroport transferi — bitta ilovada."
     }
   },
   "admin": {

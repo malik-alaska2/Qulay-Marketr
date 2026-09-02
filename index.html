@@ -396,10 +396,12 @@ const TRANSFER_FALLBACK = {
    uni api/bot.js o'qiydi. Bu yerda faqat standart qiymatlar. */
 const PROMO_FALLBACK = {
   on: 1,
-  photo: "",
+  photo: "photos/bot-banner.jpg",
   title: "Qulay Market",
-  text: "Istanbulda kunlik va oylik uy-joy ijarasi, aeroport transferi va taksi.\nKerakli bo'limni tanlang — hammasi shu yerda.",
-  buttons: "Katalogni ochish | app\nTransfer buyurtma | app#transfer",
+  text: "Istanbulda kunlik va oylik uy-joy ijarasi, aeroportga kutib olish va taksi.\nHammasi bitta ilovada — quyidagi tugmani bosing.",
+  buttons: "Qulay Market'ni ochish | app",
+  about: "Istanbulda kunlik va oylik uy-joy ijarasi, aeroportga kutib olish va taksi.\n\nUy-joy e'lonlari surat va narxlari bilan, transfer esa «qayerdan — qayerga» ko'rinishida — hammasi bitta ilovada.\n\nBoshlash uchun pastdagi tugmani bosing.",
+  short: "Istanbulda uy-joy ijarasi va aeroport transferi — bitta ilovada.",
 };
 
 const FALLBACK = {
@@ -497,10 +499,12 @@ function normPromo(p) {
   const str = (v, d) => String(v == null ? d : v);
   return {
     on: p.on === 0 || p.on === false || p.on === "0" ? 0 : 1,
-    photo: str(p.photo, "").trim(),
+    photo: str(p.photo, PROMO_FALLBACK.photo).trim(),
     title: str(p.title, PROMO_FALLBACK.title).trim(),
     text: str(p.text, PROMO_FALLBACK.text),
     buttons: str(p.buttons, PROMO_FALLBACK.buttons),
+    about: str(p.about, PROMO_FALLBACK.about),
+    short: str(p.short, PROMO_FALLBACK.short),
   };
 }
 
@@ -571,15 +575,26 @@ function go(next, id) {
   if (tg && tg.BackButton) { try { next === "item" ? tg.BackButton.show() : tg.BackButton.hide(); } catch {} }
 }
 
+/* Bo'lim nomi → sahifa. Telegram mini app manzilining # qismini o'zining
+   ma'lumotlari bilan to'ldiradi, shuning uchun ?p=transfer ham qabul qilinadi. */
+function routeKey(key) {
+  const k = String(key || "");
+  const m = k.match(/^item-(\d+)$/);
+  if (m) return ["item", m[1]];
+  if (k === "mahsulot") return [SHOW_PRODUCTS ? "product" : "realty"];
+  if (k === "transfer") return ["taxi"];
+  if (k === "saralangan") return ["fav"];
+  if (k === "admin") return ["admin"];
+  return null;
+}
+
 function routeFromHash() {
-  const h = location.hash;
-  const m = h.match(/^#item-(\d+)$/);
-  if (m) return go("item", m[1]);
-  if (h === "#mahsulot") return go(SHOW_PRODUCTS ? "product" : "realty");
-  if (h === "#transfer") return go("taxi");
-  if (h === "#saralangan") return go("fav");
-  if (h === "#admin") { $("navAdmin").style.display = "flex"; return go("admin"); }
-  go("realty");
+  let q = "";
+  try { q = new URLSearchParams(location.search).get("p") || ""; } catch {}
+  const r = routeKey(location.hash.replace(/^#/, "")) || routeKey(q);
+  if (!r) return go("realty");
+  if (r[0] === "admin") $("navAdmin").style.display = "flex";
+  go(r[0], r[1]);
 }
 
 /* ============================================================ KATALOG ============================================================ */
@@ -1267,10 +1282,17 @@ function renderAdmin() {
         <div class="f"><label>Matn</label>
           <textarea rows="4" oninput="setPromo('text',this.value)">${esc(draftSettings.promo.text)}</textarea></div>
         <div class="f"><label>Tugmalar — har qatorda: matn | havola</label>
-          <textarea rows="4" placeholder="Katalogni ochish | app" oninput="setPromo('buttons',this.value)">${esc(draftSettings.promo.buttons)}</textarea></div>
+          <textarea rows="3" placeholder="Qulay Market'ni ochish | app" oninput="setPromo('buttons',this.value)">${esc(draftSettings.promo.buttons)}</textarea></div>
         <p class="muted">Havola o'rniga <b>app</b> — mini appni ochadi, <b>app#transfer</b> — transfer bo'limini,
-          <b>@nik</b> yoki <b>https://…</b> — oddiy havola. Ko'pi bilan 6 ta tugma.
-          Bot javob berishi uchun Vercel'da <b>BOT_TOKEN</b> ko'rsatilgan bo'lishi kerak.</p>
+          <b>@nik</b> yoki <b>https://…</b> — oddiy havola. Ko'pi bilan 6 ta tugma.</p>
+        <div class="adm-t" style="margin:6px 0 -5px">Botni ochganda ko'rinadigan matn</div>
+        <div class="f"><label>Tavsif — «Start» bosilmasdan turib chat o'rtasida chiqadi</label>
+          <textarea rows="5" maxlength="512" oninput="setPromo('about',this.value)">${esc(draftSettings.promo.about)}</textarea></div>
+        <div class="f"><label>Qisqa tavsif — bot profilida va havolada</label>
+          <textarea rows="2" maxlength="120" oninput="setPromo('short',this.value)">${esc(draftSettings.promo.short)}</textarea></div>
+        <p class="muted">Bu ikki matn saqlangandan keyin
+          <b>/api/bot?setup=1</b> manzili ochilganda Telegramga yuboriladi.
+          Surat esa BotFather'da qo'yiladi: <b>/mybots → bot → Edit Bot → Edit Description Picture</b>.</p>
       </div>
     </div>
 

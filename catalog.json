@@ -2,7 +2,15 @@
   "settings": {
     "title": "Qulay Market",
     "contact": "Ahmad17667",
-    "phone": ""
+    "phone": "",
+    "transfer": {
+      "on": 1,
+      "contact": "ist2015",
+      "phone": "",
+      "note": "Aeroportga kutib olish va kuzatish, shahar ichi va shaharlararo safarlar.\nBuyurtma haydovchiga Telegram orqali yuboriladi.",
+      "places": "Istanbul aeroporti (IST)\nSabiha Gökçen aeroporti (SAW)\nBaşakşehir / Kayaşehir\nTaksim\nFatih (Sultanahmet)\nEsenyurt\nBeylikdüzü\nBahçelievler\nBursa\nSapanca",
+      "rates": ""
+    }
   },
   "admin": {
     "login": "admin",

@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Qulay Market</title>
-<meta name="description" content="Uy-joy va mahsulotlar katalogi. Brauzerda ham, Telegram ichida ham ochiladi.">
+<meta name="description" content="Uy-joy e'lonlari va transfer / taksi xizmati. Brauzerda ham, Telegram ichida ham ochiladi.">
 <meta name="theme-color" content="#FE5857">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Qulay Market">
-<meta property="og:description" content="Uy-joy va mahsulotlar katalogi">
+<meta property="og:description" content="Uy-joy e'lonlari va transfer / taksi xizmati">
 <meta property="og:image" content="logo.png">
 <link rel="icon" href="icon.png">
 <link rel="apple-touch-icon" href="icon.png">
@@ -195,6 +195,38 @@
   .photos img{width:80px;height:64px;object-fit:cover;border-radius:10px;background:var(--accent-soft)}
   .photos button{position:absolute;top:-6px;right:-6px;width:23px;height:23px;border-radius:99px;
     background:var(--danger);color:#fff;font-size:14px;line-height:1;display:flex;align-items:center;justify-content:center}
+  /* Transfer / taksi */
+  .tx-banner{display:flex;align-items:center;gap:11px;padding:11px 13px;margin:10px 0 0;border-radius:14px;
+    background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);cursor:pointer;transition:transform .12s}
+  .tx-banner:active{transform:scale(.99)}
+  .tx-banner .ic{width:38px;height:38px;border-radius:12px;background:var(--accent-soft);color:var(--accent);
+    display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .tx-banner .g{flex:1;min-width:0}
+  .tx-banner b{display:block;font-size:14px;font-weight:700;letter-spacing:-.2px}
+  .tx-banner span{font-size:12px;color:var(--muted);display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .tx-banner .go{color:var(--muted);flex-shrink:0}
+
+  .hero-tx{position:relative;overflow:hidden;border-radius:var(--r);padding:20px 17px 21px;margin:16px 0 15px;
+    background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;
+    box-shadow:0 10px 26px color-mix(in srgb,var(--accent) 30%,transparent)}
+  .hero-tx h1{font-size:21px;font-weight:800;letter-spacing:-.5px;margin-bottom:6px;position:relative}
+  .hero-tx p{font-size:13.5px;line-height:1.6;opacity:.93;max-width:76%;position:relative;white-space:pre-line}
+  .hero-tx .ill{position:absolute;right:-14px;bottom:-18px;opacity:.2;pointer-events:none}
+
+  .route{display:flex;align-items:stretch;gap:8px;background:var(--card);border:1px solid var(--line);
+    border-radius:var(--r);padding:8px 10px 8px 13px;box-shadow:var(--shadow)}
+  .route .line{flex:0 0 11px;display:flex;flex-direction:column;align-items:center;padding:19px 0}
+  .route .line .dot{width:10px;height:10px;border-radius:99px;border:2.5px solid var(--brand)}
+  .route .line .bar{flex:1;width:2px;margin:4px 0;background:repeating-linear-gradient(var(--line) 0 3px,transparent 3px 7px)}
+  .route .line .sq{width:10px;height:10px;border-radius:3px;background:var(--brand)}
+  .route .fields{flex:1;min-width:0}
+  .route .fields input{border:none;background:transparent;border-radius:0;padding:13px 0;font-size:15px;font-weight:600}
+  .route .fields input::placeholder{font-weight:400;color:var(--muted)}
+  .route .fields .sep{height:1px;background:var(--line)}
+  .route .swap{flex:0 0 40px;width:40px;height:40px;align-self:center;border-radius:99px;
+    border:1px solid var(--line);background:var(--bg);color:var(--muted);display:flex;align-items:center;justify-content:center}
+  .route .swap:active{transform:rotate(180deg);transition:transform .2s}
+
   .save-bar{position:sticky;bottom:calc(80px + env(safe-area-inset-bottom));padding:12px 0;z-index:25;
     background:linear-gradient(to top,var(--bg) 60%,transparent)}
 </style>
@@ -231,6 +263,22 @@
     <path d="m4.5 12.4 5 5L19.5 6.8"/></symbol>
   <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
     <path d="M12 21.5s7-6.1 7-11.1a7 7 0 1 0-14 0c0 5 7 11.1 7 11.1z"/><circle cx="12" cy="10.2" r="2.7"/></symbol>
+  <symbol id="i-car" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3.2 16.4v-3.1l1.9-4.6C5.5 7.8 6.3 7.2 7.2 7.2h9.6c.9 0 1.7.6 2.1 1.5l1.9 4.6v3.1"/>
+    <path d="M3.2 13.3h17.6"/><path d="M4.6 16.4h3v2.4h-3zM16.4 16.4h3v2.4h-3z"/>
+    <circle cx="7.2" cy="15.9" r=".9" fill="currentColor" stroke="none"/>
+    <circle cx="16.8" cy="15.9" r=".9" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-swap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8 4.5v15M8 4.5 5 7.7M8 4.5l3 3.2"/><path d="M16 19.5v-15M16 19.5l3-3.2M16 19.5l-3-3.2"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="8.6"/><path d="M12 7.2V12l3.2 2"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="9.4" cy="8.2" r="3.4"/><path d="M3.4 19.4c0-3.2 2.7-5.2 6-5.2s6 2 6 5.2"/>
+    <path d="M16.2 5.2a3.4 3.4 0 0 1 0 6.4"/><path d="M17.6 14.6c2 .6 3.4 2.3 3.4 4.8"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="9" y="9" width="11" height="11" rx="2.4"/><path d="M15 5.6A2.4 2.4 0 0 0 12.6 4H6.4A2.4 2.4 0 0 0 4 6.4v6.2A2.4 2.4 0 0 0 5.6 15"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m9.5 5 6.5 7-6.5 7"/></symbol>
   <symbol id="i-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
     <path d="M10.4 13.6a4.2 4.2 0 0 0 6 0l2.8-2.8a4.25 4.25 0 0 0-6-6l-1.6 1.6"/>
     <path d="M13.6 10.4a4.2 4.2 0 0 0-6 0l-2.8 2.8a4.25 4.25 0 0 0 6 6l1.6-1.6"/></symbol>
@@ -256,6 +304,7 @@
              autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"
              data-lpignore="true" data-1p-ignore data-form-type="other">
     </form>
+    <div id="txBanner"></div>
     <div class="chips" id="chips"></div>
     <div class="toolbar">
       <div class="count" id="count" style="flex:1;margin:0"></div>
@@ -275,6 +324,9 @@
     </div>
   </section>
 
+  <!-- TRANSFER / TAKSI -->
+  <section class="page" id="p-taxi"></section>
+
   <!-- POZITSIYA -->
   <section class="page" id="p-item"></section>
 
@@ -285,6 +337,7 @@
 
 <nav class="nav" id="nav">
   <button data-page="realty"><svg width="22" height="22"><use href="#i-home"/></svg><span>Uy-joy</span></button>
+  <button data-page="taxi" id="navTaxi"><svg width="22" height="22"><use href="#i-car"/></svg><span>Transfer</span></button>
   <button data-page="product" id="navProduct"><svg width="22" height="22"><use href="#i-bag"/></svg><span>Mahsulotlar</span></button>
   <button data-page="fav"><svg width="22" height="22"><use href="#i-star"/></svg><span>Saralangan</span><i class="badge" id="favBadge" style="display:none"></i></button>
   <button data-page="admin" id="navAdmin" style="display:none"><svg width="22" height="22"><use href="#i-gear"/></svg><span>Boshqaruv</span></button>
@@ -305,8 +358,30 @@ const CONFIG = {
 const SHOW_PRODUCTS = false;
 
 /* catalog.json hali yo'q bo'lsa ishlatiladi */
+/* Transfer bo'limining standart sozlamalari. Boshqaruv panelidan o'zgartiriladi
+   va catalog.json ichida settings.transfer bo'lib saqlanadi. */
+const TRANSFER_FALLBACK = {
+  on: 1,
+  contact: "ist2015",
+  phone: "",
+  note: "Aeroportga kutib olish va kuzatish, shahar ichi va shaharlararo safarlar.\nBuyurtma haydovchiga Telegram orqali yuboriladi.",
+  places: [
+    "Istanbul aeroporti (IST)",
+    "Sabiha Gökçen aeroporti (SAW)",
+    "Başakşehir / Kayaşehir",
+    "Taksim",
+    "Fatih (Sultanahmet)",
+    "Esenyurt",
+    "Beylikdüzü",
+    "Bahçelievler",
+    "Bursa",
+    "Sapanca",
+  ].join("\n"),
+  rates: "",
+};
+
 const FALLBACK = {
-  settings: { title: "Qulay Market", contact: "", phone: "" },
+  settings: { title: "Qulay Market", contact: "", phone: "", transfer: { ...TRANSFER_FALLBACK } },
   admin: { login: "admin", salt: "ZYYcn4fzWO4p3cjcnwPNUA==", iterations: 200000,
            hash: "rtS9gSedhf/74xGlYRtIM4Zy1W0Kdtcmam8MbfwIuQU=" },
   items: [],
@@ -336,6 +411,10 @@ let token = localStorage.getItem(K("ghKey")) || "";
 let unlocked = sessionStorage.getItem(K("unlocked")) === "1";
 let draft = null, draftSettings = null, draftAdmin = null, openRow = null;
 let brandTaps = 0, brandTimer = null, toastTimer = null;
+
+/* Transfer buyurtmasi — foydalanuvchi kiritgan qiymatlar */
+let TX = { from: "", to: "", date: "", time: "", pax: "1", bags: "0", note: "", ...load("taxi", {}) };
+TX.date = ""; TX.time = ""; TX.note = "";
 
 function load(key, fallback) {
   try { const v = JSON.parse(localStorage.getItem(K(key))); return v ?? fallback; } catch { return fallback; }
@@ -375,6 +454,20 @@ const AMEN = [
 ];
 
 /* ============================================================ YORDAMCHI ============================================================ */
+function normTransfer(t) {
+  t = t && typeof t === "object" ? t : {};
+  const str = (v, d) => String(v == null ? d : v);
+  return {
+    on: t.on === 0 || t.on === false || t.on === "0" ? 0 : 1,
+    contact: str(t.contact, TRANSFER_FALLBACK.contact).trim().replace(/^@/, ""),
+    phone: str(t.phone, "").trim(),
+    note: str(t.note, TRANSFER_FALLBACK.note),
+    places: str(t.places, TRANSFER_FALLBACK.places),
+    rates: str(t.rates, ""),
+  };
+}
+const TRANSFER = () => (SETTINGS.transfer = normTransfer(SETTINGS.transfer));
+
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) =>
   ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
@@ -389,8 +482,10 @@ const priceHtml = (it) => (it.rentType === "kelishiladi" || !Number(it.price)
   ? "Kelishiladi" : money(it.price, it.currency) + per(it));
 
 /* «Narx jadvali» maydoni: har qatorda «matn | narx» */
-const rateRows = (it) => String(it.rates || "").split("\n").map((l) => l.trim()).filter(Boolean)
+const splitRates = (text) => String(text || "").split("\n").map((l) => l.trim()).filter(Boolean)
   .map((l) => { const i = l.indexOf("|"); return i < 0 ? [l, ""] : [l.slice(0, i).trim(), l.slice(i + 1).trim()]; });
+const rateRows = (it) => splitRates(it.rates);
+const lines = (text) => String(text || "").split("\n").map((l) => l.trim()).filter(Boolean);
 const cover = (it) => (Array.isArray(it.images) && it.images.length ? it.images[0] : "");
 const icon = (name, size) => `<svg width="${size}" height="${size}"><use href="#i-${name}"/></svg>`;
 
@@ -414,10 +509,11 @@ function applyTheme() {
 function haptic(kind) { try { if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred(kind || "light"); } catch {} }
 
 /* ============================================================ MARSHRUTLAR ============================================================ */
-const HASHES = { realty: "", product: "#mahsulot", fav: "#saralangan", admin: "#admin" };
+const HASHES = { realty: "", product: "#mahsulot", taxi: "#transfer", fav: "#saralangan", admin: "#admin" };
 
 function go(next, id) {
   if (next === "product" && !SHOW_PRODUCTS) next = "realty";
+  if (next === "taxi" && !TRANSFER().on) next = "realty";
   page = next;
   if (next === "realty" || next === "product") { kind = next; cat = ""; }
   curItem = next === "item" ? Number(id) : null;
@@ -430,6 +526,7 @@ function go(next, id) {
   if (location.hash !== hash) history.replaceState(null, "", location.pathname + location.search + hash);
 
   if (next === "realty" || next === "product") renderList();
+  if (next === "taxi") renderTaxi();
   if (next === "fav") renderFavs();
   if (next === "item") renderItem();
   if (next === "admin") renderAdmin();
@@ -443,6 +540,7 @@ function routeFromHash() {
   const m = h.match(/^#item-(\d+)$/);
   if (m) return go("item", m[1]);
   if (h === "#mahsulot") return go(SHOW_PRODUCTS ? "product" : "realty");
+  if (h === "#transfer") return go("taxi");
   if (h === "#saralangan") return go("fav");
   if (h === "#admin") { $("navAdmin").style.display = "flex"; return go("admin"); }
   go("realty");
@@ -500,8 +598,22 @@ function renderChips() {
 }
 function setCat(c) { cat = c; haptic(); renderList(); }
 
+function renderTxBanner() {
+  const t = TRANSFER();
+  const el = $("txBanner");
+  if (!el) return;
+  el.innerHTML = t.on
+    ? `<div class="tx-banner" onclick="go('taxi')">
+         <div class="ic">${icon("car", 21)}</div>
+         <div class="g"><b>Transfer va taksi</b><span>Aeroport, shahar ichi va shaharlararo safarlar</span></div>
+         <span class="go">${icon("arrow", 17)}</span>
+       </div>`
+    : "";
+}
+
 function renderList() {
   renderChips();
+  renderTxBanner();
   $("sortBtn").textContent = SORTS[sort];
   const list = visible();
   const empty = $("listEmpty");
@@ -537,6 +649,130 @@ function renderFavs() {
   const list = ITEMS.filter((it) => favs.includes(it.id) && !it.hidden && (SHOW_PRODUCTS || isRealty(it)));
   $("favGrid").innerHTML = list.map((it) => cardHtml(it, true)).join("");
   $("favEmpty").style.display = list.length ? "none" : "block";
+}
+
+/* ============================================================ TRANSFER / TAKSI ============================================================ */
+function txSet(field, value) { TX[field] = value; }
+
+function txSwap() {
+  const a = $("txFrom"), b = $("txTo");
+  if (!a || !b) return;
+  [TX.from, TX.to] = [TX.to, TX.from];
+  a.value = TX.from; b.value = TX.to;
+  haptic();
+}
+
+const dmy = (iso) => {
+  const m = String(iso || "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  return m ? `${m[3]}.${m[2]}.${m[1]}` : String(iso || "");
+};
+
+function txText() {
+  const out = ["Assalomu alaykum! Transfer buyurtma qilmoqchiman."];
+  out.push("Qayerdan: " + TX.from.trim());
+  out.push("Qayerga: " + TX.to.trim());
+  if (TX.date || TX.time) {
+    out.push("Sana va vaqt: " + [dmy(TX.date), TX.time].filter(Boolean).join(", "));
+  }
+  out.push("Yo'lovchilar: " + (TX.pax || "1"));
+  if (Number(TX.bags)) out.push("Yuk (chamadon): " + TX.bags);
+  if (TX.note.trim()) out.push("Izoh: " + TX.note.trim());
+  return out.join("\n");
+}
+
+function txReady() {
+  if (TX.from.trim() && TX.to.trim()) return true;
+  toast("«Qayerdan» va «Qayerga» to'ldirilsin");
+  haptic("heavy");
+  const el = TX.from.trim() ? $("txTo") : $("txFrom");
+  if (el) el.focus();
+  return false;
+}
+
+function txOrder() {
+  if (!txReady()) return;
+  const t = TRANSFER();
+  if (!t.contact) { toast("Haydovchining Telegrami ko'rsatilmagan"); return; }
+  save("taxi", { from: TX.from, to: TX.to, pax: TX.pax, bags: TX.bags });
+  const url = `https://t.me/${t.contact}?text=${encodeURIComponent(txText())}`;
+  haptic("medium");
+  if (tg && tg.openTelegramLink) { try { tg.openTelegramLink(url); return; } catch {} }
+  window.open(url, "_blank", "noopener");
+}
+
+async function txCopy() {
+  if (!txReady()) return;
+  try { await navigator.clipboard.writeText(txText()); haptic(); toast("Buyurtma matni nusxalandi"); }
+  catch { prompt("Buyurtma matni:", txText()); }
+}
+
+function renderTaxi() {
+  const t = TRANSFER();
+  const places = lines(t.places);
+  const rates = splitRates(t.rates);
+  const num = (id, from, to, val, unit) => {
+    let out = "";
+    for (let n = from; n <= to; n++) out += `<option value="${n}"${String(val) === String(n) ? " selected" : ""}>${n}${unit || ""}</option>`;
+    return out;
+  };
+  const today = new Date();
+  const iso = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+
+  $("p-taxi").innerHTML = `
+    <div class="hero-tx">
+      <svg class="ill" width="160" height="160"><use href="#i-car"/></svg>
+      <h1>Transfer va taksi</h1>
+      <p>${esc(t.note)}</p>
+    </div>
+
+    <datalist id="txPlaces">${places.map((x) => `<option value="${esc(x)}"></option>`).join("")}</datalist>
+
+    <div class="route">
+      <div class="line"><i class="dot"></i><i class="bar"></i><i class="sq"></i></div>
+      <div class="fields">
+        <input id="txFrom" list="txPlaces" placeholder="Qayerdan" autocomplete="off" spellcheck="false"
+               value="${esc(TX.from)}" oninput="txSet('from',this.value)">
+        <div class="sep"></div>
+        <input id="txTo" list="txPlaces" placeholder="Qayerga" autocomplete="off" spellcheck="false"
+               value="${esc(TX.to)}" oninput="txSet('to',this.value)">
+      </div>
+      <button class="swap" onclick="txSwap()" aria-label="Almashtirish">${icon("swap", 18)}</button>
+    </div>
+
+    <div class="f2" style="margin-top:12px">
+      <div class="f"><label>Sana</label>
+        <input id="txDate" type="date" min="${iso}" value="${esc(TX.date)}" oninput="txSet('date',this.value)"></div>
+      <div class="f"><label>Vaqt</label>
+        <input id="txTime" type="time" value="${esc(TX.time)}" oninput="txSet('time',this.value)"></div>
+    </div>
+
+    <div class="f2" style="margin-top:11px">
+      <div class="f"><label>Yo'lovchilar</label>
+        <select onchange="txSet('pax',this.value)">${num("pax", 1, 8, TX.pax, " kishi")}</select></div>
+      <div class="f"><label>Yuk (chamadon)</label>
+        <select onchange="txSet('bags',this.value)">${num("bags", 0, 8, TX.bags, " ta")}</select></div>
+    </div>
+
+    <div class="f" style="margin-top:11px">
+      <label>Izoh (ixtiyoriy)</label>
+      <textarea rows="3" placeholder="Reys raqami, bolalar o'rindig'i, qo'shimcha manzil…"
+                oninput="txSet('note',this.value)">${esc(TX.note)}</textarea>
+    </div>
+
+    ${rates.length ? `<h2 class="sec">Narxlar</h2><div class="specs-list">${rates.map(([k, v]) =>
+      `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</div>` : ""}
+
+    <div class="cta-box">
+      <div class="cta-t">Buyurtma berish</div>
+      <div class="cta-s">Yo'nalish va vaqt haydovchiga tayyor xabar bo'lib boradi</div>
+      <div class="cta">
+        ${t.contact ? `<button class="btn btn-primary" onclick="txOrder()">${icon("send", 18)} Telegram orqali buyurtma</button>` : ""}
+        ${t.phone ? `<a class="btn btn-line" href="tel:${esc(t.phone)}">${icon("phone", 17)} ${esc(t.phone)}</a>` : ""}
+        <button class="btn btn-line" onclick="txCopy()">${icon("copy", 17)} Buyurtma matnini nusxalash</button>
+        ${!t.contact && !t.phone ? `<div class="muted">Haydovchining aloqasi boshqaruv panelida — «Transfer / taksi» bo'limida ko'rsatilmagan.</div>` : ""}
+      </div>
+    </div>
+    <p class="muted" style="text-align:center;margin-top:12px">Narx va vaqt haydovchi bilan kelishiladi.</p>`;
 }
 
 /* ============================================================ POZITSIYA ============================================================ */
@@ -676,7 +912,10 @@ async function checkPassword(login, password) {
 /* ============================================================ BOSHQARUV PANELI ============================================================ */
 function ensureDraft() {
   if (!draft) draft = JSON.parse(JSON.stringify(ITEMS));
-  if (!draftSettings) draftSettings = JSON.parse(JSON.stringify(SETTINGS));
+  if (!draftSettings) {
+    draftSettings = JSON.parse(JSON.stringify(SETTINGS));
+    draftSettings.transfer = normTransfer(draftSettings.transfer);
+  }
   if (!draftAdmin) draftAdmin = { login: ADMIN.login, password: "", repeat: "" };
 }
 
@@ -709,6 +948,7 @@ function setNum(i, field, value) {
   draft[i][field] = value === "" ? (nullable ? null : 0) : Number(value);
 }
 function setSetting(field, value) { ensureDraft(); draftSettings[field] = value; }
+function setTransfer(field, value) { ensureDraft(); draftSettings.transfer[field] = value; }
 function setAdmin(field, value) { ensureDraft(); draftAdmin[field] = value; }
 function rowToggle(i) { openRow = openRow === i ? null : i; renderAdmin(); }
 
@@ -905,6 +1145,30 @@ function renderAdmin() {
     </div>
 
     <div class="adm">
+      <div class="adm-t">Transfer / taksi</div>
+      <div class="adm-body" style="margin-top:0">
+        <div class="checks">
+          <label><input type="checkbox"${draftSettings.transfer.on ? " checked" : ""}
+            onchange="setTransfer('on',this.checked?1:0);renderAdmin()">Bo'lim saytda ko'rsatilsin</label>
+        </div>
+        <div class="f2">
+          <div class="f"><label>Haydovchi Telegram (@ siz)</label>
+            <input value="${esc(draftSettings.transfer.contact)}" placeholder="ist2015" autocapitalize="off" spellcheck="false"
+              oninput="setTransfer('contact',this.value)"></div>
+          <div class="f"><label>Haydovchi telefoni</label>
+            <input value="${esc(draftSettings.transfer.phone)}" inputmode="tel" oninput="setTransfer('phone',this.value)"></div>
+        </div>
+        <div class="f"><label>Bo'lim tavsifi</label>
+          <textarea rows="3" oninput="setTransfer('note',this.value)">${esc(draftSettings.transfer.note)}</textarea></div>
+        <div class="f"><label>Yo'nalish variantlari — har qatorda bitta joy</label>
+          <textarea rows="6" placeholder="Istanbul aeroporti (IST)" oninput="setTransfer('places',this.value)">${esc(draftSettings.transfer.places)}</textarea></div>
+        <div class="f"><label>Narxlar — har qatorda: yo'nalish | narx</label>
+          <textarea rows="4" placeholder="Istanbul aeroporti → Kayaşehir | 1500 TL" oninput="setTransfer('rates',this.value)">${esc(draftSettings.transfer.rates)}</textarea></div>
+        <p class="muted">Narxlar bo'sh qoldirilsa, sahifada «Narxlar» jadvali chiqmaydi.</p>
+      </div>
+    </div>
+
+    <div class="adm">
       <div class="adm-t">Kirish ma'lumotlari</div>
       <div class="adm-body" style="margin-top:0">
         <div class="f"><label>Login</label>
@@ -1075,6 +1339,7 @@ async function adminSave() {
         title: String(draftSettings.title || "").trim() || "Qulay Market",
         contact: String(draftSettings.contact || "").trim().replace(/^@/, ""),
         phone: String(draftSettings.phone || "").trim(),
+        transfer: normTransfer(draftSettings.transfer),
       },
       admin: nextAdmin,
       items: draft.map(normalize),
@@ -1086,6 +1351,7 @@ async function adminSave() {
     ITEMS = payload.items.map(normalize);
     draft = null; draftSettings = null; draftAdmin = null;
     applySettings(); renderAdmin(); renderList(); renderFavBadge();
+    if (page === "taxi") renderTaxi();
     toast("GitHub'ga saqlandi");
     haptic("medium");
   } catch (e) {
@@ -1109,6 +1375,9 @@ async function adminSave() {
 
 /* ============================================================ YUKLASH VA ISHGA TUSHISH ============================================================ */
 function applySettings() {
+  const on = TRANSFER().on;
+  $("navTaxi").style.display = on ? "flex" : "none";
+  if (!on && page === "taxi") go("realty");
   const name = String(SETTINGS.title || "Qulay Market").trim();
   const parts = name.split(" ");
   $("brandText").innerHTML = parts.length > 1
@@ -1132,6 +1401,7 @@ async function loadCatalog() {
   applySettings();
   renderFavBadge();
   if (page === "realty" || page === "product") renderList();
+  if (page === "taxi") renderTaxi();
   if (page === "fav") renderFavs();
   if (page === "item") renderItem();
   if (page === "admin" && !unlocked) renderAdmin();

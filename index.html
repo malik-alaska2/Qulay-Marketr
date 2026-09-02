@@ -213,19 +213,29 @@
   .hero-tx p{font-size:13.5px;line-height:1.6;opacity:.93;max-width:76%;position:relative;white-space:pre-line}
   .hero-tx .ill{position:absolute;right:-14px;bottom:-18px;opacity:.2;pointer-events:none}
 
-  .route{display:flex;align-items:stretch;gap:8px;background:var(--card);border:1px solid var(--line);
-    border-radius:var(--r);padding:8px 10px 8px 13px;box-shadow:var(--shadow)}
-  .route .line{flex:0 0 11px;display:flex;flex-direction:column;align-items:center;padding:19px 0}
-  .route .line .dot{width:10px;height:10px;border-radius:99px;border:2.5px solid var(--brand)}
-  .route .line .bar{flex:1;width:2px;margin:4px 0;background:repeating-linear-gradient(var(--line) 0 3px,transparent 3px 7px)}
-  .route .line .sq{width:10px;height:10px;border-radius:3px;background:var(--brand)}
-  .route .fields{flex:1;min-width:0}
-  .route .fields input{border:none;background:transparent;border-radius:0;padding:13px 0;font-size:15px;font-weight:600}
-  .route .fields input::placeholder{font-weight:400;color:var(--muted)}
-  .route .fields .sep{height:1px;background:var(--line)}
+  .route{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);
+    border-radius:var(--r);padding:4px 10px 4px 14px;box-shadow:var(--shadow)}
+  .route .rows{flex:1;min-width:0}
+  .rrow{position:relative;display:flex;align-items:center;gap:12px}
+  .rrow + .rrow{border-top:1px solid var(--line)}
+  .rrow .mk{flex:0 0 10px;width:10px;height:10px;position:relative;z-index:1}
+  .rrow .mk.a{border-radius:99px;border:2.5px solid var(--brand)}
+  .rrow .mk.m{border-radius:99px;background:var(--muted);transform:scale(.6)}
+  .rrow .mk.b{border-radius:3px;background:var(--brand)}
+  .rrow:not(:last-child)::before{content:"";position:absolute;left:4px;top:calc(50% + 9px);height:calc(100% - 18px);
+    width:2px;background:repeating-linear-gradient(var(--line) 0 3px,transparent 3px 7px)}
+  .rrow input{border:none;background:transparent;border-radius:0;padding:13px 0;font-size:15px;font-weight:600}
+  .rrow input::placeholder{font-weight:400;color:var(--muted)}
+  .rrow input::-webkit-calendar-picker-indicator{display:none!important}
+  .rrow .rm{flex:0 0 28px;width:28px;height:28px;border-radius:99px;color:var(--muted);
+    font-size:20px;line-height:1;display:flex;align-items:center;justify-content:center}
+  .rrow .rm:active{background:var(--accent-soft);color:var(--danger)}
   .route .swap{flex:0 0 40px;width:40px;height:40px;align-self:center;border-radius:99px;
     border:1px solid var(--line);background:var(--bg);color:var(--muted);display:flex;align-items:center;justify-content:center}
   .route .swap:active{transform:rotate(180deg);transition:transform .2s}
+  .addstop{display:inline-flex;align-items:center;gap:7px;margin:11px 2px 0;padding:9px 14px;border-radius:99px;
+    background:var(--accent-soft);color:var(--accent);font-size:13px;font-weight:700}
+  .addstop:active{transform:scale(.97)}
 
   .save-bar{position:sticky;bottom:calc(80px + env(safe-area-inset-bottom));padding:12px 0;z-index:25;
     background:linear-gradient(to top,var(--bg) 60%,transparent)}
@@ -268,6 +278,8 @@
     <path d="M3.2 13.3h17.6"/><path d="M4.6 16.4h3v2.4h-3zM16.4 16.4h3v2.4h-3z"/>
     <circle cx="7.2" cy="15.9" r=".9" fill="currentColor" stroke="none"/>
     <circle cx="16.8" cy="15.9" r=".9" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+    <path d="M12 5.5v13M5.5 12h13"/></symbol>
   <symbol id="i-swap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
     <path d="M8 4.5v15M8 4.5 5 7.7M8 4.5l3 3.2"/><path d="M16 19.5v-15M16 19.5l3-3.2M16 19.5l-3-3.2"/></symbol>
   <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
@@ -415,6 +427,7 @@ let brandTaps = 0, brandTimer = null, toastTimer = null;
 /* Transfer buyurtmasi — foydalanuvchi kiritgan qiymatlar */
 let TX = { from: "", to: "", date: "", time: "", pax: "1", bags: "0", note: "", ...load("taxi", {}) };
 TX.date = ""; TX.time = ""; TX.note = "";
+TX.stops = [];                      /* oraliq to'xtash joylari, ko'pi bilan 4 ta */
 
 function load(key, fallback) {
   try { const v = JSON.parse(localStorage.getItem(K(key))); return v ?? fallback; } catch { return fallback; }
@@ -654,12 +667,46 @@ function renderFavs() {
 /* ============================================================ TRANSFER / TAKSI ============================================================ */
 function txSet(field, value) { TX[field] = value; }
 
-function txSwap() {
-  const a = $("txFrom"), b = $("txTo");
-  if (!a || !b) return;
-  [TX.from, TX.to] = [TX.to, TX.from];
-  a.value = TX.from; b.value = TX.to;
+const TX_MAX_STOPS = 4;
+function txSetStop(n, value) { TX.stops[n] = value; }
+function txAddStop() {
+  if (TX.stops.length >= TX_MAX_STOPS) { toast("Ko'pi bilan " + TX_MAX_STOPS + " ta to'xtash joyi"); return; }
+  TX.stops.push("");
   haptic();
+  renderRoute();
+  const rows = document.querySelectorAll("#txRoute .rrow input");
+  if (rows.length > 1) rows[rows.length - 2].focus();
+}
+function txDelStop(n) { TX.stops.splice(n, 1); haptic(); renderRoute(); }
+
+function txSwap() {
+  [TX.from, TX.to] = [TX.to, TX.from];
+  TX.stops.reverse();
+  haptic();
+  renderRoute();
+}
+
+/* Marshrut bloki alohida chiziladi — to'xtash joyi qo'shilganda butun sahifa qayta chizilmasin */
+function renderRoute() {
+  const el = $("txRoute");
+  if (!el) return;
+  const row = (mark, inner) => `<div class="rrow"><i class="mk ${mark}"></i>${inner}</div>`;
+  el.innerHTML = `
+    <div class="route">
+      <div class="rows">
+        ${row("a", `<input id="txFrom" list="txPlaces" placeholder="Qayerdan" autocomplete="off" spellcheck="false"
+                 value="${esc(TX.from)}" oninput="txSet('from',this.value)">`)}
+        ${TX.stops.map((v, n) => row("m",
+          `<input list="txPlaces" placeholder="To'xtash joyi${TX.stops.length > 1 ? " " + (n + 1) : ""}"
+                  autocomplete="off" spellcheck="false" value="${esc(v)}" oninput="txSetStop(${n},this.value)">
+           <button class="rm" onclick="txDelStop(${n})" aria-label="O'chirish">×</button>`)).join("")}
+        ${row("b", `<input id="txTo" list="txPlaces" placeholder="Qayerga" autocomplete="off" spellcheck="false"
+                 value="${esc(TX.to)}" oninput="txSet('to',this.value)">`)}
+      </div>
+      <button class="swap" onclick="txSwap()" aria-label="Almashtirish">${icon("swap", 18)}</button>
+    </div>
+    ${TX.stops.length < TX_MAX_STOPS
+      ? `<button class="addstop" onclick="txAddStop()">${icon("plus", 14)} To'xtash joyi qo'shish</button>` : ""}`;
 }
 
 const dmy = (iso) => {
@@ -670,6 +717,8 @@ const dmy = (iso) => {
 function txText() {
   const out = ["Assalomu alaykum! Transfer buyurtma qilmoqchiman."];
   out.push("Qayerdan: " + TX.from.trim());
+  const stops = TX.stops.map((x) => String(x || "").trim()).filter(Boolean);
+  stops.forEach((x, n) => out.push("To'xtash" + (stops.length > 1 ? " " + (n + 1) : "") + ": " + x));
   out.push("Qayerga: " + TX.to.trim());
   if (TX.date || TX.time) {
     out.push("Sana va vaqt: " + [dmy(TX.date), TX.time].filter(Boolean).join(", "));
@@ -727,17 +776,7 @@ function renderTaxi() {
 
     <datalist id="txPlaces">${places.map((x) => `<option value="${esc(x)}"></option>`).join("")}</datalist>
 
-    <div class="route">
-      <div class="line"><i class="dot"></i><i class="bar"></i><i class="sq"></i></div>
-      <div class="fields">
-        <input id="txFrom" list="txPlaces" placeholder="Qayerdan" autocomplete="off" spellcheck="false"
-               value="${esc(TX.from)}" oninput="txSet('from',this.value)">
-        <div class="sep"></div>
-        <input id="txTo" list="txPlaces" placeholder="Qayerga" autocomplete="off" spellcheck="false"
-               value="${esc(TX.to)}" oninput="txSet('to',this.value)">
-      </div>
-      <button class="swap" onclick="txSwap()" aria-label="Almashtirish">${icon("swap", 18)}</button>
-    </div>
+    <div id="txRoute"></div>
 
     <div class="f2" style="margin-top:12px">
       <div class="f"><label>Sana</label>
@@ -773,6 +812,8 @@ function renderTaxi() {
       </div>
     </div>
     <p class="muted" style="text-align:center;margin-top:12px">Narx va vaqt haydovchi bilan kelishiladi.</p>`;
+
+  renderRoute();
 }
 
 /* ============================================================ POZITSIYA ============================================================ */

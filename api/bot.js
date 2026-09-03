@@ -84,7 +84,11 @@ function buildKeyboard(text) {
         /* Telegram web_app manzilining # qismini o'zining ma'lumotlari bilan
            almashtiradi, shuning uchun bo'lim so'rov parametri bilan uzatiladi */
         if (tail.startsWith("#")) tail = "?p=" + tail.slice(1);
-        return [{ text: label, web_app: { url: SITE + tail } }];
+        /* Telegram mini-appni keshlab qo'yadi va eski nusxani ko'rsatishi mumkin.
+           Har soatda o'zgaradigan «v» parametri yangi versiyani majburan yuklatadi. */
+        const stamp = Math.floor(Date.now() / 3600000).toString(36);
+        const url = SITE + tail + (tail.includes("?") ? "&" : "?") + "v=" + stamp;
+        return [{ text: label, web_app: { url } }];
       }
       if (/^@[\w\d_]+$/.test(target)) target = "https://t.me/" + target.slice(1);
       else if (/^t\.me\//i.test(target)) target = "https://" + target;
@@ -172,6 +176,7 @@ module.exports = async function handler(req, res) {
       secretSet: Boolean(secret),
       webhook: hook,
       site: SITE,
+      build: "2026-09-03-cachebust",
     };
     if (!token) return res.status(200).json({ ...base, hint: "Vercel'da token ko'rsatilmagan" });
 

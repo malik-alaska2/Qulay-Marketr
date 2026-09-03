@@ -31,6 +31,7 @@
   }
   *{margin:0;padding:0;box-sizing:border-box}
   html{-webkit-text-size-adjust:100%}
+  html,body{max-width:100%;overflow-x:clip}
   body{background:var(--bg);color:var(--text);font-family:"Open Sans",system-ui,-apple-system,Segoe UI,sans-serif;
     font-size:15px;line-height:1.45;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
   button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
@@ -41,7 +42,8 @@
     transition:border-color .15s}
   input:focus,select:focus,textarea:focus{border-color:var(--brand)}
   textarea{resize:vertical}
-  .wrap{max-width:840px;margin:0 auto;padding:0 15px calc(88px + env(safe-area-inset-bottom))}
+  .wrap{max-width:840px;margin:0 auto;
+    padding:0 max(15px,env(safe-area-inset-right)) calc(74px + env(safe-area-inset-bottom)) max(15px,env(safe-area-inset-left))}
 
   /* Shapka */
   .header{position:sticky;top:0;z-index:40;backdrop-filter:blur(14px);
@@ -138,11 +140,11 @@
   .amen span{display:inline-flex;align-items:center;gap:7px;padding:8px 13px;border-radius:99px;
     background:var(--card);border:1px solid var(--line);font-size:13px;font-weight:600;box-shadow:var(--shadow)}
   .amen span svg{color:var(--brand);flex-shrink:0}
-  .cta-box{margin:22px 0 8px;padding:16px 15px 15px;border:1px solid var(--line);border-radius:var(--r);
+  .cta-box{margin:13px 0 6px;padding:13px 13px 12px;border:1px solid var(--line);border-radius:var(--r);
     background:var(--card);box-shadow:var(--shadow)}
   .cta-box .cta-t{font-size:15px;font-weight:800;letter-spacing:-.2px;margin-bottom:3px}
-  .cta-box .cta-s{font-size:13px;color:var(--muted);margin-bottom:13px}
-  .cta-box .cta{margin:0;gap:9px}
+  .cta-box .cta-s{font-size:12.5px;line-height:1.45;color:var(--muted);margin-bottom:10px}
+  .cta-box .cta{margin:0;gap:8px}
 
   /* Pastki menyu */
   .nav{position:fixed;left:0;right:0;bottom:0;z-index:35;background:color-mix(in srgb,var(--card) 94%,transparent);
@@ -185,8 +187,25 @@
   .adm-head .mini{width:48px;height:48px;border-radius:11px;object-fit:cover;background:var(--accent-soft);flex-shrink:0;
     display:flex;align-items:center;justify-content:center;color:var(--brand)}
   .adm-body{margin-top:13px;display:flex;flex-direction:column;gap:11px}
-  .f label{display:block;font-size:12.5px;font-weight:700;margin-bottom:6px;color:var(--muted)}
-  .f2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+  .f label{display:block;font-size:12px;font-weight:700;margin-bottom:5px;color:var(--muted)}
+  .f{min-width:0}
+  .f2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:11px;align-items:start}
+  .f2 input,.f2 select,.f2 textarea{min-width:0;max-width:100%}
+  /* Sana va vaqt: iOS bu maydonlarni o'zicha kengaytirib, ustunni siqib qo'yadi — o'lchamni qat'iy qilamiz */
+  input[type=date],input[type=time]{-webkit-appearance:none;appearance:none;
+    min-width:0;max-width:100%;height:48px;line-height:22px;text-align:left}
+  input[type=date]::-webkit-date-and-time-value,
+  input[type=time]::-webkit-date-and-time-value{text-align:left;margin:0;min-height:22px}
+  input[type=date]::-webkit-datetime-edit,
+  input[type=time]::-webkit-datetime-edit{padding:0;line-height:22px}
+  input[type=date]::-webkit-calendar-picker-indicator,
+  input[type=time]::-webkit-calendar-picker-indicator{opacity:.45;padding:0;margin:0 0 0 6px}
+  .dt{position:relative;min-width:0}
+  .dt .ph{position:absolute;left:14px;top:50%;transform:translateY(-50%);pointer-events:none;
+    color:var(--muted);font-size:15px}
+  .dt.filled .ph{display:none}
+  .dt:not(.filled) input::-webkit-datetime-edit{opacity:0}
+  @media (max-width:340px){.f2{gap:8px}.dt .ph{font-size:13.5px;left:12px}}
   .checks{display:flex;gap:20px;flex-wrap:wrap;font-size:14px}
   .checks label{display:flex;align-items:center;gap:8px}
   .checks input{width:20px;height:20px;padding:0;accent-color:var(--accent)}
@@ -197,15 +216,15 @@
     background:var(--danger);color:#fff;font-size:14px;line-height:1;display:flex;align-items:center;justify-content:center}
   /* Transfer / taksi */
 
-  .hero-tx{position:relative;overflow:hidden;border-radius:var(--r);padding:20px 17px 21px;margin:16px 0 15px;
+  .hero-tx{position:relative;overflow:hidden;border-radius:var(--r);padding:13px 14px 14px;margin:10px 0 10px;
     background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;
     box-shadow:0 10px 26px color-mix(in srgb,var(--accent) 30%,transparent)}
-  .hero-tx h1{font-size:21px;font-weight:800;letter-spacing:-.5px;margin-bottom:6px;position:relative}
-  .hero-tx p{font-size:13.5px;line-height:1.6;opacity:.93;max-width:76%;position:relative;white-space:pre-line}
-  .hero-tx .ill{position:absolute;right:-14px;bottom:-18px;opacity:.2;pointer-events:none}
+  .hero-tx h1{font-size:18px;font-weight:800;letter-spacing:-.5px;margin-bottom:3px;position:relative}
+  .hero-tx p{font-size:12.5px;line-height:1.45;opacity:.92;max-width:78%;position:relative;white-space:pre-line}
+  .hero-tx .ill{position:absolute;right:-12px;bottom:-14px;opacity:.2;pointer-events:none}
 
   .route{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);
-    border-radius:var(--r);padding:4px 10px 4px 14px;box-shadow:var(--shadow)}
+    border-radius:var(--r);padding:2px 10px 2px 14px;box-shadow:var(--shadow)}
   .route .rows{flex:1;min-width:0}
   .rrow{position:relative;display:flex;align-items:center;gap:12px}
   .rrow + .rrow{border-top:1px solid var(--line)}
@@ -213,9 +232,9 @@
   .rrow .mk.a{border-radius:99px;border:2.5px solid var(--brand)}
   .rrow .mk.m{border-radius:99px;background:var(--muted);transform:scale(.6)}
   .rrow .mk.b{border-radius:3px;background:var(--brand)}
-  .rrow:not(:last-child)::before{content:"";position:absolute;left:4px;top:calc(50% + 9px);height:calc(100% - 18px);
+  .rrow:not(:last-of-type)::before{content:"";position:absolute;left:4px;top:calc(50% + 9px);height:calc(100% - 18px);
     width:2px;background:repeating-linear-gradient(var(--line) 0 3px,transparent 3px 7px)}
-  .rrow input{border:none;background:transparent;border-radius:0;padding:13px 0;font-size:15px;font-weight:600}
+  .rrow input{border:none;background:transparent;border-radius:0;padding:12px 0;font-size:15px;font-weight:600}
   .rrow input::placeholder{font-weight:400;color:var(--muted)}
   .rrow input::-webkit-calendar-picker-indicator{display:none!important}
   .rrow .rm{flex:0 0 28px;width:28px;height:28px;border-radius:99px;color:var(--muted);
@@ -224,9 +243,18 @@
   .route .swap{flex:0 0 40px;width:40px;height:40px;align-self:center;border-radius:99px;
     border:1px solid var(--line);background:var(--bg);color:var(--muted);display:flex;align-items:center;justify-content:center}
   .route .swap:active{transform:rotate(180deg);transition:transform .2s}
-  .addstop{display:inline-flex;align-items:center;gap:7px;margin:11px 2px 0;padding:9px 14px;border-radius:99px;
-    background:var(--accent-soft);color:var(--accent);font-size:13px;font-weight:700}
-  .addstop:active{transform:scale(.97)}
+  .addstop{display:flex;align-items:center;gap:9px;width:100%;padding:10px 0;border-top:1px solid var(--line);
+    color:var(--brand);font-size:12.5px;font-weight:700;text-align:left}
+  .addstop:active{opacity:.6}
+  .linkbtn{display:block;width:100%;padding:9px 0 2px;text-align:center;
+    font-size:12.5px;font-weight:700;color:var(--muted)}
+  .linkbtn:active{opacity:.6}
+  .addnote{display:flex;align-items:center;gap:8px;width:100%;margin-top:9px;padding:11px 13px;
+    border:1.5px dashed var(--line);border-radius:12px;background:var(--card);
+    color:var(--muted);font-size:12.5px;font-weight:600;text-align:left}
+  .addnote:active{border-color:var(--brand);color:var(--brand)}
+  .tx-cta{margin:13px 0 0;gap:8px}
+  .tx-foot{margin:8px 2px 0;text-align:center;font-size:11.5px;line-height:1.45;color:var(--muted)}
 
   .save-bar{position:sticky;bottom:calc(80px + env(safe-area-inset-bottom));padding:12px 0;z-index:25;
     background:linear-gradient(to top,var(--bg) 60%,transparent)}
@@ -366,19 +394,7 @@ const TRANSFER_FALLBACK = {
   on: 1,
   contact: "ist2015",
   phone: "",
-  note: "Aeroportga kutib olish va kuzatish, shahar ichi va shaharlararo safarlar.\nBuyurtma haydovchiga Telegram orqali yuboriladi.",
-  places: [
-    "Istanbul aeroporti (IST)",
-    "Sabiha Gökçen aeroporti (SAW)",
-    "Başakşehir / Kayaşehir",
-    "Taksim",
-    "Fatih (Sultanahmet)",
-    "Esenyurt",
-    "Beylikdüzü",
-    "Bahçelievler",
-    "Bursa",
-    "Sapanca",
-  ].join("\n"),
+  note: "Aeroportdan kutib olish, aeroportga kuzatib qo'yish, shahar ichi va shaharlararo safarlar.",
   rates: "",
 };
 
@@ -429,7 +445,7 @@ let brandTaps = 0, brandTimer = null, toastTimer = null;
 
 /* Transfer buyurtmasi — foydalanuvchi kiritgan qiymatlar */
 let TX = { from: "", to: "", date: "", time: "", pax: "1", bags: "0", note: "", ...load("taxi", {}) };
-TX.date = ""; TX.time = ""; TX.note = "";
+TX.from = ""; TX.to = ""; TX.date = ""; TX.time = ""; TX.note = ""; TX.noteOpen = false;
 TX.stops = [];                      /* oraliq to'xtash joylari, ko'pi bilan 4 ta */
 
 function load(key, fallback) {
@@ -478,7 +494,6 @@ function normTransfer(t) {
     contact: str(t.contact, TRANSFER_FALLBACK.contact).trim().replace(/^@/, ""),
     phone: str(t.phone, "").trim(),
     note: str(t.note, TRANSFER_FALLBACK.note),
-    places: str(t.places, TRANSFER_FALLBACK.places),
     rates: str(t.rates, ""),
   };
 }
@@ -534,6 +549,12 @@ function toast(msg) {
 function applyTheme() {
   document.documentElement.dataset.theme = theme;
   $("themeBtn").innerHTML = icon(theme === "dark" ? "sun" : "moon", 19);
+  const bg = theme === "dark" ? "#0C0D10" : "#FAFAFA";
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute("content", bg);
+  try { if (tg && tg.setHeaderColor) tg.setHeaderColor(bg); } catch {}
+  try { if (tg && tg.setBackgroundColor) tg.setBackgroundColor(bg); } catch {}
+  try { if (tg && tg.setBottomBarColor) tg.setBottomBarColor(bg); } catch {}
 }
 
 function haptic(kind) { try { if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred(kind || "light"); } catch {} }
@@ -680,6 +701,7 @@ function renderFavs() {
 
 /* ============================================================ TRANSFER / TAKSI ============================================================ */
 function txSet(field, value) { TX[field] = value; }
+function txOpenNote() { TX.noteOpen = true; renderTaxi(); const el = $("txNote"); if (el) el.focus(); }
 
 const TX_MAX_STOPS = 4;
 function txSetStop(n, value) { TX.stops[n] = value; }
@@ -708,19 +730,19 @@ function renderRoute() {
   el.innerHTML = `
     <div class="route">
       <div class="rows">
-        ${row("a", `<input id="txFrom" list="txPlaces" placeholder="Qayerdan" autocomplete="off" spellcheck="false"
+        ${row("a", `<input id="txFrom" placeholder="Qayerdan" autocomplete="off" spellcheck="false"
                  value="${esc(TX.from)}" oninput="txSet('from',this.value)">`)}
         ${TX.stops.map((v, n) => row("m",
-          `<input list="txPlaces" placeholder="To'xtash joyi${TX.stops.length > 1 ? " " + (n + 1) : ""}"
+          `<input placeholder="To'xtash joyi${TX.stops.length > 1 ? " " + (n + 1) : ""}"
                   autocomplete="off" spellcheck="false" value="${esc(v)}" oninput="txSetStop(${n},this.value)">
            <button class="rm" onclick="txDelStop(${n})" aria-label="O'chirish">×</button>`)).join("")}
-        ${row("b", `<input id="txTo" list="txPlaces" placeholder="Qayerga" autocomplete="off" spellcheck="false"
+        ${row("b", `<input id="txTo" placeholder="Qayerga" autocomplete="off" spellcheck="false"
                  value="${esc(TX.to)}" oninput="txSet('to',this.value)">`)}
+        ${TX.stops.length < TX_MAX_STOPS
+          ? `<button class="addstop" onclick="txAddStop()">${icon("plus", 13)} To'xtash joyi qo'shish</button>` : ""}
       </div>
       <button class="swap" onclick="txSwap()" aria-label="Almashtirish">${icon("swap", 18)}</button>
-    </div>
-    ${TX.stops.length < TX_MAX_STOPS
-      ? `<button class="addstop" onclick="txAddStop()">${icon("plus", 14)} To'xtash joyi qo'shish</button>` : ""}`;
+    </div>`;
 }
 
 const dmy = (iso) => {
@@ -756,7 +778,7 @@ function txOrder() {
   if (!txReady()) return;
   const t = TRANSFER();
   if (!t.contact) { toast("Haydovchining Telegrami ko'rsatilmagan"); return; }
-  save("taxi", { from: TX.from, to: TX.to, pax: TX.pax, bags: TX.bags });
+  save("taxi", { pax: TX.pax, bags: TX.bags });
   const url = `https://t.me/${t.contact}?text=${encodeURIComponent(txText())}`;
   haptic("medium");
   if (tg && tg.openTelegramLink) { try { tg.openTelegramLink(url); return; } catch {} }
@@ -771,7 +793,6 @@ async function txCopy() {
 
 function renderTaxi() {
   const t = TRANSFER();
-  const places = lines(t.places);
   const rates = splitRates(t.rates);
   const num = (id, from, to, val, unit) => {
     let out = "";
@@ -783,49 +804,53 @@ function renderTaxi() {
 
   $("p-taxi").innerHTML = `
     <div class="hero-tx">
-      <svg class="ill" width="160" height="160"><use href="#i-car"/></svg>
+      <svg class="ill" width="126" height="126"><use href="#i-car"/></svg>
       <h1>Transfer va taksi</h1>
       <p>${esc(t.note)}</p>
     </div>
 
-    <datalist id="txPlaces">${places.map((x) => `<option value="${esc(x)}"></option>`).join("")}</datalist>
 
     <div id="txRoute"></div>
 
-    <div class="f2" style="margin-top:12px">
+    <div class="f2" style="margin-top:10px">
       <div class="f"><label>Sana</label>
-        <input id="txDate" type="date" min="${iso}" value="${esc(TX.date)}" oninput="txSet('date',this.value)"></div>
+        <div class="dt${TX.date ? " filled" : ""}">
+          <input id="txDate" type="date" min="${iso}" value="${esc(TX.date)}"
+                 oninput="txSet('date',this.value);this.parentNode.classList.toggle('filled',!!this.value)">
+          <span class="ph">kun.oy.yil</span></div></div>
       <div class="f"><label>Vaqt</label>
-        <input id="txTime" type="time" value="${esc(TX.time)}" oninput="txSet('time',this.value)"></div>
+        <div class="dt${TX.time ? " filled" : ""}">
+          <input id="txTime" type="time" value="${esc(TX.time)}"
+                 oninput="txSet('time',this.value);this.parentNode.classList.toggle('filled',!!this.value)">
+          <span class="ph">soat:daqiqa</span></div></div>
     </div>
 
-    <div class="f2" style="margin-top:11px">
+    <div class="f2" style="margin-top:9px">
       <div class="f"><label>Yo'lovchilar</label>
         <select onchange="txSet('pax',this.value)">${num("pax", 1, 8, TX.pax, " kishi")}</select></div>
       <div class="f"><label>Yuk (chamadon)</label>
         <select onchange="txSet('bags',this.value)">${num("bags", 0, 8, TX.bags, " ta")}</select></div>
     </div>
 
-    <div class="f" style="margin-top:11px">
-      <label>Izoh (ixtiyoriy)</label>
-      <textarea rows="3" placeholder="Reys raqami, bolalar o'rindig'i, qo'shimcha manzil…"
-                oninput="txSet('note',this.value)">${esc(TX.note)}</textarea>
-    </div>
+    ${TX.noteOpen
+      ? `<div class="f" style="margin-top:9px">
+           <label>Izoh (ixtiyoriy)</label>
+           <textarea id="txNote" rows="2" placeholder="Reys raqami, bolalar o'rindig'i, qo'shimcha manzil…"
+                     oninput="txSet('note',this.value)">${esc(TX.note)}</textarea>
+         </div>`
+      : `<button class="addnote" onclick="txOpenNote()">${icon("plus", 13)} Izoh qo'shish (ixtiyoriy)</button>`}
 
     ${rates.length ? `<h2 class="sec">Narxlar</h2><div class="specs-list">${rates.map(([k, v]) =>
       `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</div>` : ""}
 
-    <div class="cta-box">
-      <div class="cta-t">Buyurtma berish</div>
-      <div class="cta-s">Yo'nalish va vaqt haydovchiga tayyor xabar bo'lib boradi</div>
-      <div class="cta">
-        ${t.contact ? `<button class="btn btn-primary" onclick="txOrder()">${icon("send", 18)} Telegram orqali buyurtma</button>` : ""}
-        ${t.phone ? `<a class="btn btn-line" href="tel:${esc(t.phone)}">${icon("phone", 17)} ${esc(t.phone)}</a>` : ""}
-        <button class="btn btn-line" onclick="txCopy()">${icon("copy", 17)} Buyurtma matnini nusxalash</button>
-        ${!t.contact && !t.phone ? `<div class="muted">Haydovchining aloqasi boshqaruv panelida — «Transfer / taksi» bo'limida ko'rsatilmagan.</div>` : ""}
-      </div>
+    <div class="cta tx-cta">
+      ${t.contact ? `<button class="btn btn-primary" onclick="txOrder()">${icon("send", 18)} Telegram orqali buyurtma</button>` : ""}
+      ${t.phone ? `<a class="btn btn-line" href="tel:${esc(t.phone)}">${icon("phone", 17)} ${esc(t.phone)}</a>` : ""}
+      ${!t.contact && !t.phone ? `<div class="muted">Haydovchining aloqasi boshqaruv panelida — «Transfer / taksi» bo'limida ko'rsatilmagan.</div>` : ""}
     </div>
-    <p class="muted" style="text-align:center;margin-top:12px">Narx va vaqt haydovchi bilan kelishiladi.</p>`;
+    <button class="linkbtn" onclick="txCopy()">Buyurtma matnini nusxalash</button>
+    <p class="tx-foot">Narx va vaqt haydovchi bilan kelishiladi.</p>
+`;
 
   renderRoute();
 }
@@ -1231,8 +1256,6 @@ function renderAdmin() {
         </div>
         <div class="f"><label>Bo'lim tavsifi</label>
           <textarea rows="3" oninput="setTransfer('note',this.value)">${esc(draftSettings.transfer.note)}</textarea></div>
-        <div class="f"><label>Yo'nalish variantlari — har qatorda bitta joy</label>
-          <textarea rows="6" placeholder="Istanbul aeroporti (IST)" oninput="setTransfer('places',this.value)">${esc(draftSettings.transfer.places)}</textarea></div>
         <div class="f"><label>Narxlar — har qatorda: yo'nalish | narx</label>
           <textarea rows="4" placeholder="Istanbul aeroporti → Kayaşehir | 1500 TL" oninput="setTransfer('rates',this.value)">${esc(draftSettings.transfer.rates)}</textarea></div>
         <p class="muted">Narxlar bo'sh qoldirilsa, sahifada «Narxlar» jadvali chiqmaydi.</p>

@@ -8,7 +8,11 @@
       "contact": "ist2015",
       "phone": "",
       "note": "Aeroportdan kutib olish, aeroportga kuzatib qo'yish va taksi xizmati.",
-      "rates": ""
+      "rates": "",
+      "ru": {
+        "note": "Встреча в аэропорту, проводы в аэропорт и такси по городу.",
+        "rates": ""
+      }
     },
     "promo": {
       "on": 1,
@@ -17,7 +21,14 @@
       "text": "Istanbulda kunlik va oylik uy-joy ijarasi — surat, narx va joylashuvi bilan.\n\n✈️ Aeroportdan kutib olish — reys kechiksa ham kutib turamiz\n🧳 Aeroportga kuzatib qo'yish — uchishdan oldin o'z vaqtida yetkazamiz\n🚕 Taksi xizmati — shahar ichida, istalgan vaqtda\n\nBuyurtma bir necha soniyada: qayerdan — qayerga, sana va vaqtni tanlaysiz.\n\nQuyidagi tugmani bosing 👇",
       "buttons": "Qulay Market'ni ochish | app",
       "about": "Istanbulda kunlik va oylik uy-joy ijarasi hamda transfer xizmati.\n\n✈️ Aeroportdan kutib olish\n🧳 Aeroportga kuzatib qo'yish\n🚕 Taksi xizmati\n\nUy-joy e'lonlari surat va narxlari bilan, transfer esa «qayerdan — qayerga» ko'rinishida — hammasi bitta ilovada.\n\nBoshlash uchun pastdagi tugmani bosing.",
-      "short": "Istanbulda uy-joy ijarasi, aeroport transferi va taksi — hammasi bitta ilovada."
+      "short": "Istanbulda uy-joy ijarasi, aeroport transferi va taksi — hammasi bitta ilovada.",
+      "ru": {
+        "title": "Qulay Market",
+        "text": "Посуточная и помесячная аренда жилья в Стамбуле — с фото, ценами и расположением.\n\n✈️ Встреча в аэропорту — подождём, даже если рейс задержится\n🧳 Проводы в аэропорт — привезём вовремя, до вылета\n🚕 Такси — по городу, в любое время\n\nЗаказ за несколько секунд: откуда — куда, дата и время.\n\nНажмите кнопку ниже 👇",
+        "buttons": "Открыть Qulay Market | app",
+        "about": "Посуточная и помесячная аренда жилья в Стамбуле и услуги трансфера.\n\n✈️ Встреча в аэропорту\n🧳 Проводы в аэропорт\n🚕 Такси по городу\n\nОбъявления с фото и ценами, трансфер — в виде «откуда — куда». Всё в одном приложении.\n\nНажмите кнопку внизу, чтобы начать.",
+        "short": "Аренда жилья, трансфер и такси в Стамбуле — всё в одном приложении."
+      }
     }
   },
   "admin": {
@@ -74,7 +85,18 @@
         "photos/kayasehir-3-1-08.jpg",
         "photos/kayasehir-3-1-09.jpg"
       ],
-      "hidden": 0
+      "hidden": 0,
+      "ru": {
+        "title": "Квартира 3+1 в Кайяшехире, посуточно",
+        "description": "Дом находится в закрытом комплексе (site): охрана 7/24, детская площадка, мечеть и магазины.\nДо аэропорта Стамбула 30 минут, до больницы Çam ve Sakura — 10 минут.\nДо парка «Миллет» и метро — 5 минут пешком.\nЕсть Wi-Fi.\nДолгосрочно не сдаётся — только посуточно, понедельно и помесячно.",
+        "category": "Посуточная аренда",
+        "district": "Башакшехир",
+        "floor": "11-й этаж",
+        "address": "Башакшехир, район Кайяшехир",
+        "transport": "До метро и парка «Миллет» 5 минут пешком",
+        "minTerm": "1 день",
+        "rates": "1–10 дней | 70$\n10–20 дней | 60$\nболее 20 дней | 55$"
+      }
     },
     {
       "id": 2,
@@ -122,7 +144,16 @@
         "photos/kayasehir-2-1-07.jpg",
         "photos/kayasehir-2-1-08.jpg"
       ],
-      "hidden": 0
+      "hidden": 0,
+      "ru": {
+        "title": "Квартира 2+1 в Кайяшехире, входной этаж",
+        "description": "Дом находится в закрытом комплексе (site): охрана 7/24, детская площадка, мечеть и магазины.\nДо аэропорта Стамбула 30 минут, до больницы Çam ve Sakura — 10 минут.\nДо парка «Миллет» и метро — 5–10 минут пешком.\nЦена договорная.",
+        "category": "Квартиры",
+        "district": "Башакшехир",
+        "floor": "Входной этаж",
+        "address": "Башакшехир, район Кайяшехир",
+        "transport": "До метро и парка «Миллет» 5–10 минут пешком"
+      }
     }
   ]
 }

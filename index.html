@@ -57,6 +57,13 @@
   .icon-btn{width:38px;height:38px;border-radius:12px;background:var(--card);border:1px solid var(--line);
     display:flex;align-items:center;justify-content:center;color:var(--muted);flex-shrink:0}
   .icon-btn:active{transform:scale(.94)}
+  /* Til almashtirgich */
+  .lang{display:flex;gap:2px;padding:3px;border-radius:12px;background:var(--card);
+    border:1px solid var(--line);flex-shrink:0}
+  .lang button{padding:6px 9px;border-radius:9px;font-size:11.5px;font-weight:800;
+    letter-spacing:.4px;color:var(--muted);line-height:1;transition:.15s}
+  .lang button.on{background:var(--ink);color:var(--bg)}
+  .lang button:active{transform:scale(.94)}
 
   /* Qidiruv va filtrlar */
   .search{position:relative;margin:10px 0}
@@ -321,7 +328,11 @@
       <img src="icon.png" alt="Qulay Market">
       <span id="brandText"><i>Qulay</i> Market</span>
     </div>
-    <button class="icon-btn" id="themeBtn" aria-label="Mavzu"><svg width="19" height="19"><use href="#i-moon"/></svg></button>
+    <div class="lang" id="langSw">
+      <button type="button" data-lang="uz">UZ</button>
+      <button type="button" data-lang="ru">RU</button>
+    </div>
+    <button class="icon-btn" id="themeBtn" data-i18n-aria="a.theme" aria-label="Mavzu"><svg width="19" height="19"><use href="#i-moon"/></svg></button>
   </div>
 </header>
 
@@ -331,7 +342,7 @@
   <section class="page" id="p-list">
     <form class="search" autocomplete="off" onsubmit="return false">
       <svg width="17" height="17"><use href="#i-search"/></svg>
-      <input id="q" type="search" name="katalog-qidiruv" placeholder="Katalogdan qidirish"
+      <input id="q" type="search" name="katalog-qidiruv" data-i18n-ph="list.search" placeholder="Katalogdan qidirish"
              autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"
              data-lpignore="true" data-1p-ignore data-form-type="other">
     </form>
@@ -346,11 +357,11 @@
 
   <!-- SARALANGAN -->
   <section class="page" id="p-fav">
-    <h2 class="title">Saralangan</h2>
+    <h2 class="title" data-i18n="fav.title">Saralangan</h2>
     <div class="grid" id="favGrid"></div>
     <div class="empty" id="favEmpty" style="display:none">
       <svg width="46" height="46"><use href="#i-star"/></svg>
-      <div>Yulduzcha bosilgan e'lonlar shu yerda to'planadi</div>
+      <div data-i18n="fav.empty">Yulduzcha bosilgan e'lonlar shu yerda to'planadi</div>
     </div>
   </section>
 
@@ -366,11 +377,11 @@
 </div>
 
 <nav class="nav" id="nav">
-  <button data-page="realty"><svg width="22" height="22"><use href="#i-home"/></svg><span>Uy-joy</span></button>
-  <button data-page="taxi" id="navTaxi"><svg width="22" height="22"><use href="#i-car"/></svg><span>Transfer</span></button>
-  <button data-page="product" id="navProduct"><svg width="22" height="22"><use href="#i-bag"/></svg><span>Mahsulotlar</span></button>
-  <button data-page="fav"><svg width="22" height="22"><use href="#i-star"/></svg><span>Saralangan</span><i class="badge" id="favBadge" style="display:none"></i></button>
-  <button data-page="admin" id="navAdmin" style="display:none"><svg width="22" height="22"><use href="#i-gear"/></svg><span>Boshqaruv</span></button>
+  <button data-page="realty"><svg width="22" height="22"><use href="#i-home"/></svg><span data-i18n="nav.realty">Uy-joy</span></button>
+  <button data-page="taxi" id="navTaxi"><svg width="22" height="22"><use href="#i-car"/></svg><span data-i18n="nav.taxi">Transfer</span></button>
+  <button data-page="product" id="navProduct"><svg width="22" height="22"><use href="#i-bag"/></svg><span data-i18n="nav.product">Mahsulotlar</span></button>
+  <button data-page="fav"><svg width="22" height="22"><use href="#i-star"/></svg><span data-i18n="nav.fav">Saralangan</span><i class="badge" id="favBadge" style="display:none"></i></button>
+  <button data-page="admin" id="navAdmin" style="display:none"><svg width="22" height="22"><use href="#i-gear"/></svg><span data-i18n="nav.admin">Boshqaruv</span></button>
 </nav>
 
 <div class="toast" id="toast"></div>
@@ -396,6 +407,7 @@ const TRANSFER_FALLBACK = {
   phone: "",
   note: "Aeroportdan kutib olish, aeroportga kuzatib qo'yish va taksi xizmati.",
   rates: "",
+  ru: { note: "Встреча в аэропорту, проводы в аэропорт и такси по городу.", rates: "" },
 };
 
 /* Botga kirganda yuboriladigan reklama. catalog.json ichida settings.promo,
@@ -408,6 +420,13 @@ const PROMO_FALLBACK = {
   buttons: "Qulay Market'ni ochish | app",
   about: "Istanbulda kunlik va oylik uy-joy ijarasi, aeroportga kutib olish va taksi.\n\nUy-joy e'lonlari surat va narxlari bilan, transfer esa «qayerdan — qayerga» ko'rinishida — hammasi bitta ilovada.\n\nBoshlash uchun pastdagi tugmani bosing.",
   short: "Istanbulda uy-joy ijarasi va aeroport transferi — bitta ilovada.",
+  ru: {
+    title: "Qulay Market",
+    text: "Посуточная и помесячная аренда жилья в Стамбуле, встреча в аэропорту и такси.\nВсё в одном приложении — нажмите кнопку ниже.",
+    buttons: "Открыть Qulay Market | app",
+    about: "Посуточная и помесячная аренда жилья в Стамбуле, встреча в аэропорту и такси.\n\nОбъявления с фото и ценами, трансфер — в виде «откуда — куда». Всё в одном приложении.\n\nНажмите кнопку внизу, чтобы начать.",
+    short: "Аренда жилья, трансфер и такси в Стамбуле — в одном приложении.",
+  },
 };
 
 const FALLBACK = {
@@ -425,6 +444,183 @@ const $ = (id) => document.getElementById(id);
 /* malik-alaska2.github.io dagi barcha loyihalar bitta xotirani baham ko'radi,
    shuning uchun kalitlar qm: old qo'shimchasi bilan. */
 const K = (key) => "qm:" + key;
+
+/* ============================================================ TILLAR ============================================================
+   Interfeys ikki tilda: o'zbekcha (uz) va ruscha (ru). Til tanlovi shapkadagi
+   UZ / RU tugmasi orqali o'zgaradi va brauzerda saqlanadi. Bot mini-appni
+   ochganda manzilga ?lang=uz yoki ?lang=ru qo'shadi — o'sha til ustun turadi.
+   E'lonlarning ruscha matni catalog.json ichida har bir e'lonning ru obyektida.
+   Boshqaruv paneli faqat o'zbekcha — u do'kon egasi uchun.
+   ============================================================================ */
+const I18N = {
+  uz: {
+    "nav.realty": "Uy-joy", "nav.taxi": "Transfer", "nav.product": "Mahsulotlar",
+    "nav.fav": "Saralangan", "nav.admin": "Boshqaruv",
+    "a.theme": "Mavzu", "a.fav": "Saralangan", "a.del": "O'chirish", "a.swap": "Almashtirish",
+
+    "list.search": "Katalogdan qidirish", "list.all": "Barchasi",
+    "list.sort0": "Yangi", "list.sort1": "Avval arzoni", "list.sort2": "Avval qimmati",
+    "list.none": "Hech narsa topilmadi", "list.empty": "Hozircha bu bo'limda e'lon yo'q",
+    "tag.realty": "Uy-joy", "tag.product": "Mahsulot",
+
+    "fav.title": "Saralangan", "fav.empty": "Yulduzcha bosilgan e'lonlar shu yerda to'planadi",
+
+    "item.back": "Katalogga qaytish", "item.notfound": "E'lon topilmadi", "item.tocatalog": "Katalogga",
+    "item.info": "Ma'lumotlar", "item.prices": "Narxlar", "item.rent": "Ijara sharti", "item.desc": "Tavsif",
+    "item.contact": "Aloqaga chiqish", "item.write": "Telegramga yozish", "item.map": "Xaritada ko'rish",
+    "item.copylink": "E'lon havolasini nusxalash", "item.copied": "Havola nusxalandi",
+    "item.number": "E'lon raqami: №", "item.negotiable": "Kelishiladi",
+    "item.nocontact": "Bog'lanish uchun Telegram yoki telefon boshqaruv panelida ko'rsatilmagan.",
+    "item.hello": "Assalomu alaykum! «{title}» (№{id}) qiziqtiryapti.",
+
+    "row.category": "Kategoriya", "row.district": "Tuman", "row.address": "Manzil",
+    "row.rooms": "Xonalar", "row.area": "Maydoni", "row.floor": "Qavat",
+    "row.buildingAge": "Bino yoshi", "row.heating": "Isitish", "row.appliances": "Texnika",
+    "row.transport": "Transport", "row.postedAt": "E'lon sanasi",
+    "row.deposit": "Depozit", "row.commission": "Komissiya", "row.minTerm": "Minimal muddat",
+
+    "am.furnished": "Mebel bilan", "am.elevator": "Lift bor", "am.balcony": "Balkon",
+    "am.parking": "Avtoturargoh", "am.internet": "Internet", "am.utilities": "Kommunal narxda",
+    "am.pets": "Uy hayvonlari mumkin", "am.security": "7/24 qo'riqlash",
+    "am.playground": "Bolalar maydonchasi", "am.mosque": "Masjid yaqin", "am.market": "Do'kon va market",
+
+    "per.oylik": " / oyiga", "per.kunlik": " / kunlik", "per.kelishiladi": "",
+
+    "tx.title": "Transfer va taksi", "tx.note": "Aeroportdan kutib olish, aeroportga kuzatib qo'yish va taksi xizmati.",
+    "tx.from": "Qayerdan", "tx.to": "Qayerga", "tx.stop": "To'xtash joyi",
+    "tx.addstop": "To'xtash joyi qo'shish", "tx.maxstops": "Ko'pi bilan {n} ta to'xtash joyi",
+    "tx.date": "Sana", "tx.time": "Vaqt", "tx.phdate": "kun.oy.yil", "tx.phtime": "soat:daqiqa",
+    "tx.pax": "Yo'lovchilar", "tx.paxunit": " kishi", "tx.bags": "Yuk (chamadon)", "tx.bagsunit": " ta",
+    "tx.note2": "Izoh (ixtiyoriy)", "tx.addnote": "Izoh qo'shish (ixtiyoriy)",
+    "tx.noteph": "Reys raqami, bolalar o'rindig'i, qo'shimcha manzil…",
+    "tx.prices": "Narxlar", "tx.order": "Telegram orqali buyurtma", "tx.copy": "Buyurtma matnini nusxalash",
+    "tx.foot": "Narx va vaqt haydovchi bilan kelishiladi.",
+    "tx.fill": "«Qayerdan» va «Qayerga» to'ldirilsin",
+    "tx.copied": "Buyurtma matni nusxalandi", "tx.nodriver": "Haydovchining Telegrami ko'rsatilmagan",
+    "tx.nocontact": "Haydovchining aloqasi boshqaruv panelida — «Transfer / taksi» bo'limida ko'rsatilmagan.",
+    "tx.m.hi": "Assalomu alaykum! Transfer buyurtma qilmoqchiman.",
+    "tx.m.from": "Qayerdan", "tx.m.stop": "To'xtash", "tx.m.to": "Qayerga",
+    "tx.m.when": "Sana va vaqt", "tx.m.pax": "Yo'lovchilar", "tx.m.bags": "Yuk (chamadon)", "tx.m.note": "Izoh",
+
+    "u.m2": "m²", "u.year": " yil", "u.items": "{n} ta e'lon", "u.products": "{n} ta mahsulot",
+  },
+  ru: {
+    "nav.realty": "Жильё", "nav.taxi": "Трансфер", "nav.product": "Товары",
+    "nav.fav": "Избранное", "nav.admin": "Панель",
+    "a.theme": "Тема", "a.fav": "В избранное", "a.del": "Удалить", "a.swap": "Поменять местами",
+
+    "list.search": "Поиск по каталогу", "list.all": "Все",
+    "list.sort0": "Новые", "list.sort1": "Сначала дешёвые", "list.sort2": "Сначала дорогие",
+    "list.none": "Ничего не найдено", "list.empty": "В этом разделе пока нет объявлений",
+    "tag.realty": "Жильё", "tag.product": "Товар",
+
+    "fav.title": "Избранное", "fav.empty": "Объявления со звёздочкой собираются здесь",
+
+    "item.back": "Назад в каталог", "item.notfound": "Объявление не найдено", "item.tocatalog": "В каталог",
+    "item.info": "Информация", "item.prices": "Цены", "item.rent": "Условия аренды", "item.desc": "Описание",
+    "item.contact": "Связаться", "item.write": "Написать в Telegram", "item.map": "Показать на карте",
+    "item.copylink": "Скопировать ссылку", "item.copied": "Ссылка скопирована",
+    "item.number": "Номер объявления: №", "item.negotiable": "Договорная",
+    "item.nocontact": "Telegram или телефон для связи не указаны в панели управления.",
+    "item.hello": "Здравствуйте! Интересует «{title}» (№{id}).",
+
+    "row.category": "Категория", "row.district": "Район", "row.address": "Адрес",
+    "row.rooms": "Комнаты", "row.area": "Площадь", "row.floor": "Этаж",
+    "row.buildingAge": "Возраст дома", "row.heating": "Отопление", "row.appliances": "Техника",
+    "row.transport": "Транспорт", "row.postedAt": "Дата публикации",
+    "row.deposit": "Депозит", "row.commission": "Комиссия", "row.minTerm": "Минимальный срок",
+
+    "am.furnished": "С мебелью", "am.elevator": "Лифт", "am.balcony": "Балкон",
+    "am.parking": "Парковка", "am.internet": "Интернет", "am.utilities": "Коммунальные включены",
+    "am.pets": "Можно с животными", "am.security": "Охрана 7/24",
+    "am.playground": "Детская площадка", "am.mosque": "Мечеть рядом", "am.market": "Магазины рядом",
+
+    "per.oylik": " / в месяц", "per.kunlik": " / в сутки", "per.kelishiladi": "",
+
+    "tx.title": "Трансфер и такси", "tx.note": "Встреча в аэропорту, проводы в аэропорт и такси по городу.",
+    "tx.from": "Откуда", "tx.to": "Куда", "tx.stop": "Остановка",
+    "tx.addstop": "Добавить остановку", "tx.maxstops": "Не больше {n} остановок",
+    "tx.date": "Дата", "tx.time": "Время", "tx.phdate": "дд.мм.гггг", "tx.phtime": "чч:мм",
+    "tx.pax": "Пассажиры", "tx.paxunit": " чел.", "tx.bags": "Багаж (чемоданы)", "tx.bagsunit": " шт.",
+    "tx.note2": "Комментарий (необязательно)", "tx.addnote": "Добавить комментарий",
+    "tx.noteph": "Номер рейса, детское кресло, дополнительный адрес…",
+    "tx.prices": "Цены", "tx.order": "Заказать в Telegram", "tx.copy": "Скопировать текст заказа",
+    "tx.foot": "Цену и время согласуете с водителем.",
+    "tx.fill": "Заполните «Откуда» и «Куда»",
+    "tx.copied": "Текст заказа скопирован", "tx.nodriver": "Telegram водителя не указан",
+    "tx.nocontact": "Контакты водителя не указаны в панели управления — раздел «Трансфер / такси».",
+    "tx.m.hi": "Здравствуйте! Хочу заказать трансфер.",
+    "tx.m.from": "Откуда", "tx.m.stop": "Остановка", "tx.m.to": "Куда",
+    "tx.m.when": "Дата и время", "tx.m.pax": "Пассажиры", "tx.m.bags": "Багаж (чемоданы)", "tx.m.note": "Комментарий",
+
+    "u.m2": "м²", "u.year": " лет", "u.items": "{n} объявлений", "u.products": "{n} товаров",
+  },
+};
+
+const LANGS = ["uz", "ru"];
+
+/* Til: manzildagi ?lang= → brauzer xotirasi → Telegram/brauzer tili → o'zbekcha */
+function pickLang() {
+  let q = "";
+  try { q = (new URLSearchParams(location.search).get("lang") || "").toLowerCase(); } catch {}
+  if (LANGS.includes(q)) { try { localStorage.setItem(K("lang"), q); } catch {} return q; }
+  let saved = "";
+  try { saved = localStorage.getItem(K("lang")) || ""; } catch {}
+  if (LANGS.includes(saved)) return saved;
+  let code = "";
+  try {
+    code = String((tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.language_code)
+      || navigator.language || "").toLowerCase();
+  } catch {}
+  return /^(ru|be|uk|kk|ky|tg|tk)/.test(code) ? "ru" : "uz";
+}
+let LANG = pickLang();
+
+/* Kalit bo'yicha matn. {n}, {title}, {id} kabi o'rinlar to'ldiriladi. */
+function T(key, vars) {
+  let out = (I18N[LANG] && I18N[LANG][key]) ?? I18N.uz[key] ?? key;
+  if (vars) for (const k in vars) out = out.split("{" + k + "}").join(vars[k]);
+  return out;
+}
+
+/* Ruscha son shakllari: 1 e'lon / 2 e'lon / 5 e'lon */
+function plural(n, one, few, many) {
+  const a = Math.abs(Number(n) || 0) % 100, b = a % 10;
+  if (a > 10 && a < 20) return many;
+  if (b === 1) return one;
+  if (b >= 2 && b <= 4) return few;
+  return many;
+}
+
+/* E'lonning tanlangan tildagi maydoni. Ruschasi bo'sh bo'lsa — o'zbekchasi. */
+function L(it, key) {
+  if (LANG === "ru" && it && it.ru) {
+    const v = String(it.ru[key] ?? "").trim();
+    if (v) return it.ru[key];
+  }
+  return it ? it[key] : "";
+}
+
+/* Sahifadagi qat'iy yozuvlar (data-i18n) shu yerda yangilanadi */
+function applyLang() {
+  document.documentElement.lang = LANG;
+  document.querySelectorAll("[data-i18n]").forEach((el) => { el.textContent = T(el.dataset.i18n); });
+  document.querySelectorAll("[data-i18n-ph]").forEach((el) => { el.placeholder = T(el.dataset.i18nPh); });
+  document.querySelectorAll("[data-i18n-aria]").forEach((el) => { el.setAttribute("aria-label", T(el.dataset.i18nAria)); });
+  document.querySelectorAll("#langSw button").forEach((b) => b.classList.toggle("on", b.dataset.lang === LANG));
+}
+
+function setLang(next) {
+  if (!LANGS.includes(next) || next === LANG) return;
+  LANG = next;
+  try { localStorage.setItem(K("lang"), next); } catch {}
+  haptic();
+  applyLang();
+  if (page === "realty" || page === "product") renderList();
+  if (page === "taxi") renderTaxi();
+  if (page === "fav") renderFavs();
+  if (page === "item") renderItem();
+}
 
 let SETTINGS = { ...FALLBACK.settings };
 let ADMIN = { ...FALLBACK.admin };
@@ -453,7 +649,7 @@ function load(key, fallback) {
 }
 const save = (key, value) => { try { localStorage.setItem(K(key), JSON.stringify(value)); } catch {} };
 
-const SORTS = ["Yangi", "Avval arzoni", "Avval qimmati"];
+const SORTS = () => [T("list.sort0"), T("list.sort1"), T("list.sort2")];
 
 /* Uy-joy e'lonining qo'shimcha maydonlari.
    turi: text — oddiy matn, num — raqam, check — bor/yo'q belgisi */
@@ -469,6 +665,23 @@ const EXTRA = [
   { key: "minTerm",     label: "Minimal muddat", group: "rent", type: "text", hint: "6 oy" },
 ];
 const EXTRA_NUM = EXTRA.filter((f) => f.type === "num").map((f) => f.key);
+
+/* E'lonning ruscha varianti — catalog.json ichida it.ru bo'lib saqlanadi.
+   Bo'sh qoldirilgan maydon o'rniga saytda o'zbekchasi ko'rsatiladi. */
+const RU_FIELDS = [
+  { key: "title",       label: "Nomi" },
+  { key: "description", label: "Tavsifi", area: 4 },
+  { key: "category",    label: "Kategoriya" },
+  { key: "district",    label: "Tuman" },
+  { key: "floor",       label: "Qavat" },
+  { key: "address",     label: "Manzil" },
+  { key: "heating",     label: "Isitish" },
+  { key: "appliances",  label: "Texnika" },
+  { key: "transport",   label: "Transport" },
+  { key: "commission",  label: "Komissiya" },
+  { key: "minTerm",     label: "Minimal muddat" },
+  { key: "rates",       label: "Narx jadvali — har qatorda: matn | narx", area: 3 },
+];
 
 /* Belgilar — e'lon sahifasida faqat «bor» bo'lganlari chiqadi */
 const AMEN = [
@@ -489,27 +702,40 @@ const AMEN = [
 function normTransfer(t) {
   t = t && typeof t === "object" ? t : {};
   const str = (v, d) => String(v == null ? d : v);
+  const ru = t.ru && typeof t.ru === "object" ? t.ru : {};
   return {
     on: t.on === 0 || t.on === false || t.on === "0" ? 0 : 1,
     contact: str(t.contact, TRANSFER_FALLBACK.contact).trim().replace(/^@/, ""),
     phone: str(t.phone, "").trim(),
     note: str(t.note, TRANSFER_FALLBACK.note),
     rates: str(t.rates, ""),
+    ru: { note: str(ru.note, TRANSFER_FALLBACK.ru.note), rates: str(ru.rates, "") },
   };
 }
+/* Transfer bo'limining tanlangan tildagi maydoni */
+const trL = (t, key) => (LANG === "ru" && t.ru && String(t.ru[key] || "").trim() ? t.ru[key] : t[key]);
 const TRANSFER = () => (SETTINGS.transfer = normTransfer(SETTINGS.transfer));
 
 function normPromo(p) {
   p = p && typeof p === "object" ? p : {};
   const str = (v, d) => String(v == null ? d : v);
+  const ru = p.ru && typeof p.ru === "object" ? p.ru : {};
+  const F = PROMO_FALLBACK;
   return {
     on: p.on === 0 || p.on === false || p.on === "0" ? 0 : 1,
-    photo: str(p.photo, PROMO_FALLBACK.photo).trim(),
-    title: str(p.title, PROMO_FALLBACK.title).trim(),
-    text: str(p.text, PROMO_FALLBACK.text),
-    buttons: str(p.buttons, PROMO_FALLBACK.buttons),
-    about: str(p.about, PROMO_FALLBACK.about),
-    short: str(p.short, PROMO_FALLBACK.short),
+    photo: str(p.photo, F.photo).trim(),
+    title: str(p.title, F.title).trim(),
+    text: str(p.text, F.text),
+    buttons: str(p.buttons, F.buttons),
+    about: str(p.about, F.about),
+    short: str(p.short, F.short),
+    ru: {
+      title: str(ru.title, F.ru.title).trim(),
+      text: str(ru.text, F.ru.text),
+      buttons: str(ru.buttons, F.ru.buttons),
+      about: str(ru.about, F.ru.about),
+      short: str(ru.short, F.ru.short),
+    },
   };
 }
 
@@ -518,24 +744,24 @@ const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) =>
 
 const CURRENCIES = ["TL", "$", "\u20ac"];
 const RENT = { oylik: "Oylik", kunlik: "Kunlik", kelishiladi: "Kelishiladi" };
-const PER = { oylik: " / oyiga", kunlik: " / kunlik", kelishiladi: "" };
 
 const money = (n, cur) => (Number(n) || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " " + (cur || "TL");
 const isRealty = (it) => it.kind === "realty";
-const per = (it) => (isRealty(it) && PER[it.rentType] ? `<small>${PER[it.rentType]}</small>` : "");
+const per = (it) => (isRealty(it) && T("per." + it.rentType) ? `<small>${T("per." + it.rentType)}</small>` : "");
 const priceHtml = (it) => (it.rentType === "kelishiladi" || !Number(it.price)
-  ? "Kelishiladi" : money(it.price, it.currency) + per(it));
+  ? T("item.negotiable") : money(it.price, it.currency) + per(it));
 
 /* «Narx jadvali» maydoni: har qatorda «matn | narx» */
 const splitRates = (text) => String(text || "").split("\n").map((l) => l.trim()).filter(Boolean)
   .map((l) => { const i = l.indexOf("|"); return i < 0 ? [l, ""] : [l.slice(0, i).trim(), l.slice(i + 1).trim()]; });
-const rateRows = (it) => splitRates(it.rates);
+const rateRows = (it) => splitRates(L(it, "rates"));
 const lines = (text) => String(text || "").split("\n").map((l) => l.trim()).filter(Boolean);
 const cover = (it) => (Array.isArray(it.images) && it.images.length ? it.images[0] : "");
 const icon = (name, size) => `<svg width="${size}" height="${size}"><use href="#i-${name}"/></svg>`;
 
 function specsLine(it) {
-  return [it.rooms, it.area ? it.area + " m²" : "", it.floor, it.district].filter(Boolean).join(" · ");
+  return [it.rooms, it.area ? it.area + " " + T("u.m2") : "", L(it, "floor"), L(it, "district")]
+    .filter(Boolean).join(" · ");
 }
 
 function toast(msg) {
@@ -617,7 +843,9 @@ function visible() {
     if (!SHOW_PRODUCTS && !isRealty(it)) return false;
     if (cat && it.category !== cat) return false;
     if (!q) return true;
-    return [it.title, it.description, it.category, it.district, it.rooms, it.floor, it.address, it.transport]
+    const ru = it.ru || {};
+    return [it.title, it.description, it.category, it.district, it.rooms, it.floor, it.address, it.transport,
+            ru.title, ru.description, ru.category, ru.district, ru.floor, ru.address, ru.transport]
       .filter(Boolean).join(" ").toLowerCase().includes(q);
   });
   if (sort === 1) list = [...list].sort((a, b) => a.price - b.price);
@@ -631,16 +859,16 @@ function cardHtml(it, withTag) {
   return `
   <article class="card" onclick="go('item',${it.id})">
     <div class="thumb">
-      ${img ? `<img src="${esc(img)}" alt="${esc(it.title)}" loading="lazy">`
+      ${img ? `<img src="${esc(img)}" alt="${esc(L(it, "title"))}" loading="lazy">`
             : `<div class="none">${icon(isRealty(it) ? "home" : "box", 40)}</div>`}
-      ${withTag ? `<span class="tag${isRealty(it) ? " red" : ""}">${isRealty(it) ? "Uy-joy" : "Mahsulot"}</span>` : ""}
-      <button class="fav${fav ? " on" : ""}" onclick="event.stopPropagation();toggleFav(${it.id})" aria-label="Saralangan">
+      ${withTag ? `<span class="tag${isRealty(it) ? " red" : ""}">${T(isRealty(it) ? "tag.realty" : "tag.product")}</span>` : ""}
+      <button class="fav${fav ? " on" : ""}" onclick="event.stopPropagation();toggleFav(${it.id})" aria-label="${esc(T("a.fav"))}">
         ${icon(fav ? "star-f" : "star", 17)}
       </button>
     </div>
     <div class="card-b">
       <div class="price">${priceHtml(it)}</div>
-      <div class="ttl">${esc(it.title)}</div>
+      <div class="ttl">${esc(L(it, "title"))}</div>
       ${specsLine(it) ? `<div class="specs">${esc(specsLine(it))}</div>` : ""}
     </div>
   </article>`;
@@ -650,30 +878,44 @@ const skeleton = () => Array.from({ length: 4 }, () =>
   `<div class="sk"><div class="b"></div><div class="l"></div><div class="l s"></div></div>`).join("");
 
 function renderChips() {
-  const list = [...new Set(ITEMS.filter((i) => !i.hidden && i.kind === kind).map((i) => i.category).filter(Boolean))]
-    .sort((a, b) => a.localeCompare(b, "uz"));
-  if (cat && !list.includes(cat)) cat = "";
+  /* Qiymat — o'zbekcha kategoriya (filtr shunga qarab ishlaydi), yozuvi — tanlangan tilda */
+  const seen = new Map();
+  ITEMS.filter((i) => !i.hidden && i.kind === kind).forEach((i) => {
+    if (i.category && !seen.has(i.category)) seen.set(i.category, L(i, "category") || i.category);
+  });
+  const list = [...seen.entries()].sort((a, b) => a[1].localeCompare(b[1], LANG));
+  if (cat && !seen.has(cat)) cat = "";
   $("chips").innerHTML = list.length
-    ? `<button class="chip${cat ? "" : " on"}" onclick="setCat('')">Barchasi</button>` +
-      list.map((c) => `<button class="chip${cat === c ? " on" : ""}" onclick="setCat(${JSON.stringify(c).replace(/"/g, "&quot;")})">${esc(c)}</button>`).join("")
+    ? `<button class="chip${cat ? "" : " on"}" onclick="setCat('')">${esc(T("list.all"))}</button>` +
+      list.map(([value, label]) =>
+        `<button class="chip${cat === value ? " on" : ""}" onclick="setCat(${JSON.stringify(value).replace(/"/g, "&quot;")})">${esc(label)}</button>`).join("")
     : "";
 }
 function setCat(c) { cat = c; haptic(); renderList(); }
 
+/* «12 ta e'lon» / «12 объявлений» — ruschada son shakli o'zgaradi */
+function countLabel(n) {
+  if (LANG !== "ru") return T(kind === "realty" ? "u.items" : "u.products", { n });
+  const word = kind === "realty"
+    ? plural(n, "объявление", "объявления", "объявлений")
+    : plural(n, "товар", "товара", "товаров");
+  return n + " " + word;
+}
+
 function renderList() {
   renderChips();
-  $("sortBtn").textContent = SORTS[sort];
+  $("sortBtn").textContent = SORTS()[sort];
   const list = visible();
   const empty = $("listEmpty");
 
   if (!loaded) { $("grid").innerHTML = skeleton(); empty.style.display = "none"; $("count").textContent = ""; return; }
 
   $("grid").innerHTML = list.map((it) => cardHtml(it, false)).join("");
-  $("count").textContent = list.length ? `${list.length} ta ${kind === "realty" ? "e'lon" : "mahsulot"}` : "";
+  $("count").textContent = list.length ? countLabel(list.length) : "";
   empty.style.display = list.length ? "none" : "block";
   empty.innerHTML = ITEMS.some((i) => i.kind === kind && !i.hidden)
-    ? `${icon("search", 44)}<div>Hech narsa topilmadi</div>`
-    : `${icon(kind === "realty" ? "home" : "box", 44)}<div>Hozircha bu bo'limda e'lon yo'q</div>`;
+    ? `${icon("search", 44)}<div>${esc(T("list.none"))}</div>`
+    : `${icon(kind === "realty" ? "home" : "box", 44)}<div>${esc(T("list.empty"))}</div>`;
 }
 
 function toggleFav(id) {
@@ -706,7 +948,7 @@ function txOpenNote() { TX.noteOpen = true; renderTaxi(); const el = $("txNote")
 const TX_MAX_STOPS = 4;
 function txSetStop(n, value) { TX.stops[n] = value; }
 function txAddStop() {
-  if (TX.stops.length >= TX_MAX_STOPS) { toast("Ko'pi bilan " + TX_MAX_STOPS + " ta to'xtash joyi"); return; }
+  if (TX.stops.length >= TX_MAX_STOPS) { toast(T("tx.maxstops", { n: TX_MAX_STOPS })); return; }
   TX.stops.push("");
   haptic();
   renderRoute();
@@ -730,18 +972,18 @@ function renderRoute() {
   el.innerHTML = `
     <div class="route">
       <div class="rows">
-        ${row("a", `<input id="txFrom" placeholder="Qayerdan" autocomplete="off" spellcheck="false"
+        ${row("a", `<input id="txFrom" placeholder="${esc(T("tx.from"))}" autocomplete="off" spellcheck="false"
                  value="${esc(TX.from)}" oninput="txSet('from',this.value)">`)}
         ${TX.stops.map((v, n) => row("m",
-          `<input placeholder="To'xtash joyi${TX.stops.length > 1 ? " " + (n + 1) : ""}"
+          `<input placeholder="${esc(T("tx.stop"))}${TX.stops.length > 1 ? " " + (n + 1) : ""}"
                   autocomplete="off" spellcheck="false" value="${esc(v)}" oninput="txSetStop(${n},this.value)">
-           <button class="rm" onclick="txDelStop(${n})" aria-label="O'chirish">×</button>`)).join("")}
-        ${row("b", `<input id="txTo" placeholder="Qayerga" autocomplete="off" spellcheck="false"
+           <button class="rm" onclick="txDelStop(${n})" aria-label="${esc(T("a.del"))}">×</button>`)).join("")}
+        ${row("b", `<input id="txTo" placeholder="${esc(T("tx.to"))}" autocomplete="off" spellcheck="false"
                  value="${esc(TX.to)}" oninput="txSet('to',this.value)">`)}
         ${TX.stops.length < TX_MAX_STOPS
-          ? `<button class="addstop" onclick="txAddStop()">${icon("plus", 13)} To'xtash joyi qo'shish</button>` : ""}
+          ? `<button class="addstop" onclick="txAddStop()">${icon("plus", 13)} ${esc(T("tx.addstop"))}</button>` : ""}
       </div>
-      <button class="swap" onclick="txSwap()" aria-label="Almashtirish">${icon("swap", 18)}</button>
+      <button class="swap" onclick="txSwap()" aria-label="${esc(T("a.swap"))}">${icon("swap", 18)}</button>
     </div>`;
 }
 
@@ -751,23 +993,23 @@ const dmy = (iso) => {
 };
 
 function txText() {
-  const out = ["Assalomu alaykum! Transfer buyurtma qilmoqchiman."];
-  out.push("Qayerdan: " + TX.from.trim());
+  const out = [T("tx.m.hi")];
+  out.push(T("tx.m.from") + ": " + TX.from.trim());
   const stops = TX.stops.map((x) => String(x || "").trim()).filter(Boolean);
-  stops.forEach((x, n) => out.push("To'xtash" + (stops.length > 1 ? " " + (n + 1) : "") + ": " + x));
-  out.push("Qayerga: " + TX.to.trim());
+  stops.forEach((x, n) => out.push(T("tx.m.stop") + (stops.length > 1 ? " " + (n + 1) : "") + ": " + x));
+  out.push(T("tx.m.to") + ": " + TX.to.trim());
   if (TX.date || TX.time) {
-    out.push("Sana va vaqt: " + [dmy(TX.date), TX.time].filter(Boolean).join(", "));
+    out.push(T("tx.m.when") + ": " + [dmy(TX.date), TX.time].filter(Boolean).join(", "));
   }
-  out.push("Yo'lovchilar: " + (TX.pax || "1"));
-  if (Number(TX.bags)) out.push("Yuk (chamadon): " + TX.bags);
-  if (TX.note.trim()) out.push("Izoh: " + TX.note.trim());
+  out.push(T("tx.m.pax") + ": " + (TX.pax || "1"));
+  if (Number(TX.bags)) out.push(T("tx.m.bags") + ": " + TX.bags);
+  if (TX.note.trim()) out.push(T("tx.m.note") + ": " + TX.note.trim());
   return out.join("\n");
 }
 
 function txReady() {
   if (TX.from.trim() && TX.to.trim()) return true;
-  toast("«Qayerdan» va «Qayerga» to'ldirilsin");
+  toast(T("tx.fill"));
   haptic("heavy");
   const el = TX.from.trim() ? $("txTo") : $("txFrom");
   if (el) el.focus();
@@ -777,7 +1019,7 @@ function txReady() {
 function txOrder() {
   if (!txReady()) return;
   const t = TRANSFER();
-  if (!t.contact) { toast("Haydovchining Telegrami ko'rsatilmagan"); return; }
+  if (!t.contact) { toast(T("tx.nodriver")); return; }
   save("taxi", { pax: TX.pax, bags: TX.bags });
   const url = `https://t.me/${t.contact}?text=${encodeURIComponent(txText())}`;
   haptic("medium");
@@ -787,13 +1029,13 @@ function txOrder() {
 
 async function txCopy() {
   if (!txReady()) return;
-  try { await navigator.clipboard.writeText(txText()); haptic(); toast("Buyurtma matni nusxalandi"); }
-  catch { prompt("Buyurtma matni:", txText()); }
+  try { await navigator.clipboard.writeText(txText()); haptic(); toast(T("tx.copied")); }
+  catch { prompt(T("tx.copy") + ":", txText()); }
 }
 
 function renderTaxi() {
   const t = TRANSFER();
-  const rates = splitRates(t.rates);
+  const rates = splitRates(trL(t, "rates"));
   const num = (id, from, to, val, unit) => {
     let out = "";
     for (let n = from; n <= to; n++) out += `<option value="${n}"${String(val) === String(n) ? " selected" : ""}>${n}${unit || ""}</option>`;
@@ -805,51 +1047,51 @@ function renderTaxi() {
   $("p-taxi").innerHTML = `
     <div class="hero-tx">
       <svg class="ill" width="126" height="126"><use href="#i-car"/></svg>
-      <h1>Transfer va taksi</h1>
-      <p>${esc(t.note)}</p>
+      <h1>${esc(T("tx.title"))}</h1>
+      <p>${esc(trL(t, "note") || T("tx.note"))}</p>
     </div>
 
 
     <div id="txRoute"></div>
 
     <div class="f2" style="margin-top:10px">
-      <div class="f"><label>Sana</label>
+      <div class="f"><label>${esc(T("tx.date"))}</label>
         <div class="dt${TX.date ? " filled" : ""}">
           <input id="txDate" type="date" min="${iso}" value="${esc(TX.date)}"
                  oninput="txSet('date',this.value);this.parentNode.classList.toggle('filled',!!this.value)">
-          <span class="ph">kun.oy.yil</span></div></div>
-      <div class="f"><label>Vaqt</label>
+          <span class="ph">${esc(T("tx.phdate"))}</span></div></div>
+      <div class="f"><label>${esc(T("tx.time"))}</label>
         <div class="dt${TX.time ? " filled" : ""}">
           <input id="txTime" type="time" value="${esc(TX.time)}"
                  oninput="txSet('time',this.value);this.parentNode.classList.toggle('filled',!!this.value)">
-          <span class="ph">soat:daqiqa</span></div></div>
+          <span class="ph">${esc(T("tx.phtime"))}</span></div></div>
     </div>
 
     <div class="f2" style="margin-top:9px">
-      <div class="f"><label>Yo'lovchilar</label>
-        <select onchange="txSet('pax',this.value)">${num("pax", 1, 8, TX.pax, " kishi")}</select></div>
-      <div class="f"><label>Yuk (chamadon)</label>
-        <select onchange="txSet('bags',this.value)">${num("bags", 0, 8, TX.bags, " ta")}</select></div>
+      <div class="f"><label>${esc(T("tx.pax"))}</label>
+        <select onchange="txSet('pax',this.value)">${num("pax", 1, 8, TX.pax, T("tx.paxunit"))}</select></div>
+      <div class="f"><label>${esc(T("tx.bags"))}</label>
+        <select onchange="txSet('bags',this.value)">${num("bags", 0, 8, TX.bags, T("tx.bagsunit"))}</select></div>
     </div>
 
     ${TX.noteOpen
       ? `<div class="f" style="margin-top:9px">
-           <label>Izoh (ixtiyoriy)</label>
-           <textarea id="txNote" rows="2" placeholder="Reys raqami, bolalar o'rindig'i, qo'shimcha manzil…"
+           <label>${esc(T("tx.note2"))}</label>
+           <textarea id="txNote" rows="2" placeholder="${esc(T("tx.noteph"))}"
                      oninput="txSet('note',this.value)">${esc(TX.note)}</textarea>
          </div>`
-      : `<button class="addnote" onclick="txOpenNote()">${icon("plus", 13)} Izoh qo'shish (ixtiyoriy)</button>`}
+      : `<button class="addnote" onclick="txOpenNote()">${icon("plus", 13)} ${esc(T("tx.addnote"))}</button>`}
 
-    ${rates.length ? `<h2 class="sec">Narxlar</h2><div class="specs-list">${rates.map(([k, v]) =>
+    ${rates.length ? `<h2 class="sec">${esc(T("tx.prices"))}</h2><div class="specs-list">${rates.map(([k, v]) =>
       `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</div>` : ""}
 
     <div class="cta tx-cta">
-      ${t.contact ? `<button class="btn btn-primary" onclick="txOrder()">${icon("send", 18)} Telegram orqali buyurtma</button>` : ""}
+      ${t.contact ? `<button class="btn btn-primary" onclick="txOrder()">${icon("send", 18)} ${esc(T("tx.order"))}</button>` : ""}
       ${t.phone ? `<a class="btn btn-line" href="tel:${esc(t.phone)}">${icon("phone", 17)} ${esc(t.phone)}</a>` : ""}
-      ${!t.contact && !t.phone ? `<div class="muted">Haydovchining aloqasi boshqaruv panelida — «Transfer / taksi» bo'limida ko'rsatilmagan.</div>` : ""}
+      ${!t.contact && !t.phone ? `<div class="muted">${esc(T("tx.nocontact"))}</div>` : ""}
     </div>
-    <button class="linkbtn" onclick="txCopy()">Buyurtma matnini nusxalash</button>
-    <p class="tx-foot">Narx va vaqt haydovchi bilan kelishiladi.</p>
+    <button class="linkbtn" onclick="txCopy()">${esc(T("tx.copy"))}</button>
+    <p class="tx-foot">${esc(T("tx.foot"))}</p>
 `;
 
   renderRoute();
@@ -859,80 +1101,85 @@ function renderTaxi() {
 function renderItem() {
   const it = ITEMS.find((x) => x.id === curItem);
   if (!it || it.hidden) {
-    $("p-item").innerHTML = `<div class="empty">${icon("search", 44)}<div>E'lon topilmadi</div>
-      <button class="btn btn-soft" style="margin-top:18px" onclick="go('realty')">Katalogga</button></div>`;
+    $("p-item").innerHTML = `<div class="empty">${icon("search", 44)}<div>${esc(T("item.notfound"))}</div>
+      <button class="btn btn-soft" style="margin-top:18px" onclick="go('realty')">${esc(T("item.tocatalog"))}</button></div>`;
     return;
   }
   const photos = Array.isArray(it.images) ? it.images : [];
   const realty = isRealty(it);
   const extraVal = (key) => {
     const f = EXTRA.find((x) => x.key === key);
-    const v = it[key];
+    const v = L(it, key);
     if (v === "" || v == null) return "";
-    if (f && f.type === "num") return f.money ? money(v, it.currency) : v + (f.unit || "");
+    if (f && f.type === "num") {
+      if (f.money) return money(v, it.currency);
+      /* «yil» ruschada songa qarab o'zgaradi: 1 год / 2 года / 8 лет */
+      if (key === "buildingAge" && LANG === "ru") return v + " " + plural(v, "год", "года", "лет");
+      return v + (f.unit || "");
+    }
     return String(v);
   };
   const rows = [
-    ["Kategoriya", it.category],
-    ["Tuman", it.district],
-    realty ? ["Manzil", extraVal("address")] : null,
-    ["Xonalar", it.rooms],
-    ["Maydoni", it.area ? it.area + " m²" : ""],
-    ["Qavat", it.floor],
-    realty ? ["Bino yoshi", extraVal("buildingAge")] : null,
-    realty ? ["Isitish", extraVal("heating")] : null,
-    realty ? ["Texnika", extraVal("appliances")] : null,
-    realty ? ["Transport", extraVal("transport")] : null,
-    realty ? ["E'lon sanasi", extraVal("postedAt")] : null,
+    [T("row.category"), L(it, "category")],
+    [T("row.district"), L(it, "district")],
+    realty ? [T("row.address"), extraVal("address")] : null,
+    [T("row.rooms"), it.rooms],
+    [T("row.area"), it.area ? it.area + " " + T("u.m2") : ""],
+    [T("row.floor"), L(it, "floor")],
+    realty ? [T("row.buildingAge"), extraVal("buildingAge")] : null,
+    realty ? [T("row.heating"), extraVal("heating")] : null,
+    realty ? [T("row.appliances"), extraVal("appliances")] : null,
+    realty ? [T("row.transport"), extraVal("transport")] : null,
+    realty ? [T("row.postedAt"), extraVal("postedAt")] : null,
   ].filter((r) => r && r[1]);
 
   const rentRows = realty
-    ? EXTRA.filter((f) => f.group === "rent").map((f) => [f.label, extraVal(f.key)]).filter((r) => r[1])
+    ? EXTRA.filter((f) => f.group === "rent").map((f) => [T("row." + f.key), extraVal(f.key)]).filter((r) => r[1])
     : [];
   const amens = realty ? AMEN.filter((a) => it[a.key]) : [];
   const rates = rateRows(it);
 
   const contact = String(it.contact || SETTINGS.contact || "").replace(/^@/, "");
-  const text = `Assalomu alaykum! "${it.title}" (№${it.id}) qiziqtiryapti.`;
+  const text = T("item.hello", { title: L(it, "title"), id: it.id });
   const link = contact ? `https://t.me/${contact}?text=${encodeURIComponent(text)}` : "";
   const fav = favs.includes(it.id);
 
   $("p-item").innerHTML = `
-    <button class="back" onclick="go('${it.kind}')">${icon("back", 15)} Katalogga qaytish</button>
+    <button class="back" onclick="go('${it.kind}')">${icon("back", 15)} ${esc(T("item.back"))}</button>
     ${photos.length ? `
-      <div class="gallery" id="gallery">${photos.map((p) => `<img src="${esc(p)}" alt="${esc(it.title)}">`).join("")}</div>
+      <div class="gallery" id="gallery">${photos.map((p) => `<img src="${esc(p)}" alt="${esc(L(it, "title"))}">`).join("")}</div>
       ${photos.length > 1 ? `<div class="dots" id="dots">${photos.map((_, i) => `<i class="${i ? "" : "on"}"></i>`).join("")}</div>` : ""}
     ` : `<div class="hero-none">${icon(isRealty(it) ? "home" : "box", 54)}</div>`}
 
     <div class="name-row">
-      <h1 class="name">${esc(it.title)}</h1>
-      <button class="star${fav ? " on" : ""}" onclick="toggleFav(${it.id})" aria-label="Saralangan">${icon(fav ? "star-f" : "star", 19)}</button>
+      <h1 class="name">${esc(L(it, "title"))}</h1>
+      <button class="star${fav ? " on" : ""}" onclick="toggleFav(${it.id})" aria-label="${esc(T("a.fav"))}">${icon(fav ? "star-f" : "star", 19)}</button>
     </div>
     <div class="big-price">${priceHtml(it)}</div>
 
     ${amens.length ? `<div class="amen">${amens.map((a) =>
-      `<span>${icon("check", 14)}${esc(a.label)}</span>`).join("")}</div>` : ""}
+      `<span>${icon("check", 14)}${esc(T("am." + a.key))}</span>`).join("")}</div>` : ""}
 
-    ${rows.length ? `<h2 class="sec">Ma'lumotlar</h2><div class="specs-list">${rows.map(([k, v]) =>
+    ${rows.length ? `<h2 class="sec">${esc(T("item.info"))}</h2><div class="specs-list">${rows.map(([k, v]) =>
       `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</div>` : ""}
-    ${rates.length ? `<h2 class="sec">Narxlar</h2><div class="specs-list">${rates.map(([k, v]) =>
+    ${rates.length ? `<h2 class="sec">${esc(T("item.prices"))}</h2><div class="specs-list">${rates.map(([k, v]) =>
       `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</div>` : ""}
-    ${rentRows.length ? `<h2 class="sec">Ijara sharti</h2><div class="specs-list">${rentRows.map(([k, v]) =>
+    ${rentRows.length ? `<h2 class="sec">${esc(T("item.rent"))}</h2><div class="specs-list">${rentRows.map(([k, v]) =>
       `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</div>` : ""}
-    ${it.description ? `<h2 class="sec">Tavsif</h2><p class="desc">${esc(it.description)}</p>` : ""}
+    ${L(it, "description") ? `<h2 class="sec">${esc(T("item.desc"))}</h2><p class="desc">${esc(L(it, "description"))}</p>` : ""}
 
     <div class="cta-box">
-      <div class="cta-t">Aloqaga chiqish</div>
-      <div class="cta-s">${esc(it.title)} — №${it.id}</div>
+      <div class="cta-t">${esc(T("item.contact"))}</div>
+      <div class="cta-s">${esc(L(it, "title"))} — №${it.id}</div>
       <div class="cta">
-        ${link ? `<a class="btn btn-primary" id="ctaBtn" href="${esc(link)}" target="_blank" rel="noopener">${icon("send", 18)} Telegramga yozish</a>` : ""}
+        ${link ? `<a class="btn btn-primary" id="ctaBtn" href="${esc(link)}" target="_blank" rel="noopener">${icon("send", 18)} ${esc(T("item.write"))}</a>` : ""}
         ${SETTINGS.phone ? `<a class="btn btn-line" href="tel:${esc(SETTINGS.phone)}">${icon("phone", 17)} ${esc(SETTINGS.phone)}</a>` : ""}
-        ${!link && !SETTINGS.phone ? `<div class="muted">Bog'lanish uchun Telegram yoki telefon boshqaruv panelida — «Do'kon» bo'limida ko'rsatilmagan.</div>` : ""}
-        ${it.mapUrl ? `<a class="btn btn-line" href="${esc(it.mapUrl)}" target="_blank" rel="noopener">${icon("pin", 17)} Xaritada ko'rish</a>` : ""}
-        <button class="btn btn-line" onclick="copyLink(${it.id})">${icon("link", 17)} E'lon havolasini nusxalash</button>
+        ${!link && !SETTINGS.phone ? `<div class="muted">${esc(T("item.nocontact"))}</div>` : ""}
+        ${it.mapUrl ? `<a class="btn btn-line" href="${esc(it.mapUrl)}" target="_blank" rel="noopener">${icon("pin", 17)} ${esc(T("item.map"))}</a>` : ""}
+        <button class="btn btn-line" onclick="copyLink(${it.id})">${icon("link", 17)} ${esc(T("item.copylink"))}</button>
       </div>
     </div>
-    <p class="muted" style="text-align:center;margin-top:12px">E'lon raqami: №${it.id}</p>`;
+    <p class="muted" style="text-align:center;margin-top:12px">${esc(T("item.number"))}${it.id}</p>`;
 
   const gallery = $("gallery");
   if (gallery && photos.length > 1) {
@@ -948,7 +1195,9 @@ function renderItem() {
 }
 
 function itemUrl(id) {
-  return location.origin + location.pathname + location.search + "#item-" + id;
+  const p = new URLSearchParams(location.search);
+  p.set("lang", LANG);
+  return location.origin + location.pathname + "?" + p.toString() + "#item-" + id;
 }
 
 async function copyLink(id) {
@@ -956,9 +1205,9 @@ async function copyLink(id) {
   try {
     await navigator.clipboard.writeText(url);
     haptic();
-    toast("Havola nusxalandi");
+    toast(T("item.copied"));
   } catch {
-    prompt("E'lon havolasi:", url);
+    prompt(T("item.copylink") + ":", url);
   }
 }
 
@@ -1031,6 +1280,10 @@ function setNum(i, field, value) {
 function setSetting(field, value) { ensureDraft(); draftSettings[field] = value; }
 function setTransfer(field, value) { ensureDraft(); draftSettings.transfer[field] = value; }
 function setPromo(field, value) { ensureDraft(); draftSettings.promo[field] = value; }
+/* Ruscha variantlar */
+function setFieldRu(i, field, value) { ensureDraft(); if (!draft[i].ru) draft[i].ru = {}; draft[i].ru[field] = value; }
+function setTransferRu(field, value) { ensureDraft(); if (!draftSettings.transfer.ru) draftSettings.transfer.ru = {}; draftSettings.transfer.ru[field] = value; }
+function setPromoRu(field, value) { ensureDraft(); if (!draftSettings.promo.ru) draftSettings.promo.ru = {}; draftSettings.promo.ru[field] = value; }
 
 function pickPromoPhoto() {
   ensureDraft();
@@ -1206,6 +1459,15 @@ function renderAdmin() {
         <div class="adm-t" style="margin:4px 0 -5px">Uyda bor</div>
         <div class="checks">${AMEN.map((a) =>
           `<label><input type="checkbox"${it[a.key] ? " checked" : ""} onchange="setField(${i},'${a.key}',this.checked?1:0)">${a.label}</label>`).join("")}</div>` : ""}
+        <div class="adm-t" style="margin:4px 0 -5px">🇷🇺 Ruscha (bo'sh qolsa — o'zbekchasi ko'rsatiladi)</div>
+        ${RU_FIELDS.map((f) => {
+          const v = (it.ru && it.ru[f.key]) || "";
+          return f.area
+            ? `<div class="f"><label>${esc(f.label)} (RU)</label>
+                 <textarea rows="${f.area}" oninput="setFieldRu(${i},'${f.key}',this.value)">${esc(v)}</textarea></div>`
+            : `<div class="f"><label>${esc(f.label)} (RU)</label>
+                 <input value="${esc(v)}" oninput="setFieldRu(${i},'${f.key}',this.value)"></div>`;
+        }).join("")}
         <div class="checks">
           <label><input type="checkbox"${it.hidden ? " checked" : ""} onchange="setField(${i},'hidden',this.checked?1:0);renderAdmin()">Saytda ko'rsatilmasin</label>
         </div>
@@ -1258,7 +1520,13 @@ function renderAdmin() {
           <textarea rows="3" oninput="setTransfer('note',this.value)">${esc(draftSettings.transfer.note)}</textarea></div>
         <div class="f"><label>Narxlar — har qatorda: yo'nalish | narx</label>
           <textarea rows="4" placeholder="Istanbul aeroporti → Kayaşehir | 1500 TL" oninput="setTransfer('rates',this.value)">${esc(draftSettings.transfer.rates)}</textarea></div>
-        <p class="muted">Narxlar bo'sh qoldirilsa, sahifada «Narxlar» jadvali chiqmaydi.</p>
+        <div class="adm-t" style="margin:6px 0 -5px">🇷🇺 Ruscha</div>
+        <div class="f"><label>Bo'lim tavsifi (RU)</label>
+          <textarea rows="3" oninput="setTransferRu('note',this.value)">${esc((draftSettings.transfer.ru || {}).note || "")}</textarea></div>
+        <div class="f"><label>Narxlar (RU)</label>
+          <textarea rows="4" placeholder="Аэропорт Стамбула → Кайяшехир | 1500 TL" oninput="setTransferRu('rates',this.value)">${esc((draftSettings.transfer.ru || {}).rates || "")}</textarea></div>
+        <p class="muted">Narxlar bo'sh qoldirilsa, sahifada «Narxlar» jadvali chiqmaydi.
+          Ruscha maydon bo'sh bo'lsa, rus tilida ham o'zbekchasi ko'rsatiladi.</p>
       </div>
     </div>
 
@@ -1289,8 +1557,21 @@ function renderAdmin() {
           <textarea rows="5" maxlength="512" oninput="setPromo('about',this.value)">${esc(draftSettings.promo.about)}</textarea></div>
         <div class="f"><label>Qisqa tavsif — bot profilida va havolada</label>
           <textarea rows="2" maxlength="120" oninput="setPromo('short',this.value)">${esc(draftSettings.promo.short)}</textarea></div>
-        <p class="muted">Bu ikki matn saqlangandan keyin
-          <b>/api/bot?setup=1</b> manzili ochilganda Telegramga yuboriladi.
+        <div class="adm-t" style="margin:10px 0 -5px">🇷🇺 Ruscha reklama</div>
+        <p class="muted">Botga kirgan odam «🇷🇺 Русский» tugmasini bossa — shu matnlar chiqadi.
+          Surat ikkala tilda bir xil.</p>
+        <div class="f"><label>Sarlavha (RU)</label>
+          <input value="${esc((draftSettings.promo.ru || {}).title || "")}" oninput="setPromoRu('title',this.value)"></div>
+        <div class="f"><label>Matn (RU)</label>
+          <textarea rows="4" oninput="setPromoRu('text',this.value)">${esc((draftSettings.promo.ru || {}).text || "")}</textarea></div>
+        <div class="f"><label>Tugmalar (RU) — har qatorda: matn | havola</label>
+          <textarea rows="3" placeholder="Открыть Qulay Market | app" oninput="setPromoRu('buttons',this.value)">${esc((draftSettings.promo.ru || {}).buttons || "")}</textarea></div>
+        <div class="f"><label>Tavsif (RU)</label>
+          <textarea rows="5" maxlength="512" oninput="setPromoRu('about',this.value)">${esc((draftSettings.promo.ru || {}).about || "")}</textarea></div>
+        <div class="f"><label>Qisqa tavsif (RU)</label>
+          <textarea rows="2" maxlength="120" oninput="setPromoRu('short',this.value)">${esc((draftSettings.promo.ru || {}).short || "")}</textarea></div>
+        <p class="muted">Bu matnlar saqlangandan keyin
+          <b>/api/bot?setup=1</b> manzili ochilganda Telegramga yuboriladi — o'zbekchasi va ruschasi alohida.
           Surat esa BotFather'da qo'yiladi: <b>/mybots → bot → Edit Bot → Edit Description Picture</b>.</p>
       </div>
     </div>
@@ -1428,7 +1709,19 @@ function normalize(it) {
     contact: String(it.contact || "").trim().replace(/^@/, ""),
     images: (Array.isArray(it.images) ? it.images : []).filter(Boolean),
     hidden: it.hidden ? 1 : 0,
+    ...normalizeRu(it.ru),
   };
+}
+
+/* Faqat to'ldirilgan ruscha maydonlar saqlanadi — catalog.json ortiqcha shishmasin */
+function normalizeRu(ru) {
+  if (!ru || typeof ru !== "object") return {};
+  const out = {};
+  RU_FIELDS.forEach((f) => {
+    const v = String(ru[f.key] ?? "").trim();
+    if (v) out[f.key] = v;
+  });
+  return Object.keys(out).length ? { ru: out } : {};
 }
 
 async function adminSave() {
@@ -1548,8 +1841,9 @@ async function loadCatalog() {
 /* Hodisalar */
 $("themeBtn").onclick = () => { theme = theme === "dark" ? "light" : "dark"; localStorage.setItem(K("theme"), theme); applyTheme(); };
 $("q").oninput = (e) => { query = e.target.value; renderList(); };
-$("sortBtn").onclick = () => { sort = (sort + 1) % SORTS.length; haptic(); renderList(); };
+$("sortBtn").onclick = () => { sort = (sort + 1) % SORTS().length; haptic(); renderList(); };
 $("nav").onclick = (e) => { const b = e.target.closest("button"); if (b) { haptic(); go(b.dataset.page); } };
+$("langSw").onclick = (e) => { const b = e.target.closest("button"); if (b) setLang(b.dataset.lang); };
 
 /* Boshqaruv paneli yashirin: logotipga 5 marta bosiladi yoki manzilga #admin qo'shiladi */
 $("brand").onclick = () => {
@@ -1575,6 +1869,7 @@ if (tg) {
 if (!SHOW_PRODUCTS) $("navProduct").style.display = "none";
 
 applyTheme();
+applyLang();
 applySettings();
 if (unlocked) $("navAdmin").style.display = "flex";
 routeFromHash();

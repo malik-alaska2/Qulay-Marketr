@@ -10,7 +10,8 @@
    Reklama matni, surati va tugmalari saytning boshqaruv panelida yoziladi va
    catalog.json ichida settings.promo bo'lib saqlanadi. Ruscha varianti —
    settings.promo.ru. Bo'sh qoldirilgan ruscha maydon o'rniga o'zbekchasi
-   ishlatiladi.
+   ishlatiladi. Surat ham tilga qarab tanlanadi: o'zbekcha — settings.promo.photo,
+   ruscha — settings.promo.ru.photo (bo'sh bo'lsa o'zbekchasi yuboriladi).
 
    Muhit o'zgaruvchilari (Vercel → Settings → Environment Variables):
      BOT_TOKEN        — BotFather bergan token. Majburiy.
@@ -45,7 +46,7 @@ const UI = {
 /* catalog.json da promo bo'lmasa yoki maydonlari bo'sh bo'lsa — shular */
 const PROMO_FALLBACK = {
   on: 1,
-  photo: "photos/bot-banner.jpg",
+  photo: "photos/bot-banner-uz.jpg",
   title: "Qulay Market",
   text:
     "Istanbulda kunlik va oylik uy-joy ijarasi, aeroportdan kutib olish va taksi.\n" +
@@ -59,6 +60,7 @@ const PROMO_FALLBACK = {
   /* Bot profilida va havola ko'rinishida chiqadigan qisqa matn */
   short: "Istanbulda uy-joy ijarasi va aeroport transferi — bitta ilovada.",
   ru: {
+    photo: "photos/bot-banner-ru.jpg",
     title: "Qulay Market",
     text:
       "Посуточная и помесячная аренда жилья в Стамбуле, встреча в аэропорту и такси.\n" +
@@ -88,6 +90,7 @@ function normPromo(p) {
     about: str(p.about, F.about),
     short: str(p.short, F.short),
     ru: {
+      photo: str(ru.photo, F.ru.photo).trim(),
       title: str(ru.title, F.ru.title).trim(),
       text: str(ru.text, F.ru.text),
       buttons: str(ru.buttons, F.ru.buttons),
@@ -108,7 +111,7 @@ function promoFor(promo, lang) {
   };
   return {
     on: promo.on,
-    photo: promo.photo,
+    photo: pick("photo"),
     title: pick("title"),
     text: pick("text"),
     buttons: pick("buttons"),
@@ -290,7 +293,7 @@ module.exports = async function handler(req, res) {
       webhook: hook,
       site: SITE,
       languages: LANGS,
-      build: "2026-09-03-bilingual",
+      build: "2026-09-04-bilingual-photo",
     };
     if (!token) return res.status(200).json({ ...base, hint: "Vercel'da token ko'rsatilmagan" });
 

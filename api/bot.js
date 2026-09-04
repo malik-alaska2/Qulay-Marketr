@@ -24,6 +24,8 @@
      POST — Telegram yuboradigan update.
    ========================================================================== */
 
+const store = require("./_store");
+
 const SITE = "https://malik-alaska2.github.io/Qulay-Marketr/";
 const CATALOG = SITE + "catalog.json";
 const API = "https://api.telegram.org/bot";
@@ -185,6 +187,18 @@ const langKeyboard = () => ({
   ]],
 });
 
+/* --------------------------------------------------------- hisoblagichlar */
+/* Botga kirganlar sanaladi: nechi marta va nechta har xil odam. Xotira
+   ulanmagan bo'lsa (Upstash Redis yo'q) — jimgina o'tkazib yuboriladi.
+   Odam haqida hech narsa saqlanmaydi, faqat raqamlar. */
+const countStart = (uid) =>
+  store.pipeline([
+    ["INCR", "qm:bot:starts"],
+    uid ? ["PFADD", "qm:bot:people", String(uid)] : null,
+  ]);
+
+const countLang = (code) => store.pipeline([["INCR", "qm:bot:lang:" + (code === "ru" ? "ru" : "uz")]]);
+
 /* ------------------------------------------------------------------ tarmoq */
 async function loadPromo() {
   try {
@@ -293,7 +307,7 @@ module.exports = async function handler(req, res) {
       webhook: hook,
       site: SITE,
       languages: LANGS,
-      build: "2026-09-04-bilingual-photo",
+      build: "2026-09-04-stats",
     };
     if (!token) return res.status(200).json({ ...base, hint: "Vercel'da token ko'rsatilmagan" });
 
@@ -351,6 +365,7 @@ module.exports = async function handler(req, res) {
             await tg(token, "deleteMessage", { chat_id: chatId, message_id: cq.message.message_id });
           }
           const promo = await loadPromo();
+          try { await countLang(lang); } catch (_) {}
           if (promo.on) await sendPromo(token, chatId, promo, lang);
         }
       } else {
@@ -375,6 +390,7 @@ module.exports = async function handler(req, res) {
 
   try {
     if (wantsAsk) {
+      try { await countStart(msg.from && msg.from.id); } catch (_) {}
       await askLang(token, chatId);
     } else {
       /* Buyruq emas — Telegram tiliga qarab taxmin qilamiz,

@@ -392,6 +392,9 @@
    ============================================================ */
 const CONFIG = {
   github: { owner: "malik-alaska2", repo: "Qulay-Marketr", branch: "main", catalog: "catalog.json", photos: "photos" },
+  /* Mini appning Telegramdagi to'g'ridan-to'g'ri havolasi: t.me/<username>/<app>.
+     BotFather → Bot Settings → Configure Mini App da qo'yilgan qisqa nom. */
+  bot: { username: "QulayMarketr_Bot", app: "app" },
 };
 
 /* Mahsulotlar bo'limi vaqtincha yopilgan: pastki menyuda ko'rinmaydi, mahsulot e'lonlari saytga chiqmaydi.
@@ -560,11 +563,43 @@ const I18N = {
 
 const LANGS = ["uz", "ru"];
 
-/* Til: manzildagi ?lang= → brauzer xotirasi → Telegram/brauzer tili → o'zbekcha */
+/* ---- t.me/<bot>/app?startapp=… ----------------------------------------------
+   Telegram bu qiymatni mini appga initDataUnsafe.start_param bo'lib uzatadi
+   (brauzerda ochilsa — manzildagi tgWebAppStartParam yoki ?startapp=).
+   Ruxsat etilgan belgilar: harf, raqam, _ va -. Shakli: [til_]bo'lim
+     transfer          → Transfer bo'limi        ru_transfer   → ruschada
+     item-3            → 3-raqamli e'lon         ru_item-3     → ruschada
+     saralangan, mahsulot, admin                 ru / uz       → faqat til
+   ------------------------------------------------------------------------- */
+function startParam() {
+  let v = "";
+  try { v = String((tg && tg.initDataUnsafe && tg.initDataUnsafe.start_param) || ""); } catch {}
+  if (!v) { try { v = new URLSearchParams(location.search).get("startapp") || ""; } catch {} }
+  if (!v) {
+    try { v = new URLSearchParams(location.hash.replace(/^#/, "")).get("tgWebAppStartParam") || ""; } catch {}
+  }
+  return v.trim();
+}
+
+function parseStart(value) {
+  let s = String(value || "").trim();
+  let lang = "";
+  const m = s.match(/^(uz|ru)(?:[_-]([\s\S]*))?$/i);
+  if (m) { lang = m[1].toLowerCase(); s = m[2] || ""; }
+  return { lang, route: s };
+}
+
+const START = parseStart(startParam());
+
+/* Til: manzildagi ?lang= → startapp dagi til → brauzer xotirasi → Telegram/brauzer tili → o'zbekcha */
 function pickLang() {
   let q = "";
   try { q = (new URLSearchParams(location.search).get("lang") || "").toLowerCase(); } catch {}
   if (LANGS.includes(q)) { try { localStorage.setItem(K("lang"), q); } catch {} return q; }
+  if (LANGS.includes(START.lang)) {
+    try { localStorage.setItem(K("lang"), START.lang); } catch {}
+    return START.lang;
+  }
   let saved = "";
   try { saved = localStorage.getItem(K("lang")) || ""; } catch {}
   if (LANGS.includes(saved)) return saved;
@@ -830,7 +865,11 @@ function routeKey(key) {
 function routeFromHash() {
   let q = "";
   try { q = new URLSearchParams(location.search).get("p") || ""; } catch {}
-  const r = routeKey(location.hash.replace(/^#/, "")) || routeKey(q);
+  /* startapp faqat birinchi ochilishda ishlaydi, keyin bo'shatiladi —
+     aks holda har bir «orqaga» bosishda o'sha bo'limga qaytarib tashlardi */
+  const start = START.route;
+  START.route = "";
+  const r = routeKey(location.hash.replace(/^#/, "")) || routeKey(q) || routeKey(start);
   if (!r) return go("realty");
   if (r[0] === "admin") $("navAdmin").style.display = "flex";
   go(r[0], r[1]);
@@ -1202,8 +1241,21 @@ function itemUrl(id) {
   return location.origin + location.pathname + "?" + p.toString() + "#item-" + id;
 }
 
+/* Telegramdagi havola: bosilganda mini app ochilib, o'sha e'lon ko'rinadi.
+   Bo'lim uchun — tgUrl("transfer"), butun katalog uchun — tgUrl(). */
+function tgUrl(route) {
+  const b = (CONFIG.bot || {});
+  const user = String(b.username || "").replace(/^@/, "");
+  const app = String(b.app || "").trim();
+  if (!user || !app) return "";
+  const tail = String(route || "").trim();
+  return "https://t.me/" + user + "/" + app + "?startapp=" + LANG + (tail ? "_" + tail : "");
+}
+
+const itemShareUrl = (id) => tgUrl("item-" + id) || itemUrl(id);
+
 async function copyLink(id) {
-  const url = itemUrl(id);
+  const url = itemShareUrl(id);
   try {
     await navigator.clipboard.writeText(url);
     haptic();

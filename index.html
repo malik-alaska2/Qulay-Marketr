@@ -414,13 +414,14 @@ const TRANSFER_FALLBACK = {
    uni api/bot.js o'qiydi. Bu yerda faqat standart qiymatlar. */
 const PROMO_FALLBACK = {
   on: 1,
-  photo: "photos/bot-banner.jpg",
+  photo: "photos/bot-banner-uz.jpg",
   title: "Qulay Market",
   text: "Istanbulda kunlik va oylik uy-joy ijarasi, aeroportga kutib olish va taksi.\nHammasi bitta ilovada — quyidagi tugmani bosing.",
   buttons: "Qulay Market'ni ochish | app",
   about: "Istanbulda kunlik va oylik uy-joy ijarasi, aeroportga kutib olish va taksi.\n\nUy-joy e'lonlari surat va narxlari bilan, transfer esa «qayerdan — qayerga» ko'rinishida — hammasi bitta ilovada.\n\nBoshlash uchun pastdagi tugmani bosing.",
   short: "Istanbulda uy-joy ijarasi va aeroport transferi — bitta ilovada.",
   ru: {
+    photo: "photos/bot-banner-ru.jpg",
     title: "Qulay Market",
     text: "Посуточная и помесячная аренда жилья в Стамбуле, встреча в аэропорту и такси.\nВсё в одном приложении — нажмите кнопку ниже.",
     buttons: "Открыть Qulay Market | app",
@@ -730,6 +731,7 @@ function normPromo(p) {
     about: str(p.about, F.about),
     short: str(p.short, F.short),
     ru: {
+      photo: str(ru.photo, F.ru.photo).trim(),
       title: str(ru.title, F.ru.title).trim(),
       text: str(ru.text, F.ru.text),
       buttons: str(ru.buttons, F.ru.buttons),
@@ -1298,6 +1300,22 @@ function pickPromoPhoto() {
   input.click();
 }
 function delPromoPhoto() { ensureDraft(); draftSettings.promo.photo = ""; renderAdmin(); }
+
+/* Ruscha reklama surati — alohida rasm, bo'sh bo'lsa o'zbekchasi yuboriladi */
+function pickPromoPhotoRu() {
+  ensureDraft();
+  if (!draftSettings.promo.ru) draftSettings.promo.ru = {};
+  const input = document.createElement("input");
+  input.type = "file"; input.accept = "image/*";
+  input.onchange = async () => {
+    const file = (input.files || [])[0];
+    if (!file) return;
+    try { draftSettings.promo.ru.photo = await compress(file); renderAdmin(); toast("Surat qo'shildi"); }
+    catch { toast("Suratni o'qib bo'lmadi"); }
+  };
+  input.click();
+}
+function delPromoPhotoRu() { ensureDraft(); if (!draftSettings.promo.ru) draftSettings.promo.ru = {}; draftSettings.promo.ru.photo = ""; renderAdmin(); }
 function setAdmin(field, value) { ensureDraft(); draftAdmin[field] = value; }
 function rowToggle(i) { openRow = openRow === i ? null : i; renderAdmin(); }
 
@@ -1538,7 +1556,7 @@ function renderAdmin() {
             onchange="setPromo('on',this.checked?1:0);renderAdmin()">Botga kirilganda reklama yuborilsin</label>
         </div>
         <div class="f">
-          <label>Surat</label>
+          <label>Surat — o'zbekcha</label>
           <div class="photos">${draftSettings.promo.photo
             ? `<figure><img src="${esc(draftSettings.promo.photo)}" alt="">
                  <button onclick="delPromoPhoto()" aria-label="O'chirish">×</button></figure>` : ""}</div>
@@ -1558,8 +1576,15 @@ function renderAdmin() {
         <div class="f"><label>Qisqa tavsif — bot profilida va havolada</label>
           <textarea rows="2" maxlength="120" oninput="setPromo('short',this.value)">${esc(draftSettings.promo.short)}</textarea></div>
         <div class="adm-t" style="margin:10px 0 -5px">🇷🇺 Ruscha reklama</div>
-        <p class="muted">Botga kirgan odam «🇷🇺 Русский» tugmasini bossa — shu matnlar chiqadi.
-          Surat ikkala tilda bir xil.</p>
+        <p class="muted">Botga kirgan odam «🇷🇺 Русский» tugmasini bossa — shu surat va matnlar chiqadi.
+          Ruscha surat qo'yilmasa, o'zbekchasi yuboriladi.</p>
+        <div class="f">
+          <label>Surat — ruscha</label>
+          <div class="photos">${(draftSettings.promo.ru || {}).photo
+            ? `<figure><img src="${esc(draftSettings.promo.ru.photo)}" alt="">
+                 <button onclick="delPromoPhotoRu()" aria-label="O'chirish">×</button></figure>` : ""}</div>
+          <button class="btn btn-soft" style="margin-top:9px" onclick="pickPromoPhotoRu()">${icon("cam", 17)} Surat tanlash</button>
+        </div>
         <div class="f"><label>Sarlavha (RU)</label>
           <input value="${esc((draftSettings.promo.ru || {}).title || "")}" oninput="setPromoRu('title',this.value)"></div>
         <div class="f"><label>Matn (RU)</label>
@@ -1747,6 +1772,14 @@ async function adminSave() {
       const name = `${CONFIG.github.photos}/promo-${Date.now()}.${ext}`;
       await ghPut(name, promoData[2], "photo: " + name);
       promo.photo = name;
+    }
+    const promoDataRu = String(promo.ru.photo).match(/^data:image\/(jpeg|jpg|png|webp);base64,(.+)$/);
+    if (promoDataRu) {
+      btn.textContent = "Ruscha reklama surati yuklanmoqda…";
+      const ext = promoDataRu[1] === "jpeg" ? "jpg" : promoDataRu[1];
+      const name = `${CONFIG.github.photos}/promo-ru-${Date.now()}.${ext}`;
+      await ghPut(name, promoDataRu[2], "photo: " + name);
+      promo.ru.photo = name;
     }
 
     let uploaded = 0;

@@ -16,13 +16,14 @@
     },
     "promo": {
       "on": 1,
-      "photo": "photos/bot-banner.jpg",
+      "photo": "photos/bot-banner-uz.jpg",
       "title": "Qulay Market",
       "text": "Istanbulda kunlik va oylik uy-joy ijarasi — surat, narx va joylashuvi bilan.\n\n✈️ Aeroportdan kutib olish — reys kechiksa ham kutib turamiz\n🧳 Aeroportga kuzatib qo'yish — uchishdan oldin o'z vaqtida yetkazamiz\n🚕 Taksi xizmati — shahar ichida, istalgan vaqtda\n\nBuyurtma bir necha soniyada: qayerdan — qayerga, sana va vaqtni tanlaysiz.\n\nQuyidagi tugmani bosing 👇",
       "buttons": "Qulay Market'ni ochish | app",
       "about": "Istanbulda kunlik va oylik uy-joy ijarasi hamda transfer xizmati.\n\n✈️ Aeroportdan kutib olish\n🧳 Aeroportga kuzatib qo'yish\n🚕 Taksi xizmati\n\nUy-joy e'lonlari surat va narxlari bilan, transfer esa «qayerdan — qayerga» ko'rinishida — hammasi bitta ilovada.\n\nBoshlash uchun pastdagi tugmani bosing.",
       "short": "Istanbulda uy-joy ijarasi, aeroport transferi va taksi — hammasi bitta ilovada.",
       "ru": {
+        "photo": "photos/bot-banner-ru.jpg",
         "title": "Qulay Market",
         "text": "Посуточная и помесячная аренда жилья в Стамбуле — с фото, ценами и расположением.\n\n✈️ Встреча в аэропорту — подождём, даже если рейс задержится\n🧳 Проводы в аэропорт — привезём вовремя, до вылета\n🚕 Такси — по городу, в любое время\n\nЗаказ за несколько секунд: откуда — куда, дата и время.\n\nНажмите кнопку ниже 👇",
         "buttons": "Открыть Qulay Market | app",

@@ -263,6 +263,29 @@
   .tx-cta{margin:13px 0 0;gap:8px}
   .tx-foot{margin:8px 2px 0;text-align:center;font-size:11.5px;line-height:1.45;color:var(--muted)}
 
+  /* Ko'rishlar: e'lon kartochkasida va e'lon sahifasida */
+  .views{display:inline-flex;align-items:center;gap:5px;color:var(--muted);
+    font-size:12.5px;font-weight:700;line-height:1}
+  .views[hidden]{display:none}
+  .views svg{opacity:.85}
+  .views-row{margin:8px 0 2px}
+
+  /* Boshqaruv panelidagi statistika */
+  .st-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+  .st{padding:12px 13px;border:1px solid var(--line);border-radius:13px;background:var(--card)}
+  .st b{display:block;font-size:21px;font-weight:800;letter-spacing:-.4px}
+  .st span{display:block;margin-top:3px;font-size:11.5px;font-weight:600;color:var(--muted);line-height:1.35}
+  .st-bars{display:flex;align-items:flex-end;gap:4px;height:64px;margin:13px 0 4px}
+  .st-bars i{flex:1;min-height:3px;border-radius:4px 4px 2px 2px;background:var(--brand);opacity:.85}
+  .st-bars i.zero{background:var(--line);opacity:1}
+  .st-days{display:flex;justify-content:space-between;font-size:10.5px;font-weight:600;color:var(--muted)}
+  .st-list{margin-top:12px;border:1px solid var(--line);border-radius:13px;overflow:hidden}
+  .st-list div{display:flex;justify-content:space-between;gap:10px;align-items:center;
+    padding:10px 12px;font-size:12.5px;border-top:1px solid var(--line)}
+  .st-list div:first-child{border-top:0}
+  .st-list b{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .st-list span{flex:none;color:var(--muted);font-weight:600}
+
   .save-bar{position:sticky;bottom:calc(80px + env(safe-area-inset-bottom));padding:12px 0;z-index:25;
     background:linear-gradient(to top,var(--bg) 60%,transparent)}
 </style>
@@ -313,6 +336,9 @@
   <symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
     <circle cx="9.4" cy="8.2" r="3.4"/><path d="M3.4 19.4c0-3.2 2.7-5.2 6-5.2s6 2 6 5.2"/>
     <path d="M16.2 5.2a3.4 3.4 0 0 1 0 6.4"/><path d="M17.6 14.6c2 .6 3.4 2.3 3.4 4.8"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="2.6"/>
+  </symbol>
   <symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
     <rect x="9" y="9" width="11" height="11" rx="2.4"/><path d="M15 5.6A2.4 2.4 0 0 0 12.6 4H6.4A2.4 2.4 0 0 0 4 6.4v6.2A2.4 2.4 0 0 0 5.6 15"/></symbol>
   <symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -395,6 +421,9 @@ const CONFIG = {
   /* Mini appning Telegramdagi to'g'ridan-to'g'ri havolasi: t.me/<username>/<app>.
      BotFather → Bot Settings → Configure Mini App da qo'yilgan qisqa nom. */
   bot: { username: "QulayMarketr_Bot", app: "app" },
+  /* Ko'rishlarni sanaydigan funksiya (Vercel). Bo'sh qoldirilsa — statistika
+     butunlay o'chadi va sayt xuddi avvalgidek ishlayveradi. */
+  stats: { url: "https://qulay-market-bot.vercel.app/api/stats" },
 };
 
 /* Mahsulotlar bo'limi vaqtincha yopilgan: pastki menyuda ko'rinmaydi, mahsulot e'lonlari saytga chiqmaydi.
@@ -473,6 +502,7 @@ const I18N = {
     "item.info": "Ma'lumotlar", "item.prices": "Narxlar", "item.rent": "Ijara sharti", "item.desc": "Tavsif",
     "item.contact": "Aloqaga chiqish", "item.write": "Telegramga yozish", "item.map": "Xaritada ko'rish",
     "item.copylink": "E'lon havolasini nusxalash", "item.copied": "Havola nusxalandi",
+    "item.views": "e'lonni ko'rgan odamlar",
     "item.number": "E'lon raqami: №", "item.negotiable": "Kelishiladi",
     "item.nocontact": "Bog'lanish uchun Telegram yoki telefon boshqaruv panelida ko'rsatilmagan.",
     "item.hello": "Assalomu alaykum! «{title}» (№{id}) qiziqtiryapti.",
@@ -524,6 +554,7 @@ const I18N = {
     "item.info": "Информация", "item.prices": "Цены", "item.rent": "Условия аренды", "item.desc": "Описание",
     "item.contact": "Связаться", "item.write": "Написать в Telegram", "item.map": "Показать на карте",
     "item.copylink": "Скопировать ссылку", "item.copied": "Ссылка скопирована",
+    "item.views": "человек посмотрели объявление",
     "item.number": "Номер объявления: №", "item.negotiable": "Договорная",
     "item.nocontact": "Telegram или телефон для связи не указаны в панели управления.",
     "item.hello": "Здравствуйте! Интересует «{title}» (№{id}).",
@@ -839,6 +870,8 @@ function go(next, id) {
   const hash = next === "item" ? "#item-" + id : (HASHES[next] ?? "");
   if (location.hash !== hash) history.replaceState(null, "", location.pathname + location.search + hash);
 
+  if (next === "item" && id) track("view", id);
+
   if (next === "realty" || next === "product") renderList();
   if (next === "taxi") renderTaxi();
   if (next === "fav") renderFavs();
@@ -911,6 +944,7 @@ function cardHtml(it, withTag) {
       <div class="price">${priceHtml(it)}</div>
       <div class="ttl">${esc(L(it, "title"))}</div>
       ${specsLine(it) ? `<div class="specs">${esc(specsLine(it))}</div>` : ""}
+      ${viewsHtml(it.id, "views-row")}
     </div>
   </article>`;
 }
@@ -1197,6 +1231,7 @@ function renderItem() {
       <button class="star${fav ? " on" : ""}" onclick="toggleFav(${it.id})" aria-label="${esc(T("a.fav"))}">${icon(fav ? "star-f" : "star", 19)}</button>
     </div>
     <div class="big-price">${priceHtml(it)}</div>
+    ${viewsHtml(it.id, "views-row")}
 
     ${amens.length ? `<div class="amen">${amens.map((a) =>
       `<span>${icon("check", 14)}${esc(T("am." + a.key))}</span>`).join("")}</div>` : ""}
@@ -1263,6 +1298,84 @@ async function copyLink(id) {
   } catch {
     prompt(T("item.copylink") + ":", url);
   }
+}
+
+/* ============================================================ STATISTIKA ============================================================
+   Ko'rishlar api/stats.js orqali sanaladi (Vercel + Upstash Redis). Xotira
+   ulanmagan bo'lsa hamma raqam nol bo'ladi va sayt xuddi shunday ishlaydi.
+
+   Odam haqida hech narsa yozilmaydi: brauzerda tasodifiy belgi (vid) saqlanadi,
+   u faqat «bitta odam ikki marta sanalmasin» uchun kerak.
+   ============================================================================ */
+const STATS_URL = String((CONFIG.stats || {}).url || "").trim();
+
+let STATS = {
+  store: false,
+  app: { hits: 0, people: 0 }, bot: { starts: 0, people: 0, uz: 0, ru: 0 },
+  lang: { uz: 0, ru: 0 }, days: {}, items: {},
+};
+
+function visitorId() {
+  let v = "";
+  try { v = localStorage.getItem(K("vid")) || ""; } catch {}
+  if (v) return v;
+  let uid = "";
+  try { uid = String((tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) || ""); } catch {}
+  v = uid ? "tg" + uid : "w" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+  try { localStorage.setItem(K("vid"), v); } catch {}
+  return v;
+}
+
+/* Hodisani yuboramiz va javobini kutmaymiz — sahifa sekinlashmaydi */
+function track(ev, id) {
+  if (!STATS_URL) return;
+  try {
+    fetch(STATS_URL, {
+      method: "POST",
+      /* text/plain — brauzer qo'shimcha «preflight» so'rov yubormasligi uchun */
+      headers: { "Content-Type": "text/plain;charset=UTF-8" },
+      body: JSON.stringify({ ev, id: id == null ? "" : String(id), vid: visitorId(), lang: LANG }),
+      keepalive: true,
+    }).catch(() => {});
+  } catch {}
+}
+
+const statOf = (id) => (STATS.items && STATS.items[String(id)]) || { hits: 0, people: 0 };
+const itemPeople = (id) => Number(statOf(id).people || 0);
+const itemHits = (id) => Number(statOf(id).hits || 0);
+
+/* Kartochkadagi «👁 12» */
+function viewsHtml(id, cls) {
+  const n = itemPeople(id);
+  return `<span class="views${cls ? " " + cls : ""}" data-views="${id}" title="${esc(T("item.views"))}"${n ? "" : " hidden"}>${icon("eye", 14)}<b>${n}</b></span>`;
+}
+
+/* Raqamlar kelgach, sahifani qayta chizmasdan yangilaymiz */
+function paintViews() {
+  document.querySelectorAll("[data-views]").forEach((el) => {
+    const n = itemPeople(el.dataset.views);
+    const b = el.querySelector("b");
+    if (b) b.textContent = String(n);
+    el.hidden = n < 1;
+  });
+}
+
+async function loadStats() {
+  if (!STATS_URL) return;
+  try {
+    const res = await fetch(STATS_URL + "?t=" + Date.now(), { cache: "no-store" });
+    if (!res.ok) return;
+    const d = await res.json();
+    if (d && typeof d === "object") {
+      STATS = {
+        store: Boolean(d.store),
+        app: d.app || STATS.app, bot: d.bot || STATS.bot,
+        lang: d.lang || STATS.lang, days: d.days || {}, items: d.items || {},
+      };
+    }
+  } catch {}
+  paintViews();
+  if (page === "admin" && unlocked) renderAdmin();
 }
 
 /* ============================================================ PAROL ============================================================ */
@@ -1445,6 +1558,55 @@ function admField(i, it, f) {
     <input${hint} value="${esc(v)}" oninput="setField(${i},'${f.key}',this.value)"></div>`;
 }
 
+/* Boshqaruv panelidagi «Statistika» bloki */
+function statsHtml() {
+  const n = (v) => Number(v || 0).toLocaleString("ru-RU");
+  const days = Object.keys(STATS.days || {}).sort();
+  const vals = days.map((d) => Number(STATS.days[d] || 0));
+  const max = Math.max(1, ...vals);
+  const bars = days.map((d, i) =>
+    `<i class="${vals[i] ? "" : "zero"}" style="height:${Math.max(3, Math.round((vals[i] / max) * 62))}px"
+        title="${esc(d)} — ${n(vals[i])}"></i>`).join("");
+
+  const seen = ITEMS
+    .map((it) => ({ it, people: itemPeople(it.id), hits: itemHits(it.id) }))
+    .filter((r) => r.hits > 0)
+    .sort((a, b) => b.people - a.people || b.hits - a.hits)
+    .slice(0, 30);
+
+  const list = seen.length
+    ? seen.map((r) => `<div><b>№${r.it.id} · ${esc(r.it.title || "Nomsiz")}</b>
+        <span>${n(r.people)} odam · ${n(r.hits)} marta</span></div>`).join("")
+    : `<div><b class="muted">Hozircha hech bir e'lon ochilmagan</b></div>`;
+
+  return `
+    <div class="adm">
+      <div class="adm-t">Statistika</div>
+      <div class="adm-body" style="margin-top:0">
+        ${STATS.store ? "" : `<p class="muted" style="margin:0 0 11px">
+          Hisoblagich hali ulanmagan — raqamlar nol turadi. Vercel'da loyihaga
+          <b>Storage → Upstash Redis</b> qo'shilsa, sanash o'zi boshlanadi.</p>`}
+        <div class="st-grid">
+          <div class="st"><b>${n(STATS.app.people)}</b><span>ilovaga kirgan odam</span></div>
+          <div class="st"><b>${n(STATS.app.hits)}</b><span>ilova ochilgan</span></div>
+          <div class="st"><b>${n(STATS.bot.people)}</b><span>botga kirgan odam</span></div>
+          <div class="st"><b>${n(STATS.bot.starts)}</b><span>«/start» bosilgan</span></div>
+        </div>
+        <p class="muted" style="margin:11px 0 0">Bir odam 10 daqiqada bir marta sanaladi.</p>
+        <p class="muted" style="margin:5px 0 0">Til tanlovi — bot: ${n(STATS.bot.uz)} UZ · ${n(STATS.bot.ru)} RU,
+          ilova: ${n(STATS.lang.uz)} UZ · ${n(STATS.lang.ru)} RU</p>
+        <div class="adm-t" style="margin:14px 0 0">Oxirgi 14 kun</div>
+        <div class="st-bars">${bars || ""}</div>
+        <div class="st-days"><span>${esc(days[0] || "")}</span><span>${esc(days[days.length - 1] || "")}</span></div>
+        <div class="adm-t" style="margin:14px 0 0">E'lonlar — ko'p ko'rilgani birinchi</div>
+        <div class="st-list">${list}</div>
+        <button class="btn btn-soft" style="margin-top:11px" onclick="loadStats()">Raqamlarni yangilash</button>
+        <p class="muted" style="margin:9px 0 0">«Odam» — nechta har xil odam ochgani.
+          Kartochkalarda va e'lon sahifasida ham shu raqam ko'rinadi.</p>
+      </div>
+    </div>`;
+}
+
 function renderAdmin() {
   if (!unlocked) {
     $("p-admin").innerHTML = `
@@ -1557,6 +1719,8 @@ function renderAdmin() {
 
   $("p-admin").innerHTML = `
     <h2 class="title">Boshqaruv paneli</h2>
+
+    ${statsHtml()}
 
     <div class="adm">
       <div class="adm-t">Do'kon</div>
@@ -1958,6 +2122,8 @@ applyLang();
 applySettings();
 if (unlocked) $("navAdmin").style.display = "flex";
 routeFromHash();
+track("open");
+loadStats();
 renderList();
 loadCatalog();
 </script>

@@ -26,7 +26,10 @@
 
 const store = require("./_store");
 
-const SITE = "https://malik-alaska2.github.io/Qulay-Marketr/";
+/* Mini appning asosiy manzili. Bot tugmalari, menyu tugmasi, suratlar va
+   catalog.json — hammasi shu manzildan oladi. GitHub Pages nusxasi
+   (malik-alaska2.github.io/Qulay-Marketr/) ham ishlab turaveradi. */
+const SITE = "https://qulay-market-bot.vercel.app/";
 const CATALOG = SITE + "catalog.json";
 const API = "https://api.telegram.org/bot";
 
@@ -267,7 +270,7 @@ async function setupAll(token, hook, secret, promo) {
     { command: "start", description: "Начать" },
     { command: "lang", description: "Сменить язык / Tilni o‘zgartirish" },
   ];
-  const [hookOut, dUz, dRu, sUz, sRu, cUz, cRu] = await Promise.all([
+  const [hookOut, dUz, dRu, sUz, sRu, cUz, cRu, menu] = await Promise.all([
     tg(token, "setWebhook", {
       url: hook,
       allowed_updates: ["message", "callback_query"],
@@ -280,12 +283,17 @@ async function setupAll(token, hook, secret, promo) {
     tg(token, "setMyShortDescription", { short_description: ru.short.slice(0, 120), language_code: "ru" }),
     tg(token, "setMyCommands", { commands: cmdUz }),
     tg(token, "setMyCommands", { commands: cmdRu, language_code: "ru" }),
+    /* Chatdagi «Menu» tugmasi ham shu manzilni ochsin — BotFather'siz o'rnatiladi */
+    tg(token, "setChatMenuButton", {
+      menu_button: { type: "web_app", text: "Qulay Market", web_app: { url: SITE } },
+    }),
   ]);
   return {
     setWebhook: hookOut,
     description: { uz: Boolean(dUz && dUz.ok), ru: Boolean(dRu && dRu.ok) },
     shortDescription: { uz: Boolean(sUz && sUz.ok), ru: Boolean(sRu && sRu.ok) },
     commands: { uz: Boolean(cUz && cUz.ok), ru: Boolean(cRu && cRu.ok) },
+    menuButton: { ok: Boolean(menu && menu.ok), url: SITE },
   };
 }
 
@@ -307,7 +315,7 @@ module.exports = async function handler(req, res) {
       webhook: hook,
       site: SITE,
       languages: LANGS,
-      build: "2026-09-04-stats",
+      build: "2026-09-05-sharhlar",
     };
     if (!token) return res.status(200).json({ ...base, hint: "Vercel'da token ko'rsatilmagan" });
 

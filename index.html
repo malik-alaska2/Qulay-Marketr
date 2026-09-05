@@ -286,6 +286,41 @@
   .st-list b{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .st-list span{flex:none;color:var(--muted);font-weight:600}
 
+  /* Sharhlar */
+  .rv-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:4px 0 14px}
+  .rv-card{padding:14px 13px;border:1.5px solid var(--line);border-radius:15px;background:var(--card);
+    box-shadow:var(--shadow);text-align:left}
+  .rv-card.on{border-color:var(--brand)}
+  .rv-card .ico{width:34px;height:34px;border-radius:11px;background:var(--accent-soft);color:var(--brand);
+    display:flex;align-items:center;justify-content:center;margin-bottom:9px}
+  .rv-card h3{font-size:14px;font-weight:800;letter-spacing:-.2px}
+  .rv-card .score{display:flex;align-items:baseline;gap:6px;margin:7px 0 4px}
+  .rv-card .score b{font-size:24px;font-weight:800;letter-spacing:-.7px}
+  .rv-card .score span{font-size:11.5px;font-weight:600;color:var(--muted)}
+  .rv-card .top{display:inline-block;margin-top:8px;padding:3px 9px;border-radius:99px;
+    background:var(--accent-soft);color:var(--accent);font-size:10.5px;font-weight:800}
+  .stars{display:inline-flex;gap:2px;color:#F6A609;vertical-align:middle}
+  .stars i{display:block;opacity:.2;color:var(--muted)}
+  .rv{padding:13px 14px;border:1px solid var(--line);border-radius:14px;background:var(--card);margin-top:9px}
+  .rv-h{display:flex;align-items:center;gap:9px}
+  .rv-av{width:33px;height:33px;border-radius:99px;background:var(--accent-soft);color:var(--accent);
+    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex:none}
+  .rv-h b{flex:1;font-size:13.5px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .rv-h .d{flex:none;font-size:11px;font-weight:600;color:var(--muted)}
+  .rv .w{display:inline-block;margin-top:8px;padding:3px 9px;border-radius:99px;background:var(--bg);
+    border:1px solid var(--line);font-size:10.5px;font-weight:700;color:var(--muted)}
+  .rv p{margin-top:7px;font-size:13.5px;line-height:1.5;white-space:pre-wrap;word-break:break-word}
+  .rv-mini{display:inline-flex;align-items:center;gap:5px;color:#F6A609;font-size:12.5px;font-weight:700;line-height:1}
+  .rv-mini span{color:var(--muted)}
+  .rv-box{padding:15px 14px;border:1px solid var(--line);border-radius:15px;background:var(--card);
+    box-shadow:var(--shadow);margin-top:14px}
+  .rv-pick{display:flex;gap:7px}
+  .rv-pick button{width:40px;height:40px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg);
+    color:var(--muted);display:flex;align-items:center;justify-content:center}
+  .rv-pick button.on{color:#F6A609;border-color:#F6A609;background:var(--card)}
+  .rv-pick button:active{transform:scale(.93)}
+  .rv-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:2px}
+
   .save-bar{position:sticky;bottom:calc(80px + env(safe-area-inset-bottom));padding:12px 0;z-index:25;
     background:linear-gradient(to top,var(--bg) 60%,transparent)}
 </style>
@@ -346,6 +381,8 @@
   <symbol id="i-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
     <path d="M10.4 13.6a4.2 4.2 0 0 0 6 0l2.8-2.8a4.25 4.25 0 0 0-6-6l-1.6 1.6"/>
     <path d="M13.6 10.4a4.2 4.2 0 0 0-6 0l-2.8 2.8a4.25 4.25 0 0 0 6 6l1.6-1.6"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20.6 12.1c0 4-3.9 7.2-8.6 7.2-1 0-2-.14-2.9-.4L4 20.6l1.5-3.7c-1.3-1.3-2.1-3-2.1-4.8 0-4 3.9-7.2 8.6-7.2s8.6 3.2 8.6 7.2z"/></symbol>
 </svg>
 
 <header class="header" id="header">
@@ -394,6 +431,9 @@
   <!-- TRANSFER / TAKSI -->
   <section class="page" id="p-taxi"></section>
 
+  <!-- SHARHLAR -->
+  <section class="page" id="p-reviews"></section>
+
   <!-- POZITSIYA -->
   <section class="page" id="p-item"></section>
 
@@ -405,6 +445,7 @@
 <nav class="nav" id="nav">
   <button data-page="realty"><svg width="22" height="22"><use href="#i-home"/></svg><span data-i18n="nav.realty">Uy-joy</span></button>
   <button data-page="taxi" id="navTaxi"><svg width="22" height="22"><use href="#i-car"/></svg><span data-i18n="nav.taxi">Transfer</span></button>
+  <button data-page="reviews" id="navReviews"><svg width="22" height="22"><use href="#i-chat"/></svg><span data-i18n="nav.reviews">Sharhlar</span></button>
   <button data-page="product" id="navProduct"><svg width="22" height="22"><use href="#i-bag"/></svg><span data-i18n="nav.product">Mahsulotlar</span></button>
   <button data-page="fav"><svg width="22" height="22"><use href="#i-star"/></svg><span data-i18n="nav.fav">Saralangan</span><i class="badge" id="favBadge" style="display:none"></i></button>
   <button data-page="admin" id="navAdmin" style="display:none"><svg width="22" height="22"><use href="#i-gear"/></svg><span data-i18n="nav.admin">Boshqaruv</span></button>
@@ -424,6 +465,9 @@ const CONFIG = {
   /* Ko'rishlarni sanaydigan funksiya (Vercel). Bo'sh qoldirilsa — statistika
      butunlay o'chadi va sayt xuddi avvalgidek ishlayveradi. */
   stats: { url: "https://qulay-market-bot.vercel.app/api/stats" },
+  /* Sharhlar qutisi (Vercel). Bo'sh qoldirilsa — yangi sharh yuborib bo'lmaydi,
+     chiqarilgan sharhlar esa catalog.json dan o'qilib ko'rinaveradi. */
+  reviews: { url: "https://qulay-market-bot.vercel.app/api/reviews" },
 };
 
 /* Mahsulotlar bo'limi vaqtincha yopilgan: pastki menyuda ko'rinmaydi, mahsulot e'lonlari saytga chiqmaydi.
@@ -536,6 +580,23 @@ const I18N = {
     "tx.m.from": "Qayerdan", "tx.m.stop": "To'xtash", "tx.m.to": "Qayerga",
     "tx.m.when": "Sana va vaqt", "tx.m.pax": "Yo'lovchilar", "tx.m.bags": "Yuk (chamadon)", "tx.m.note": "Izoh",
 
+    "nav.reviews": "Sharhlar",
+    "rv.title": "Sharhlar", "rv.sub": "Xizmatdan foydalanganlar qoldirgan baholar — qaysi biri yaxshiroq, o'zingiz ko'rasiz.",
+    "rv.house": "Uy-joy", "rv.taxi": "Transfer / taksi", "rv.all": "Barchasi",
+    "rv.count": "{n} ta sharh", "rv.nomark": "hali baho yo'q", "rv.best": "Eng yuqori baho",
+    "rv.none": "Hozircha sharh yo'q", "rv.nonesub": "Birinchi bo'lib siz yozing — quyidagi shakl orqali.",
+    "rv.add": "Sharh qoldirish", "rv.form": "Sharhingizni yozing",
+    "rv.about": "Nima haqida", "rv.aboutuy": "Uy-joy xizmati (umumiy)", "rv.abouttaxi": "Transfer / taksi",
+    "rv.rating": "Bahoyingiz", "rv.name": "Ismingiz", "rv.nameph": "Aziz",
+    "rv.text": "Sharh", "rv.textph": "Nimasi yoqdi, nimasi yo'q — qisqacha yozing.",
+    "rv.send": "Yuborish", "rv.sending": "Yuborilmoqda…",
+    "rv.thanks": "Rahmat! Sharhingiz tekshiruvdan keyin chiqadi.",
+    "rv.need": "Baho qo'ying va sharh yozing", "rv.dup": "Bu bo'limga yaqinda sharh qoldirgansiz",
+    "rv.fail": "Yuborib bo'lmadi — birozdan keyin urinib ko'ring",
+    "rv.off": "Sharh yuborish vaqtincha ishlamayapti",
+    "rv.moder": "Sharhlar do'kon egasi tekshirgandan keyin saytda chiqadi.",
+    "rv.item": "E'lon", "rv.anon": "Mehmon", "rv.onitem": "Shu e'lon haqida sharhlar",
+    "rv.ontaxi": "Xizmat haqida sharhlar", "rv.showall": "Barcha sharhlar",
     "u.m2": "m²", "u.year": " yil", "u.items": "{n} ta e'lon", "u.products": "{n} ta mahsulot",
   },
   ru: {
@@ -588,6 +649,23 @@ const I18N = {
     "tx.m.from": "Откуда", "tx.m.stop": "Остановка", "tx.m.to": "Куда",
     "tx.m.when": "Дата и время", "tx.m.pax": "Пассажиры", "tx.m.bags": "Багаж (чемоданы)", "tx.m.note": "Комментарий",
 
+    "nav.reviews": "Отзывы",
+    "rv.title": "Отзывы", "rv.sub": "Оценки тех, кто уже пользовался услугами — сразу видно, где лучше.",
+    "rv.house": "Жильё", "rv.taxi": "Трансфер / такси", "rv.all": "Все",
+    "rv.count": "{n} отзывов", "rv.nomark": "оценок пока нет", "rv.best": "Лучшая оценка",
+    "rv.none": "Отзывов пока нет", "rv.nonesub": "Напишите первым — форма ниже.",
+    "rv.add": "Оставить отзыв", "rv.form": "Напишите отзыв",
+    "rv.about": "О чём отзыв", "rv.aboutuy": "Жильё (в целом)", "rv.abouttaxi": "Трансфер / такси",
+    "rv.rating": "Ваша оценка", "rv.name": "Ваше имя", "rv.nameph": "Азиз",
+    "rv.text": "Отзыв", "rv.textph": "Что понравилось, а что нет — коротко.",
+    "rv.send": "Отправить", "rv.sending": "Отправляем…",
+    "rv.thanks": "Спасибо! Отзыв появится после проверки.",
+    "rv.need": "Поставьте оценку и напишите отзыв", "rv.dup": "Вы недавно уже оставляли здесь отзыв",
+    "rv.fail": "Не отправилось — попробуйте позже",
+    "rv.off": "Отправка отзывов временно не работает",
+    "rv.moder": "Отзывы появляются после проверки владельцем.",
+    "rv.item": "Объявление", "rv.anon": "Гость", "rv.onitem": "Отзывы об этом объявлении",
+    "rv.ontaxi": "Отзывы об услуге", "rv.showall": "Все отзывы",
     "u.m2": "м²", "u.year": " лет", "u.items": "{n} объявлений", "u.products": "{n} товаров",
   },
 };
@@ -685,6 +763,7 @@ function setLang(next) {
   applyLang();
   if (page === "realty" || page === "product") renderList();
   if (page === "taxi") renderTaxi();
+  if (page === "reviews") renderReviews();
   if (page === "fav") renderFavs();
   if (page === "item") renderItem();
 }
@@ -692,6 +771,7 @@ function setLang(next) {
 let SETTINGS = { ...FALLBACK.settings };
 let ADMIN = { ...FALLBACK.admin };
 let ITEMS = [];
+let REVIEWS = [];                   /* chiqarilgan sharhlar — catalog.json dan */
 let loaded = false;
 let page = "realty";
 let kind = "realty";
@@ -703,7 +783,10 @@ let favs = load("favs", []);
 let theme = localStorage.getItem(K("theme")) || (tg && tg.colorScheme === "dark" ? "dark" : "light");
 let token = localStorage.getItem(K("ghKey")) || "";
 let unlocked = sessionStorage.getItem(K("unlocked")) === "1";
-let draft = null, draftSettings = null, draftAdmin = null, openRow = null;
+let draft = null, draftSettings = null, draftAdmin = null, draftReviews = null, openRow = null;
+/* Sharh shakli va boshqaruv panelidagi «quti» */
+let RV = { target: "taxi", rating: 0, name: "", text: "", filter: "all", sending: false };
+let PENDING = [], pendingState = "", dropIds = [];
 let brandTaps = 0, brandTimer = null, toastTimer = null;
 
 /* Transfer buyurtmasi — foydalanuvchi kiritgan qiymatlar */
@@ -779,6 +862,13 @@ function normTransfer(t) {
     ru: { note: str(ru.note, TRANSFER_FALLBACK.ru.note), rates: str(ru.rates, "") },
   };
 }
+/* Sharhlar bo'limi: hozircha bitta sozlama — ko'rsatilsinmi */
+function normReviewsSet(r) {
+  r = r && typeof r === "object" ? r : {};
+  return { on: r.on === 0 || r.on === false || r.on === "0" ? 0 : 1 };
+}
+const REVIEWS_ON = () => (SETTINGS.reviews = normReviewsSet(SETTINGS.reviews)).on;
+
 /* Transfer bo'limining tanlangan tildagi maydoni */
 const trL = (t, key) => (LANG === "ru" && t.ru && String(t.ru[key] || "").trim() ? t.ru[key] : t[key]);
 const TRANSFER = () => (SETTINGS.transfer = normTransfer(SETTINGS.transfer));
@@ -854,11 +944,12 @@ function applyTheme() {
 function haptic(kind) { try { if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred(kind || "light"); } catch {} }
 
 /* ============================================================ MARSHRUTLAR ============================================================ */
-const HASHES = { realty: "", product: "#mahsulot", taxi: "#transfer", fav: "#saralangan", admin: "#admin" };
+const HASHES = { realty: "", product: "#mahsulot", taxi: "#transfer", reviews: "#sharhlar", fav: "#saralangan", admin: "#admin" };
 
 function go(next, id) {
   if (next === "product" && !SHOW_PRODUCTS) next = "realty";
   if (next === "taxi" && !TRANSFER().on) next = "realty";
+  if (next === "reviews" && !REVIEWS_ON()) next = "realty";
   page = next;
   if (next === "realty" || next === "product") { kind = next; cat = ""; }
   curItem = next === "item" ? Number(id) : null;
@@ -874,9 +965,10 @@ function go(next, id) {
 
   if (next === "realty" || next === "product") renderList();
   if (next === "taxi") renderTaxi();
+  if (next === "reviews") renderReviews();
   if (next === "fav") renderFavs();
   if (next === "item") renderItem();
-  if (next === "admin") renderAdmin();
+  if (next === "admin") { renderAdmin(); if (unlocked && !pendingState) loadPending(); }
 
   window.scrollTo(0, 0);
   if (tg && tg.BackButton) { try { next === "item" ? tg.BackButton.show() : tg.BackButton.hide(); } catch {} }
@@ -890,6 +982,7 @@ function routeKey(key) {
   if (m) return ["item", m[1]];
   if (k === "mahsulot") return [SHOW_PRODUCTS ? "product" : "realty"];
   if (k === "transfer") return ["taxi"];
+  if (k === "sharhlar" || k === "otzyvy") return ["reviews"];
   if (k === "saralangan") return ["fav"];
   if (k === "admin") return ["admin"];
   return null;
@@ -944,7 +1037,7 @@ function cardHtml(it, withTag) {
       <div class="price">${priceHtml(it)}</div>
       <div class="ttl">${esc(L(it, "title"))}</div>
       ${specsLine(it) ? `<div class="specs">${esc(specsLine(it))}</div>` : ""}
-      ${viewsHtml(it.id, "views-row")}
+      <div class="rv-row views-row">${viewsHtml(it.id)}${rvMini("item-" + it.id)}</div>
     </div>
   </article>`;
 }
@@ -1160,6 +1253,8 @@ function renderTaxi() {
     ${rates.length ? `<h2 class="sec">${esc(T("tx.prices"))}</h2><div class="specs-list">${rates.map(([k, v]) =>
       `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</div>` : ""}
 
+    ${rvBlock("taxi", T("rv.ontaxi"))}
+
     <div class="cta tx-cta">
       ${t.contact ? `<button class="btn btn-primary" onclick="txOrder()">${icon("send", 18)} ${esc(T("tx.order"))}</button>` : ""}
       ${t.phone ? `<a class="btn btn-line" href="tel:${esc(t.phone)}">${icon("phone", 17)} ${esc(t.phone)}</a>` : ""}
@@ -1170,6 +1265,213 @@ function renderTaxi() {
 `;
 
   renderRoute();
+}
+
+/* ============================================================ SHARHLAR ============================================================
+   Sharh ikki joyda yashaydi:
+     1) yangi yuborilgani — api/reviews.js «qutisida» (Redis), saytda ko'rinmaydi;
+     2) do'kon egasi «Chiqarish» bosgani — catalog.json ichida reviews ro'yxatida,
+        shundan keyin hammaga ko'rinadi.
+   Shuning uchun sayt sharhlarni ko'rsatish uchun hech qayerga so'rov yubormaydi —
+   ular katalog bilan birga keladi. Quti faqat boshqaruv panelida o'qiladi.
+
+   target: "taxi" — transfer xizmati, "uy" — uy-joy xizmati umuman,
+           "item-3" — 3-raqamli e'lon.
+   ============================================================================ */
+const REVIEWS_URL = String((CONFIG.reviews || {}).url || "").trim();
+
+function normReview(r) {
+  r = r && typeof r === "object" ? r : {};
+  const t = String(r.target || "").trim();
+  return {
+    id: String(r.id || ("r" + Math.random().toString(36).slice(2, 9))),
+    target: /^(taxi|uy|item-\d{1,9})$/.test(t) ? t : "uy",
+    rating: Math.min(5, Math.max(1, Math.round(Number(r.rating) || 5))),
+    name: String(r.name || "").trim().slice(0, 40),
+    text: String(r.text || "").trim().slice(0, 700),
+    date: String(r.date || "").trim().slice(0, 10),
+    hidden: r.hidden ? 1 : 0,
+  };
+}
+
+const rvShown = () => REVIEWS.filter((r) => !r.hidden);
+const rvFor = (target) => rvShown().filter((r) => r.target === target);
+const rvHouse = () => rvShown().filter((r) => r.target === "uy" || r.target.indexOf("item-") === 0);
+const rvTaxi = () => rvShown().filter((r) => r.target === "taxi");
+const rvAvg = (list) => (list.length
+  ? Math.round((list.reduce((sum, r) => sum + Number(r.rating || 0), 0) / list.length) * 10) / 10 : 0);
+const rvSort = (list) => [...list].sort((a, b) => String(b.date).localeCompare(String(a.date)));
+
+/* Yulduzchalar: to'lganlari rangli, qolgani xira */
+function starsHtml(value, size) {
+  const n = Math.round(Number(value) || 0);
+  let out = "";
+  for (let i = 1; i <= 5; i++) out += i <= n ? icon("star-f", size || 14) : `<i>${icon("star-f", size || 14)}</i>`;
+  return `<span class="stars">${out}</span>`;
+}
+
+/* «12 ta sharh» / «12 отзывов» */
+function rvCount(n) {
+  if (LANG !== "ru") return T("rv.count", { n });
+  return n + " " + plural(n, "отзыв", "отзыва", "отзывов");
+}
+
+/* Kartochkadagi kichik baho: ★ 4.8 (3) */
+function rvMini(target) {
+  const list = rvFor(target);
+  if (!list.length) return "";
+  return `<span class="rv-mini">${icon("star-f", 13)}<b>${rvAvg(list).toFixed(1)}</b><span>(${list.length})</span></span>`;
+}
+
+const rvTitleOf = (target) => {
+  if (target === "taxi") return T("rv.taxi");
+  if (target === "uy") return T("rv.house");
+  const it = ITEMS.find((x) => "item-" + x.id === target);
+  return it ? T("rv.item") + " №" + it.id + " · " + L(it, "title") : T("rv.house");
+};
+
+/* Bitta sharh kartochkasi */
+function rvHtml(r, withTag) {
+  const name = r.name || T("rv.anon");
+  return `
+    <div class="rv">
+      <div class="rv-h">
+        <div class="rv-av">${esc(name.slice(0, 1).toUpperCase())}</div>
+        <b>${esc(name)}</b>
+        ${r.date ? `<span class="d">${esc(dmy(r.date) || r.date)}</span>` : ""}
+      </div>
+      <div style="margin-top:7px">${starsHtml(r.rating, 14)}</div>
+      ${r.text ? `<p>${esc(r.text)}</p>` : ""}
+      ${withTag ? `<span class="w">${esc(rvTitleOf(r.target))}</span>` : ""}
+    </div>`;
+}
+
+/* E'lon va transfer sahifalaridagi qisqa blok */
+function rvBlock(target, title) {
+  const list = rvSort(rvFor(target));
+  const avg = rvAvg(list);
+  const head = list.length
+    ? `<div class="rv-row" style="margin:2px 0 4px">${starsHtml(avg, 15)}
+         <b style="font-size:15px;font-weight:800">${avg.toFixed(1)}</b>
+         <span class="muted">${esc(rvCount(list.length))}</span></div>`
+    : `<p class="muted" style="margin-top:2px">${esc(T("rv.none"))}</p>`;
+  return `
+    <h2 class="sec">${esc(title)}</h2>
+    ${head}
+    ${list.slice(0, 3).map((r) => rvHtml(r, false)).join("")}
+    <button class="btn btn-soft" style="margin-top:11px" onclick="rvOpen('${esc(target)}')">
+      ${icon("chat", 17)} ${esc(list.length > 3 ? T("rv.showall") : T("rv.add"))}
+    </button>`;
+}
+
+/* Sharhlar sahifasini ochish, kerak bo'lsa — tayyor bo'lim bilan */
+function rvOpen(target) {
+  if (target) { RV.target = target; RV.filter = target === "taxi" ? "taxi" : "house"; }
+  haptic();
+  go("reviews");
+  setTimeout(() => { const el = $("rvForm"); if (el) el.scrollIntoView({ behavior: "smooth", block: "center" }); }, 60);
+}
+
+function rvSetFilter(v) { RV.filter = v; haptic(); renderReviews(); }
+function rvSet(field, value) { RV[field] = value; if (field === "rating") { haptic(); renderReviews(); } }
+
+/* Sharhni qutiga yuborish */
+async function rvSend() {
+  if (RV.sending) return;
+  if (!REVIEWS_URL) { toast(T("rv.off")); return; }
+  if (!RV.rating || String(RV.text || "").trim().length < 2) { toast(T("rv.need")); haptic("heavy"); return; }
+  RV.sending = true;
+  const btn = $("rvSend");
+  if (btn) { btn.disabled = true; btn.textContent = T("rv.sending"); }
+  try {
+    const res = await fetch(REVIEWS_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=UTF-8" },
+      body: JSON.stringify({
+        target: RV.target, rating: RV.rating, name: RV.name, text: RV.text,
+        vid: visitorId(), lang: LANG,
+      }),
+    });
+    const out = await res.json().catch(() => ({}));
+    if (out && out.ok) {
+      RV.rating = 0; RV.text = ""; RV.sending = false;
+      renderReviews();
+      toast(T("rv.thanks"));
+      haptic("medium");
+      return;
+    }
+    toast(out && out.error === "takror" ? T("rv.dup") : T("rv.fail"));
+    haptic("heavy");
+  } catch (_) {
+    toast(T("rv.fail"));
+  }
+  RV.sending = false;
+  renderReviews();
+}
+
+function renderReviews() {
+  const house = rvHouse(), taxi = rvTaxi();
+  const hAvg = rvAvg(house), tAvg = rvAvg(taxi);
+  const best = house.length && taxi.length && hAvg !== tAvg ? (hAvg > tAvg ? "house" : "taxi") : "";
+
+  const card = (key, title, ico, list, avg) => `
+    <button class="rv-card${RV.filter === key ? " on" : ""}" onclick="rvSetFilter('${key}')">
+      <div class="ico">${icon(ico, 19)}</div>
+      <h3>${esc(title)}</h3>
+      ${list.length
+        ? `<div class="score"><b>${avg.toFixed(1)}</b><span>/ 5</span></div>
+           ${starsHtml(avg, 13)}
+           <div class="muted" style="margin-top:6px;font-size:11.5px">${esc(rvCount(list.length))}</div>`
+        : `<div class="score"><b>—</b></div>
+           <div class="muted" style="margin-top:6px;font-size:11.5px">${esc(T("rv.nomark"))}</div>`}
+      ${best === key ? `<span class="top">${esc(T("rv.best"))}</span>` : ""}
+    </button>`;
+
+  const list = rvSort(RV.filter === "house" ? house : RV.filter === "taxi" ? taxi : rvShown());
+
+  /* Shakldagi «nima haqida» ro'yxati */
+  const opts = [`<option value="taxi"${RV.target === "taxi" ? " selected" : ""}>${esc(T("rv.abouttaxi"))}</option>`,
+                `<option value="uy"${RV.target === "uy" ? " selected" : ""}>${esc(T("rv.aboutuy"))}</option>`]
+    .concat(ITEMS.filter((it) => !it.hidden && isRealty(it)).map((it) =>
+      `<option value="item-${it.id}"${RV.target === "item-" + it.id ? " selected" : ""}>№${it.id} · ${esc(L(it, "title"))}</option>`))
+    .join("");
+
+  $("p-reviews").innerHTML = `
+    <h2 class="title">${esc(T("rv.title"))}</h2>
+    <p class="muted" style="margin:-6px 0 12px">${esc(T("rv.sub"))}</p>
+
+    <div class="rv-cards">
+      ${card("house", T("rv.house"), "home", house, hAvg)}
+      ${card("taxi", T("rv.taxi"), "car", taxi, tAvg)}
+    </div>
+
+    <div class="chips">
+      <button class="chip${RV.filter === "all" ? " on" : ""}" onclick="rvSetFilter('all')">${esc(T("rv.all"))}</button>
+      <button class="chip${RV.filter === "house" ? " on" : ""}" onclick="rvSetFilter('house')">${esc(T("rv.house"))}</button>
+      <button class="chip${RV.filter === "taxi" ? " on" : ""}" onclick="rvSetFilter('taxi')">${esc(T("rv.taxi"))}</button>
+    </div>
+
+    ${list.length
+      ? list.map((r) => rvHtml(r, true)).join("")
+      : `<div class="empty">${icon("chat", 44)}<div>${esc(T("rv.none"))}</div>
+           <div class="muted" style="margin-top:6px">${esc(T("rv.nonesub"))}</div></div>`}
+
+    <div class="rv-box" id="rvForm">
+      <div class="adm-t" style="margin:0 0 10px">${esc(T("rv.form"))}</div>
+      <div class="f"><label>${esc(T("rv.about"))}</label>
+        <select onchange="rvSet('target',this.value)">${opts}</select></div>
+      <div class="f"><label>${esc(T("rv.rating"))}</label>
+        <div class="rv-pick">${[1, 2, 3, 4, 5].map((n) =>
+          `<button type="button" class="${RV.rating >= n ? "on" : ""}" onclick="rvSet('rating',${n})"
+            aria-label="${n}">${icon(RV.rating >= n ? "star-f" : "star", 19)}</button>`).join("")}</div></div>
+      <div class="f"><label>${esc(T("rv.name"))}</label>
+        <input value="${esc(RV.name)}" maxlength="40" placeholder="${esc(T("rv.nameph"))}" oninput="rvSet('name',this.value)"></div>
+      <div class="f"><label>${esc(T("rv.text"))}</label>
+        <textarea rows="4" maxlength="700" placeholder="${esc(T("rv.textph"))}" oninput="rvSet('text',this.value)">${esc(RV.text)}</textarea></div>
+      <button class="btn btn-primary" id="rvSend" onclick="rvSend()"${RV.sending ? " disabled" : ""}>
+        ${icon("send", 18)} ${esc(RV.sending ? T("rv.sending") : T("rv.send"))}</button>
+      <p class="muted" style="margin-top:10px">${esc(T("rv.moder"))}</p>
+    </div>`;
 }
 
 /* ============================================================ POZITSIYA ============================================================ */
@@ -1231,7 +1533,7 @@ function renderItem() {
       <button class="star${fav ? " on" : ""}" onclick="toggleFav(${it.id})" aria-label="${esc(T("a.fav"))}">${icon(fav ? "star-f" : "star", 19)}</button>
     </div>
     <div class="big-price">${priceHtml(it)}</div>
-    ${viewsHtml(it.id, "views-row")}
+    <div class="rv-row views-row">${viewsHtml(it.id)}${rvMini("item-" + it.id)}</div>
 
     ${amens.length ? `<div class="amen">${amens.map((a) =>
       `<span>${icon("check", 14)}${esc(T("am." + a.key))}</span>`).join("")}</div>` : ""}
@@ -1243,6 +1545,8 @@ function renderItem() {
     ${rentRows.length ? `<h2 class="sec">${esc(T("item.rent"))}</h2><div class="specs-list">${rentRows.map(([k, v]) =>
       `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</div>` : ""}
     ${L(it, "description") ? `<h2 class="sec">${esc(T("item.desc"))}</h2><p class="desc">${esc(L(it, "description"))}</p>` : ""}
+
+    ${rvBlock("item-" + it.id, T("rv.onitem"))}
 
     <div class="cta-box">
       <div class="cta-t">${esc(T("item.contact"))}</div>
@@ -1408,9 +1712,11 @@ async function checkPassword(login, password) {
 /* ============================================================ BOSHQARUV PANELI ============================================================ */
 function ensureDraft() {
   if (!draft) draft = JSON.parse(JSON.stringify(ITEMS));
+  if (!draftReviews) draftReviews = JSON.parse(JSON.stringify(REVIEWS));
   if (!draftSettings) {
     draftSettings = JSON.parse(JSON.stringify(SETTINGS));
     draftSettings.transfer = normTransfer(draftSettings.transfer);
+    draftSettings.reviews = normReviewsSet(draftSettings.reviews);
     draftSettings.promo = normPromo(draftSettings.promo);
   }
   if (!draftAdmin) draftAdmin = { login: ADMIN.login, password: "", repeat: "" };
@@ -1429,12 +1735,13 @@ async function unlock() {
   sessionStorage.setItem(K("unlocked"), "1");
   $("navAdmin").style.display = "flex";
   renderAdmin();
+  loadPending();
 }
 
 function lockAdmin() {
   unlocked = false;
   sessionStorage.removeItem(K("unlocked"));
-  draft = null; draftSettings = null; draftAdmin = null; openRow = null;
+  draft = null; draftSettings = null; draftAdmin = null; draftReviews = null; openRow = null;
   renderAdmin();
 }
 
@@ -1446,6 +1753,7 @@ function setNum(i, field, value) {
 }
 function setSetting(field, value) { ensureDraft(); draftSettings[field] = value; }
 function setTransfer(field, value) { ensureDraft(); draftSettings.transfer[field] = value; }
+function setReviews(field, value) { ensureDraft(); draftSettings.reviews[field] = value; }
 function setPromo(field, value) { ensureDraft(); draftSettings.promo[field] = value; }
 /* Ruscha variantlar */
 function setFieldRu(i, field, value) { ensureDraft(); if (!draft[i].ru) draft[i].ru = {}; draft[i].ru[field] = value; }
@@ -1559,6 +1867,121 @@ function admField(i, it, f) {
 }
 
 /* Boshqaruv panelidagi «Statistika» bloki */
+/* ---------------------------------------------------------------- sharhlar
+   Yangi sharhlar api/reviews.js qutisida turadi. «Chiqarish» bosilsa sharh
+   katalogga (draftReviews) o'tadi va «Hammasini saqlash» bosilgach saytda
+   ko'rinadi; o'sha payt quti ham tozalanadi. */
+async function loadPending(again) {
+  if (!REVIEWS_URL) { pendingState = "off"; return; }
+  if (pendingState === "load" && !again) return;
+  pendingState = "load";
+  if (again) renderAdmin();
+  try {
+    const res = await fetch(REVIEWS_URL + "?t=" + Date.now(), { cache: "no-store" });
+    const d = await res.json();
+    PENDING = Array.isArray(d && d.pending) ? d.pending.map(normReview) : [];
+    pendingState = d && d.store === false ? "nostore" : "ok";
+  } catch (_) {
+    PENDING = []; pendingState = "fail";
+  }
+  if (page === "admin" && unlocked) renderAdmin();
+}
+
+function rvApprove(id) {
+  ensureDraft();
+  const r = PENDING.find((x) => x.id === id);
+  if (!r) return;
+  draftReviews.unshift({ ...normReview(r), hidden: 0 });
+  PENDING = PENDING.filter((x) => x.id !== id);
+  if (dropIds.indexOf(id) < 0) dropIds.push(id);
+  haptic();
+  renderAdmin();
+}
+
+function rvReject(id) {
+  ensureDraft();
+  PENDING = PENDING.filter((x) => x.id !== id);
+  if (dropIds.indexOf(id) < 0) dropIds.push(id);
+  haptic();
+  renderAdmin();
+}
+
+function rvHide(i) { ensureDraft(); draftReviews[i].hidden = draftReviews[i].hidden ? 0 : 1; renderAdmin(); }
+function rvDel(i) { ensureDraft(); draftReviews.splice(i, 1); haptic(); renderAdmin(); }
+
+/* Qutini tozalash — katalog saqlangandan keyin */
+async function rvDrop() {
+  if (!REVIEWS_URL || !dropIds.length) return;
+  try {
+    await fetch(REVIEWS_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=UTF-8" },
+      body: JSON.stringify({ op: "drop", ids: dropIds }),
+    });
+    dropIds = [];
+  } catch (_) {}
+}
+
+function reviewsHtml() {
+  ensureDraft();
+  const pend = PENDING.map((r) => `
+    <div class="rv" style="margin-top:10px">
+      <div class="rv-h">
+        <div class="rv-av">${esc((r.name || "?").slice(0, 1).toUpperCase())}</div>
+        <b>${esc(r.name || "Ismsiz")}</b>
+        <span class="d">${esc(r.date || "")}</span>
+      </div>
+      <div style="margin-top:7px">${starsHtml(r.rating, 14)}</div>
+      ${r.text ? `<p>${esc(r.text)}</p>` : ""}
+      <span class="w">${esc(rvTitleOf(r.target))}</span>
+      <div style="display:flex;gap:9px;margin-top:11px">
+        <button class="btn btn-primary" onclick="rvApprove('${esc(r.id)}')">Chiqarish</button>
+        <button class="btn btn-line" onclick="rvReject('${esc(r.id)}')">O'chirish</button>
+      </div>
+    </div>`).join("");
+
+  const live = draftReviews.map((r, i) => `
+    <div class="rv" style="margin-top:10px${r.hidden ? ";opacity:.55" : ""}">
+      <div class="rv-h">
+        <div class="rv-av">${esc((r.name || "?").slice(0, 1).toUpperCase())}</div>
+        <b>${esc(r.name || "Ismsiz")}</b>
+        <span class="d">${esc(r.date || "")}</span>
+      </div>
+      <div style="margin-top:7px">${starsHtml(r.rating, 14)}</div>
+      ${r.text ? `<p>${esc(r.text)}</p>` : ""}
+      <span class="w">${esc(rvTitleOf(r.target))}${r.hidden ? " · yashirilgan" : ""}</span>
+      <div style="display:flex;gap:9px;margin-top:11px">
+        <button class="btn btn-line" onclick="rvHide(${i})">${r.hidden ? "Ko'rsatish" : "Yashirish"}</button>
+        <button class="btn btn-danger" onclick="rvDel(${i})">O'chirish</button>
+      </div>
+    </div>`).join("");
+
+  const state = pendingState === "load" ? "Yuklanmoqda…"
+    : pendingState === "fail" ? "Qutini ochib bo'lmadi — internetni tekshiring."
+    : pendingState === "nostore" ? "Xotira ulanmagan: sharh yuborib bo'lmaydi. Vercel → Storage → Upstash Redis."
+    : pendingState === "off" ? "Sharhlar manzili CONFIG.reviews ichida ko'rsatilmagan."
+    : PENDING.length ? "" : "Yangi sharh yo'q.";
+
+  return `
+    <div class="adm">
+      <div class="adm-t">Sharhlar${PENDING.length ? " · " + PENDING.length + " yangi" : ""}</div>
+      <div class="adm-body" style="margin-top:0">
+        <div class="checks">
+          <label><input type="checkbox"${draftSettings.reviews.on ? " checked" : ""}
+            onchange="setReviews('on',this.checked?1:0);renderAdmin()">Bo'lim saytda ko'rsatilsin</label>
+        </div>
+        <p class="muted" style="margin:0 0 4px">Odam qoldirgan sharh avval shu yerga tushadi va saytda ko'rinmaydi.
+          <b>Chiqarish</b> — saytga chiqadi, <b>O'chirish</b> — yo'qoladi.
+          Ikkalasi ham pastdagi <b>Hammasini saqlash</b> bosilgandan keyin kuchga kiradi.</p>
+        ${state ? `<p class="muted" style="margin:8px 0 0">${esc(state)}</p>` : ""}
+        ${pend}
+        <button class="btn btn-soft" style="margin-top:11px" onclick="loadPending(1)">Yangi sharhlarni tekshirish</button>
+        <div class="adm-t" style="margin:16px 0 0">Saytdagi sharhlar (${draftReviews.length})</div>
+        ${live || `<p class="muted" style="margin-top:8px">Hozircha bitta ham sharh chiqarilmagan.</p>`}
+      </div>
+    </div>`;
+}
+
 function statsHtml() {
   const n = (v) => Number(v || 0).toLocaleString("ru-RU");
   const days = Object.keys(STATS.days || {}).sort();
@@ -1721,6 +2144,8 @@ function renderAdmin() {
     <h2 class="title">Boshqaruv paneli</h2>
 
     ${statsHtml()}
+
+    ${reviewsHtml()}
 
     <div class="adm">
       <div class="adm-t">Do'kon</div>
@@ -2019,17 +2444,21 @@ async function adminSave() {
         contact: String(draftSettings.contact || "").trim().replace(/^@/, ""),
         phone: String(draftSettings.phone || "").trim(),
         transfer: normTransfer(draftSettings.transfer),
+        reviews: normReviewsSet(draftSettings.reviews),
         promo,
       },
       admin: nextAdmin,
       items: draft.map(normalize),
+      reviews: draftReviews.map(normReview),
     };
     await ghPut(CONFIG.github.catalog, toBase64(JSON.stringify(payload, null, 2)), "katalog yangilandi");
 
     SETTINGS = payload.settings;
     ADMIN = payload.admin;
     ITEMS = payload.items.map(normalize);
-    draft = null; draftSettings = null; draftAdmin = null;
+    REVIEWS = payload.reviews.map(normReview);
+    await rvDrop();
+    draft = null; draftSettings = null; draftAdmin = null; draftReviews = null;
     applySettings(); renderAdmin(); renderList(); renderFavBadge();
     if (page === "taxi") renderTaxi();
     toast("GitHub'ga saqlandi");
@@ -2058,6 +2487,9 @@ function applySettings() {
   const on = TRANSFER().on;
   $("navTaxi").style.display = on ? "flex" : "none";
   if (!on && page === "taxi") go("realty");
+  const rvOn = REVIEWS_ON();
+  $("navReviews").style.display = rvOn ? "flex" : "none";
+  if (!rvOn && page === "reviews") go("realty");
   const name = String(SETTINGS.title || "Qulay Market").trim();
   const parts = name.split(" ");
   $("brandText").innerHTML = parts.length > 1
@@ -2074,6 +2506,7 @@ async function loadCatalog() {
       const items = Array.isArray(data) ? data : data.items;
       if (Array.isArray(items)) ITEMS = items.map(normalize);
       if (data && data.settings) SETTINGS = { ...SETTINGS, ...data.settings };
+      if (data && Array.isArray(data.reviews)) REVIEWS = data.reviews.map(normReview);
       if (data && data.admin && data.admin.hash) ADMIN = data.admin;
     }
   } catch {}
@@ -2082,6 +2515,7 @@ async function loadCatalog() {
   renderFavBadge();
   if (page === "realty" || page === "product") renderList();
   if (page === "taxi") renderTaxi();
+  if (page === "reviews") renderReviews();
   if (page === "fav") renderFavs();
   if (page === "item") renderItem();
   if (page === "admin" && !unlocked) renderAdmin();

@@ -1,6 +1,7 @@
-# Qulay Market — каталог на GitHub Pages
+# Qulay Market — каталог без сервера
 
-Сайт: **https://malik-alaska2.github.io/Qulay-Marketr/**
+Сайт: **https://qulay-market-bot.vercel.app/**  
+Зеркало: <https://malik-alaska2.github.io/Qulay-Marketr/> — тот же репозиторий, работает как запасной адрес.
 
 Работает без сервера — как E-BAZAR. Страница, данные и фотографии лежат прямо в этом репозитории, GitHub раздаёт их бесплатно. Ни VPS, ни базы данных, ни Docker.
 
@@ -122,8 +123,15 @@ const SHOW_PRODUCTS = false;
 
 Отдельный сервер боту не нужен — он просто открывает этот сайт.
 
-**@BotFather** → `/mybots` → ваш бот → **Bot Settings** → **Menu Button** →
-`https://malik-alaska2.github.io/Qulay-Marketr/`
+Все адреса внутри бота — кнопки под рекламой, картинки, `catalog.json` — берутся из одной строки `api/bot.js`:
+
+```js
+const SITE = "https://qulay-market-bot.vercel.app/";
+```
+
+Кнопку **Menu** в чате бота вручную задавать не нужно: она ставится сама при открытии <https://qulay-market-bot.vercel.app/api/bot?setup=1> (метод `setChatMenuButton`), в ответе видно `"menuButton":{"ok":true,…}`.
+
+Один адрес Bot API менять не умеет — короткая ссылка `t.me/QulayMarketr_Bot/app`. Её правят только вручную: **@BotFather** → `/mybots` → бот → **Bot Settings** → **Configure Mini App** → **Edit Web App URL** → `https://qulay-market-bot.vercel.app/`
 
 ## Ссылки: чем делиться
 
